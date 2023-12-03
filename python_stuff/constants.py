@@ -1,4 +1,4 @@
-SMRT_DEFAULT_URL = 'http://journey.smrt.com.sg/journey/station_info/<>/first-and-last-train/'
+SMRT_DEFAULT_URL = 'https://journey.smrt.com.sg/journey/station_info/<>/first-and-last-train/'
 SBS_URL = 'https://www.sbstransit.com.sg/first-train-last-train'
 
 def SMRT_URL(station):
