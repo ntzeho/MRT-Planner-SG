@@ -5,6 +5,7 @@ require("dotenv").config({ path: "./config.env" });
 const port = process.env.PORT || 5000;
 
 const mongoose = require("mongoose");
+const {solve, scrape} = require("./controller.js")
 
 const Db = process.env.ATLAS_URI;
 mongoose.connect(Db, { useNewUrlParser: true, useUnifiedTopology: true, dbName: "timings"});
@@ -24,6 +25,8 @@ app.use('/api', router).all((_, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
 })
 router.get('/', (_, res) => res.send('hello world from user service'));
+router.post('/solve', solve);
+router.put('/scrape', scrape)
 // router.get('/user', getUsers);
 // router.post('/user/login', getUser);
 // router.post('/user', createUser);

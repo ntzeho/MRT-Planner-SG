@@ -2,8 +2,8 @@ function _siftdown(heap, startpos, pos) {
     const newitem = heap[pos]
 
     while (pos > startpos) {
-        parentpos = (pos - 1) >> 1
-        parent = heap[parentpos]
+        var parentpos = (pos - 1) >> 1
+        var parent = heap[parentpos]
         if (newitem < parent) {
             heap[pos] = parent
             pos = parentpos
@@ -21,7 +21,7 @@ function _siftup(heap, pos) {
 
     var childpos = 2*pos + 1    //leftmost child position
     while (childpos < endpos) {
-        rightpos = childpos + 1
+        var rightpos = childpos + 1
         if ((rightpos < endpos) && !(heap[childpos] < heap[rightpos])) {
             childpos = rightpos
         }
