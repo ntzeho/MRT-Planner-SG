@@ -1,22 +1,26 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const SMRTModelSchema = new Schema({
+const TimingModelSchema = new Schema({
     station: {
         type: String,
         required: true,
         unique: true,
     },
-    code: {
+    codes: {
         type: Array,
         required: true,
     },
-    times: { //store timings for station
+    sbs_times: { //store timings for station
+        type: Object,
+        required: true,
+        default: {},
+    },
+    smrt_times: { //store timings for station
         type: Object,
         required: true,
         default: {},
     }
-    
 })
 
-module.exports = mongoose.model('SMRT', SMRTModelSchema);
+module.exports = mongoose.model('Timing', TimingModelSchema);
