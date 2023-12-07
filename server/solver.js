@@ -1,7 +1,7 @@
 const {heappush, heappop} = require("./utils/heapQueue.js")
 const {SMRT_LINES, SBS_LINES, TRANSFER_TIME, EW_NS_I, DT_CE_I, NO_CODE_I, WALKING_TIME,} = require("./constants/constants.js")
 const {stations_dict, lines, travelTime} = require("./constants/stations.js")
-
+const TimeModel = require("./timings.js")
 
 function getNeighbours(station) {
     var neighbours = [];
