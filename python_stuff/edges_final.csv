@@ -58,10 +58,10 @@ Gul Circle,Tuas Crescent,3
 Tuas Crescent,Tuas West Road,2
 Tuas West Road,Tuas Link,2
 Expo,Changi Airport,4
-HarbourFront,Outram Park,3
-Outram Park,Chinatown,2
+HarbourFront,Outram Park,4
+Outram Park,Chinatown,1
 Chinatown,Clarke Quay,2
-Clarke Quay,Dhoby Ghaut,2
+Clarke Quay,Dhoby Ghaut,3
 Dhoby Ghaut,Little India,2
 Little India,Farrer Park,2
 Farrer Park,Boon Keng,2
@@ -73,89 +73,89 @@ Kovan,Hougang,2
 Hougang,Buangkok,2
 Buangkok,Sengkang,2
 Sengkang,Punggol,3
-Dhoby Ghaut,Bras Basah,1
-Bras Basah,Esplanade,1
-Esplanade,Promenade,1
-Promenade,Bayfront,1
-Promenade,Nicoll Highway,1
-Nicoll Highway,Stadium,1
-Stadium,Mountbatten,1
-Mountbatten,Dakota,1
-Dakota,Paya Lebar,1
-Paya Lebar,MacPherson,1
-MacPherson,Tai Seng,1
-Tai Seng,Bartley,1
-Bartley,Serangoon,1
-Serangoon,Lorong Chuan,1
-Lorong Chuan,Bishan,1
-Bishan,Marymount,1
-Marymount,Caldecott,1
-Caldecott,Botanic Gardens,1
-Botanic Gardens,Farrer Road,1
-Farrer Road,Holland Village,1
-Holland Village,Buona Vista,1
-Buona Vista,one-north,1
-one-north,Kent Ridge,1
-Kent Ridge,Haw Par Villa,1
-Haw Par Villa,Pasir Panjang,1
-Pasir Panjang,Labrador Park,1
-Labrador Park,Telok Blangah,1
-Telok Blangah,HarbourFront,1
-Bayfront,Marina Bay,1
-Bukit Panjang,Cashew,1
-Cashew,Hillview,1
-Hillview,Beauty World,1
-Beauty World,King Albert Park,1
-King Albert Park,Sixth Avenue,1
-Sixth Avenue,Tan Kah Kee,1
-Tan Kah Kee,Botanic Gardens,1
-Botanic Gardens,Stevens,1
-Stevens,Newton,1
-Newton,Little India,1
+Dhoby Ghaut,Bras Basah,2
+Bras Basah,Esplanade,2
+Esplanade,Promenade,2
+Promenade,Bayfront,2
+Promenade,Nicoll Highway,2
+Nicoll Highway,Stadium,2
+Stadium,Mountbatten,2
+Mountbatten,Dakota,2
+Dakota,Paya Lebar,3
+Paya Lebar,MacPherson,2
+MacPherson,Tai Seng,2
+Tai Seng,Bartley,2
+Bartley,Serangoon,3
+Serangoon,Lorong Chuan,2
+Lorong Chuan,Bishan,3
+Bishan,Marymount,3
+Marymount,Caldecott,2
+Caldecott,Botanic Gardens,5
+Botanic Gardens,Farrer Road,2
+Farrer Road,Holland Village,3
+Holland Village,Buona Vista,2
+Buona Vista,one-north,2
+one-north,Kent Ridge,2
+Kent Ridge,Haw Par Villa,2
+Haw Par Villa,Pasir Panjang,3
+Pasir Panjang,Labrador Park,2
+Labrador Park,Telok Blangah,2
+Telok Blangah,HarbourFront,3
+Bayfront,Marina Bay,2
+Bukit Panjang,Cashew,2
+Cashew,Hillview,2
+Hillview,Beauty World,4
+Beauty World,King Albert Park,2
+King Albert Park,Sixth Avenue,3
+Sixth Avenue,Tan Kah Kee,2
+Tan Kah Kee,Botanic Gardens,2
+Botanic Gardens,Stevens,2
+Stevens,Newton,3
+Newton,Little India,3
 Little India,Rochor,1
-Rochor,Bugis,1
-Bugis,Promenade,1
-Promenade,Bayfront,1
+Rochor,Bugis,2
+Bugis,Promenade,3
+Promenade,Bayfront,2
 Bayfront,Downtown,1
-Downtown,Telok Ayer,1
-Telok Ayer,Chinatown,1
-Chinatown,Fort Canning,1
-Fort Canning,Bencoolen,1
-Bencoolen,Jalan Besar,1
-Jalan Besar,Bendemeer,1
-Bendemeer,Geylang Bahru,1
-Geylang Bahru,Mattar,1
-Mattar,MacPherson,1
-MacPherson,Ubi,1
-Ubi,Kaki Bukit,1
-Kaki Bukit,Bedok North,1
-Bedok North,Bedok Reservoir,1
-Bedok Reservoir,Tampines West,1
-Tampines West,Tampines,1
-Tampines,Tampines East,1
-Tampines East,Upper Changi,1
-Upper Changi,Expo,1
-Choa Chu Kang,South View,1
-South View,Keat Hong,1
+Downtown,Telok Ayer,2
+Telok Ayer,Chinatown,2
+Chinatown,Fort Canning,2
+Fort Canning,Bencoolen,2
+Bencoolen,Jalan Besar,2
+Jalan Besar,Bendemeer,2
+Bendemeer,Geylang Bahru,2
+Geylang Bahru,Mattar,3
+Mattar,MacPherson,2
+MacPherson,Ubi,2
+Ubi,Kaki Bukit,2
+Kaki Bukit,Bedok North,2
+Bedok North,Bedok Reservoir,2
+Bedok Reservoir,Tampines West,3
+Tampines West,Tampines,2
+Tampines,Tampines East,2
+Tampines East,Upper Changi,3
+Upper Changi,Expo,2
+Choa Chu Kang,South View,2
+South View,Keat Hong,2
 Keat Hong,Teck Whye,1
 Teck Whye,Phoenix,1
-Phoenix,Bukit Panjang,1
+Phoenix,Bukit Panjang,2
 Bukit Panjang,Petir,1
-Petir,Pending,1
+Petir,Pending,2
 Pending,Bangkit,1
-Bangkit,Fajar,1
+Bangkit,Fajar,2
 Fajar,Segar,1
-Segar,Jelapang,1
+Segar,Jelapang,2
 Jelapang,Senja,1
 Senja,Bukit Panjang,1
-Sengkang,Renjong,1
-Sengkang,Cheng Lim,1
-Sengkang,Compassvale,1
-Sengkang,Ranggung,1
+Sengkang,Renjong,3
+Sengkang,Cheng Lim,2
+Sengkang,Compassvale,2
+Sengkang,Ranggung,3
 Compassvale,Rumbia,1
 Rumbia,Bakau,1
 Bakau,Kangkar,1
-Kangkar,Ranggung,1
+Kangkar,Ranggung,2
 Cheng Lim,Farmway,1
 Farmway,Kupang,1
 Kupang,Thanggam,1
@@ -163,37 +163,37 @@ Thanggam,Fernvale,1
 Fernvale,Layar,1
 Layar,Tongkang,1
 Tongkang,Renjong,1
-Punggol,Cove,1
-Punggol,Damai,1
-Punggol,Sam Kee,1
-Punggol,Soo Teck,1
+Punggol,Cove,3
+Punggol,Damai,2
+Punggol,Sam Kee,2
+Punggol,Soo Teck,3
 Cove,Meridian,1
 Meridian,Coral Edge,1
 Coral Edge,Riviera,1
 Riviera,Kadaloor,1
 Kadaloor,Oasis,1
 Oasis,Damai,1
-Sam Kee,Punggol Point,1
+Sam Kee,Punggol Point,2
 Punggol Point,Samudera,1
 Samudera,Nibong,1
 Nibong,Sumang,1
 Sumang,Soo Teck,1
-Woodlands North ,Woodlands ,1
-Woodlands ,Woodlands South ,1
-Woodlands South ,Springleaf,1
-Springleaf,Lentor,1
-Lentor,Mayflower,1
-Mayflower,Bright Hill,1
-Bright Hill,Upper Thomson,1
-Upper Thomson,Caldecott,1
-Caldecott,Stevens,1
-Stevens,Napier,1
-Napier,Orchard Boulevard,1
-Orchard Boulevard,Orchard,1
-Orchard,Great World,1
-Great World,Havelock,1
-Havelock,Outram Park,1
-Outram Park,Maxwell,1
-Maxwell,Shenton Way,1
+Woodlands North ,Woodlands ,3
+Woodlands ,Woodlands South ,3
+Woodlands South ,Springleaf,4
+Springleaf,Lentor,4
+Lentor,Mayflower,2
+Mayflower,Bright Hill,2
+Bright Hill,Upper Thomson,3
+Upper Thomson,Caldecott,3
+Caldecott,Stevens,5
+Stevens,Napier,2
+Napier,Orchard Boulevard,2
+Orchard Boulevard,Orchard,2
+Orchard,Great World,2
+Great World,Havelock,2
+Havelock,Outram Park,2
+Outram Park,Maxwell,2
+Maxwell,Shenton Way,2
 Shenton Way,Marina Bay,1
-Marina Bay,Gardens by the Bay,1
+Marina Bay,Gardens by the Bay,4
