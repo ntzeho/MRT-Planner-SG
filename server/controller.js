@@ -1,4 +1,3 @@
-const TimeModel = require("./timings.js")
 const {outputJourney, getTimings} = require("./solver.js")
 
 async function solve(req, res) {
@@ -6,14 +5,25 @@ async function solve(req, res) {
 }
 
 async function scrapeTimings(req, res) {
-    //run python script to scrape train timings from sbs and smrt websites
+    //scrape train timings from sbs and smrt websites
     //scrapper.py
 
 
 }
 
-async function updateStations(req, res) {
-    //run python script to edit the values of constants in stations.js
+async function writeStations(req, res) {
+    //write stations.js
+    //stations.py
+
+}
+
+async function editEdges(req, res) {
+    //edit edges.csv file
+    //stations.py
+}
+
+async function writeEdges(req, res) {
+    //write edges.js
     //stations.py
 
 }
@@ -21,5 +31,7 @@ async function updateStations(req, res) {
 module.exports = {
     solve,
     scrapeTimings,
-    updateStations
+    writeStations,
+    editEdges,
+    writeEdges
 }

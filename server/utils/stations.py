@@ -10,10 +10,14 @@ NO_CODE_I = {'Tanah Merah': ['CG'], 'Promenade': ['CE']}
 
 EDGES_TO_ADD = ['CG,CG1,3', 'CE,CE1,2', 'BP6,BP13,1', 'STC,SW1,2', 'STC,SW8,3', 'STC,SE1,2', 'STC,SE5,3', 'PTC,PW1,2', 'PTC,PW7,3', 'PTC,PE1,3', 'PTC,PE7,2']
 
+walkingTime = {('Bras Basah', 'Bencoolen'): ['--DIRECTIONS--', 3], \
+                ('Raffles Place', 'Downtown'): ['--DIRECTIONS--', 7], \
+                    ('Esplanade', 'City Hall'): ['--DIRECTIONS--', 5]}
+
 stations_dict = {}
 lines = {}
 
-with open('stations.csv', mode='r') as f:
+with open('./utils/stations.csv', mode='r') as f:
     rows = csv.reader(f)
     for row in rows:
         if row[1] != 'mrt_station_english':
@@ -45,14 +49,14 @@ def stationType(station):
 
 def editEdges():
     try:
-        with open('edges.csv', mode='r') as f:
+        with open('./utils/edges.csv', mode='r') as f:
             rows = csv.reader(f)
             edges = [''.join([cell+',' for cell in row]).rstrip(',') for row in rows]
     except:
         edges = [] #file not created yet
 
     unweighted_edges = [edge.split(',')[0] + ',' + edge.split(',')[1] for edge in edges]
-    with open('stations.csv', mode='r') as f:
+    with open('./utils/stations.csv', mode='r') as f:
         rows = list(csv.reader(f))
         for i in range(1,len(rows)-1):
             if rows[i][0][:2] == rows[i+1][0][:2]:
@@ -73,29 +77,35 @@ def editEdges():
         if edge not in edges:
             edges.append(edge)
     
-    with open('edges.csv', mode='w', newline='') as f:
+    with open('./utils/edges.csv', mode='w', newline='') as f:
         for edge in edges:
             f.write(edge+'\n')
 
 def writeEdgesJS():
     travelTime = {}
-    with open("edges.csv", mode='r') as f:
+    with open("./utils/edges.csv", mode='r') as f:
         rows = csv.reader(f)
         for row in rows:
             travelTime[(row[0], row[1])] = row[2]
 
-    with open('../constants/edges.js', mode='w') as f:
+    with open('./constants/edges.js', mode='w') as f:
         f.write('const travelTime = {\n')
         for edge in travelTime:
             f.write('    '+'"['+"'"+edge[0]+", '"+edge[1]+"']"+'"'+' : '+travelTime[edge]+',' + '\n')
         f.write('}\n\n')
 
+        f.write('const walkingTime = {\n')
+        for edge in walkingTime:
+            f.write('    '+'"['+"'"+edge[0]+", '"+edge[1]+"']"+'"'+' : '+str(walkingTime[edge])+',' + '\n')
+        f.write('}\n\n')
+
         f.write('module.exports = {\n')
         f.write('    travelTime,\n')
+        f.write('    walkingTime,\n')
         f.write('}')
 
 def writeStations(): #../constants/stations.js
-    with open('../constants/stations.js', mode='w') as f:
+    with open('./constants/stations.js', mode='w') as f:
         f.write('const stations_dict = {\n')
         for station in stations_dict:
             f.write('    '+"'"+station+"' : "+str(stations_dict[station])+',\n')
