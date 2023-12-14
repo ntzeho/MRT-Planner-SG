@@ -91,12 +91,12 @@ def writeEdgesJS():
     with open('./constants/edges.js', mode='w') as f:
         f.write('const travelTime = {\n')
         for edge in travelTime:
-            f.write('    '+'"['+"'"+edge[0]+", '"+edge[1]+"']"+'"'+' : '+travelTime[edge]+',' + '\n')
+            f.write('    '+"'"+edge[0]+','+edge[1]+"'"+' : '+travelTime[edge]+',' + '\n')
         f.write('}\n\n')
 
         f.write('const walkingTime = {\n')
         for edge in walkingTime:
-            f.write('    '+'"['+"'"+edge[0]+", '"+edge[1]+"']"+'"'+' : '+str(walkingTime[edge])+',' + '\n')
+            f.write('    '+"'"+edge[0]+","+edge[1]+"'"+' : '+str(walkingTime[edge])+',' + '\n')
         f.write('}\n\n')
 
         f.write('module.exports = {\n')
