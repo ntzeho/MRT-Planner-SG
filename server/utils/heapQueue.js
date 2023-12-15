@@ -1,10 +1,10 @@
 function _siftdown(heap, startpos, pos) {
-    const newitem = heap[pos]
+    var newitem = heap[pos]
 
     while (pos > startpos) {
         var parentpos = (pos - 1) >> 1
         var parent = heap[parentpos]
-        if (newitem < parent) {
+        if (newitem[0] < parent[0]) {
             heap[pos] = parent
             pos = parentpos
             continue
@@ -15,15 +15,17 @@ function _siftdown(heap, startpos, pos) {
 }
 
 function _siftup(heap, pos) {
-    const endpos = heap.length
-    const startpos = pos
-    const newitem = heap[pos]
+    var endpos = heap.length
+    var startpos = pos
+    var newitem = heap[pos]
 
     var childpos = 2*pos + 1    //leftmost child position
     while (childpos < endpos) {
         var rightpos = childpos + 1
-        if ((rightpos < endpos) && !(heap[childpos] < heap[rightpos])) {
-            childpos = rightpos
+        if (rightpos < endpos) {
+            if (!(heap[childpos][0] < heap[rightpos][0])) {
+                childpos = rightpos
+            }
         }
             
         heap[pos] = heap[childpos]
@@ -41,9 +43,9 @@ function heappush(heap, item) {
 }
 
 function heappop(heap) {
-    const lastelt = heap.pop()
-    if (heap) {
-        const returnitem = heap[0]
+    var lastelt = heap.pop()
+    if (heap.length > 0) {
+        var returnitem = heap[0]
         heap[0] = lastelt
         _siftup(heap, 0)
         return returnitem

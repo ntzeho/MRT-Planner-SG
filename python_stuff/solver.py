@@ -3,7 +3,9 @@ from stations import stations_dict
 from heapQueue import heappop, heappush
 from sys import argv
 
-WALKING_TIME = {('Bras Basah', 'Bencoolen'): 3, ('Raffles Place', 'Downtown'): 7, ('Esplanade', 'City Hall'): 5}
+walkingTime = {('Bras Basah', 'Bencoolen'): ['--DIRECTIONS--', 3], \
+                ('Raffles Place', 'Downtown'): ['--DIRECTIONS--', 7], \
+                    ('Esplanade', 'City Hall'): ['--DIRECTIONS--', 5]}
 
 travelTime = {}
 with open("edges.csv", mode='r') as f:
@@ -17,7 +19,7 @@ def getStationFromCode(code):
             return station
 
 def getNeighbours(station, exclude=''):
-    return [edge[edge.index(station) - 1] for edge in travelTime if station in edge and station != exclude]
+    return [edge[edge.index(station) - 1] for edge in travelTime if station in edge and station[:2] != exclude]
 
 def commonLines(stn1, stn2):
     lines1 = [code[:2] for code in stations_dict[stn1]]
@@ -32,43 +34,6 @@ def checkDirect(path):
 
 def transferStation(path):
     return [getStationFromCode(path[i]) for i in range(len(path)-1) if getStationFromCode(path[i]) == getStationFromCode(path[i+1])]
-
-    # if len(path) < 3:
-    #     return []
-    # if len(path) == 3:
-    #     return [path[1]] if checkTransfer(path) else []
-    
-    # extraCheck = False
-    # transfers = []
-    # for i in range(len(path)-2):
-    #     if extraCheck:
-    #         checkPath = path[i-1:i+3]
-    #     else:
-    #         checkPath = path[i:i+3]
-
-    #     if checkTransfer(checkPath):
-    #         transfers.append(path[i+1])
-    #     elif EW_NS_I[0] in checkPath and EW_NS_I[1] in checkPath:
-    #         extraCheck = True
-    #     elif DT_CE_I[0] in checkPath and DT_CE_I[1] in checkPath:
-    #         extraCheck = True
-    #     else:
-    #         extraCheck = False
-
-    # if EW_NS_I[0] in transfers and EW_NS_I[1] in path:
-    #     transfers[transfers.index(EW_NS_I[0])] = EW_NS_I
-
-    # elif EW_NS_I[1] in transfers and EW_NS_I[0] in path:
-    #     transfers[transfers.index(EW_NS_I[1])] = EW_NS_I
-
-    # elif DT_CE_I[0] in transfers and DT_CE_I[1] in path:
-    #     if path[path.index(DT_CE_I[0])-1] == DT_CE_I[1]:
-    #         transfers[transfers.index(DT_CE_I[0])] = DT_CE_I
-
-    # elif DT_CE_I[1] in transfers and DT_CE_I[0] in path:
-    #     transfers[transfers.index(DT_CE_I[1])] = DT_CE_I
-
-    return transfers
 
 def totalTime(path):
     time = 0
@@ -106,7 +71,7 @@ def astar(start, end, exclude=''):
 
     heappush(open_list, (f_score[start], start))
 
-    while open_list:
+    while open_list:     
         current_f, current = heappop(open_list)
 
         if current == end:
@@ -120,7 +85,7 @@ def astar(start, end, exclude=''):
                 tentative_g_score = g_score[current] + travelTime.get((current, neighbor), float('inf'))
             else:
                 tentative_g_score = g_score[current] + travelTime.get((neighbor, current), float('inf'))
-
+            
             if tentative_g_score < g_score[neighbor]:
                 came_from[neighbor] = current
                 g_score[neighbor] = tentative_g_score
@@ -158,7 +123,6 @@ def outputJourney(start, end):
                 if path_transfer_unique != r_path_transfer_unique:
                     toKeep.append((r_path_code, r_path_name, r_path_transfer, r_time))
 
-    toKeep.sort(key=sortTime)
     directPaths = [path for path in toKeep if checkDirect(path[0])]
     directLines = commonLines(start, end)
 
@@ -183,19 +147,56 @@ def outputJourney(start, end):
 
             toKeep.append((directPath, convertPathToStations(directPath), [], totalTime(directPath)))
 
-    #to add in code to take into account walking stations
 
+    #take into account no bp lrt
+    newPaths = [astar(code_start, code_end, exclude='BP') for code_start in stations_dict[start] for code_end in stations_dict[end]]
+    newPaths = [path for path in newPaths if path is not None]
+    newPaths.sort(key=sortTime)
+    optimalNewPaths = [newPaths[i] for i in range(len(newPaths)) if newPaths[i][-1] == newPaths[0][-1] or (newPaths[i][-1] - newPaths[0][-1] <= 3 and len(newPaths[i][2]) <= len(newPaths[0][2]))]
+    for path in optimalNewPaths:
+        if path not in toKeep:
+            toKeep.append(path)
+
+    toKeep.sort(key=sortTime)
+
+    
+    #take into account walking stations
+    if (start, end) in walkingTime:
+        toKeep.append(tuple(walkingTime[(start, end)]))
+    
+    elif (end, start) in walkingTime:
+        toKeep.append(tuple(walkingTime[(end, start)]))
+
+    else:
+        for pair in walkingTime:
+            newPaths = []
+            if start in pair:
+                newPaths = [astar(code_start, code_end) for code_start in stations_dict[pair[pair.index(start) - 1]] for code_end in stations_dict[end]]
+            elif end in pair:
+                newPaths = [astar(code_start, code_end) for code_start in stations_dict[start] for code_end in stations_dict[pair[pair.index(end) - 1]]]
+
+            newPaths.sort(key=sortTime)
+            lst = [newPaths[i] for i in range(len(newPaths)) if newPaths[i][-1] == newPaths[0][-1] or (newPaths[i][-1] - newPaths[0][-1] <= 3 and len(newPaths[i][2]) <= len(newPaths[0][2]))]
+            for path in lst:
+                if path[-1] + walkingTime[pair][-1] <= toKeep[0][-1]:
+                    toKeep.append((walkingTime[pair], path[0], path[1], path[2], path[-1] + walkingTime[pair][-1]))
+
+    toKeep.sort(key=sortTime)
     return toKeep
 
 def testAlgo():
     lst = [station for station in stations_dict]
 
     with open('testAlgo.js', mode='w') as f:
-        f.write('const totalPaths = {\n')
+        f.write('const allPaths = {\n')
         for i in range(len(lst)-1):
             for j in range(1, len(lst)):
-                f.write('    ' + "'" + lst[i] + ',' +  lst[j] + "': "+str(len(outputJourney(lst[i], lst[j]))) + ',\n')
+                f.write('    ' + "'" + lst[i] + ',' +  lst[j] + "': "+str(outputJourney(lst[i], lst[j])) + ',\n')
+                f.write('    ' + "'" + lst[j] + ',' +  lst[i] + "': "+str(outputJourney(lst[j], lst[i])) + ',\n')
     
+        f.write('}\n\n')
+        f.write('module.exports = {\n')
+        f.write('    allPaths,\n')
         f.write('}')
 
 if __name__ == '__main__':
@@ -209,5 +210,5 @@ if __name__ == '__main__':
                 print('Ensure there are 2 arguments - start and end station!')
         except:
             print('Ensure there are 2 arguments - start and end station!')
-    except:
+    except KeyError:
         print('Ensure that inputs are valid stations!')
