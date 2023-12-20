@@ -185,7 +185,9 @@ function outputJourney(start, end) {
             reverse_path.transfer = reverse_path.transfer.reverse()
 
             if (arraysEqual(path.names, reverse_path.names) && !arraysEqual(path.codes, reverse_path.codes)) {
-                paths.push(reverse_path)
+                paths.push(reverse_path) //path is same but can interchange at different station
+            } else if (!arraysEqual(path.names, reverse_path.names) && path.time === reverse_path.time) {
+                paths.push(reverse_path) //path is different but same travelling time
             }
             if (checkDirect(path.codes)) {
                 directPaths.push(path)
@@ -225,7 +227,6 @@ function outputJourney(start, end) {
 
             const startNo = parseInt(startCode.slice(2,))
             const endNo = parseInt(endCode.slice(2,))
-            //const order = -parseInt((startNo - endNo) / Math.abs(startNo - endNo))
 
             if (startNo < endNo) {
                 for (let i = startNo; i < endNo + 1; i++) {
@@ -282,7 +283,7 @@ function outputJourney(start, end) {
         toKeep.push(pathObject)
     } else if (walkTimeKeys.includes(end+','+start)) {
         const pathObject = {
-            'names': [end, start],
+            'names': [start, end],
             'time': walkingTime[end+','+start][1],
             'walk': walkingTime[end+','+start][0]
         }
@@ -344,13 +345,6 @@ function getTimings(allPaths) {
 
 }
 
-function testFunction() {
-    //const toTest = astar('NS1', 'NS17')
-    const toTest = outputJourney('Tampines', 'Promenade')
-    console.log(toTest)
-}
-
-testFunction()
 
 module.exports = {
     outputJourney,

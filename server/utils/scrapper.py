@@ -127,7 +127,7 @@ def scrapeSBS():
 
 
 def readTimings(station):
-    with open('timings.json', mode='r') as f:
+    with open('./constants/timings.json', mode='r') as f:
         timings_dict = ast.literal_eval(str(f.read()))
         print(timings_dict[station])
 
@@ -137,7 +137,7 @@ def main():
             scrapeSBS()
             scrapeSMRT()
 
-            with open('timings.json', mode='w', newline='') as f:
+            with open('./constants/timings.json', mode='w', newline='') as f:
                 f.write(str(timings))
         
     elif len(argv) == 3:
