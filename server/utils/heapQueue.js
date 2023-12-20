@@ -1,59 +1,59 @@
-function _siftdown(heap, startpos, pos) {
-    var newitem = heap[pos]
+function bubbleDown(heap, startPOS, pos) {
+    let newItem = heap[pos]
 
-    while (pos > startpos) {
-        var parentpos = (pos - 1) >> 1
-        var parent = heap[parentpos]
-        if (newitem[0] < parent[0]) {
+    while (pos > startPOS) {
+        let parentPOS = (pos - 1) >> 1
+        let parent = heap[parentPOS]
+        if (newItem[0] < parent[0]) {
             heap[pos] = parent
-            pos = parentpos
+            pos = parentPOS
             continue
         }
         break
     }
-    heap[pos] = newitem
+    heap[pos] = newItem
 }
 
-function _siftup(heap, pos) {
-    var endpos = heap.length
-    var startpos = pos
-    var newitem = heap[pos]
+function bubbleUp(heap, pos) {
+    let endPOS = heap.length
+    let startPOS = pos
+    let newItem = heap[pos]
 
-    var childpos = 2*pos + 1    //leftmost child position
-    while (childpos < endpos) {
-        var rightpos = childpos + 1
-        if (rightpos < endpos) {
-            if (!(heap[childpos][0] < heap[rightpos][0])) {
-                childpos = rightpos
+    let childPOS = 2*pos + 1    //leftmost child position
+    while (childPOS < endPOS) {
+        let rightPOS = childPOS + 1
+        if (rightPOS < endPOS) {
+            if (!(heap[childPOS][0] < heap[rightPOS][0])) {
+                childPOS = rightPOS
             }
         }
             
-        heap[pos] = heap[childpos]
-        pos = childpos
-        childpos = 2*pos + 1
+        heap[pos] = heap[childPOS]
+        pos = childPOS
+        childPOS = 2*pos + 1
     }
 
-    heap[pos] = newitem
-    _siftdown(heap, startpos, pos)
+    heap[pos] = newItem
+    bubbleDown(heap, startPOS, pos)
 }
 
-function heappush(heap, item) {
+function heapPush(heap, item) {
     heap.push(item)
-    _siftdown(heap, 0, heap.length-1)
+    bubbleDown(heap, 0, heap.length-1)
 }
 
-function heappop(heap) {
-    var lastelt = heap.pop()
+function heapPop(heap) {
+    let lastElement = heap.pop()
     if (heap.length > 0) {
-        var returnitem = heap[0]
-        heap[0] = lastelt
-        _siftup(heap, 0)
-        return returnitem
+        let returnItem = heap[0]
+        heap[0] = lastElement
+        bubbleUp(heap, 0)
+        return returnItem
     }
-    return lastelt
+    return lastElement
 }
 
 module.exports = {
-    heappush,
-    heappop
+    heapPush,
+    heapPop
 }

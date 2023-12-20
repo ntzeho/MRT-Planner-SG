@@ -1,4 +1,5 @@
-const {heappush, heappop} = require("./utils/heapQueue.js")
+const {heapPush, heapPop} = require("./utils/heapQueue.js")
+const {arraysEqual, objectInArray} = require("./utils/utils.js")
 const {stations_dict} = require("./constants/stations.js")
 const {travelTime, walkingTime} = require("./constants/edges.js")
 
@@ -12,7 +13,7 @@ function getStationFromCode(code) {
 }
 
 function getNeighbours(station, exclude='') {
-    var neighbours = [];
+    let neighbours = [];
     const edges = Object.keys(travelTime)
 
     for (const edge of edges) {
@@ -27,15 +28,17 @@ function getNeighbours(station, exclude='') {
 }
 
 function commonLines(stn1, stn2) {
-    var lines1 = stations_dict[stn1]
-    var lines2 = stations_dict[stn2]
-    var cLines = []
+    const codes1 = stations_dict[stn1]
+    const codes2 = stations_dict[stn2]
+    let lines1 = []
+    let lines2 = []
+    let cLines = []
 
-    for (let i = 0; i < lines1.length; i++) {
-        lines1[i] = lines1[i].slice(0,2)
+    for (let i = 0; i < codes1.length; i++) {
+        lines1[i] = codes1[i].slice(0,2)
     }
-    for (let i = 0; i < lines2.length; i++) {
-        lines2[i] = lines2[i].slice(0,2)
+    for (let i = 0; i < codes2.length; i++) {
+        lines2[i] = codes2[i].slice(0,2)
     }
     for (let i = 0; i < lines1.length; i++) {
         if (lines2.includes(lines1[i])) {
@@ -46,12 +49,6 @@ function commonLines(stn1, stn2) {
 }
 
 function checkDirect(path) {
-    /*
-    for i in range(len(path)-1):
-        if path[i][:2] != path[i+1][:2]:
-            return False
-    return True
-    */
     for (let i = 0; i < path.length-1; i++) {
         if (path[i].slice(0,2) != path[i+1].slice(0,2)) {
             return false
@@ -71,20 +68,12 @@ function transferStation(path) {
 }
 
 function totalTime(path) {
-    /*
-    time = 0
-    for i in range(len(path)-1):
-        try:
-            time += travelTime[(path[i], path[i+1])]
-        except:
-            time += travelTime[(path[i+1], path[i])]
-    return time
-    */
-    var time = 0
+    let time = 0
+    const edges = Object.keys(travelTime)
     for (let i = 0; i < path.length-1; i++) {
-        try {
+        if (edges.includes(path[i] + ',' + path[i+1])) {
             time += travelTime[path[i] + ',' + path[i+1]]
-        } catch(err) {
+        } else {
             time += travelTime[path[i+1] + ',' + path[i]]
         }
     }
@@ -112,18 +101,26 @@ function convertPathToStations(path) {
     return namePath
 }
 
+function checkLineInPaths(line, paths) {
+    for (const path of paths) {
+        for (const code of path.codes) {
+            if (code.slice(0,2) == line) return true
+        }
+    }
+    return false
+}
 
 
 function astar(start, end, exclude='') {
-    var open_list = []
-    var closed_set = new Set()
-    var came_from = {}
-    var g_score = {}
-    var f_score = {}
+    let open_list = []
+    let closed_set = new Set()
+    let came_from = {}
+    let g_score = {}
+    let f_score = {}
     const stationArray = Object.keys(stations_dict)
 
     for (const station of stationArray) {
-        var codeArray = stations_dict[station]
+        let codeArray = stations_dict[station]
         for (const code of codeArray) {
             g_score[code] = Infinity
             f_score[code] = Infinity
@@ -133,10 +130,10 @@ function astar(start, end, exclude='') {
     g_score[start] = 0
     f_score[start] = 0
 
-    heappush(open_list, [f_score[start], start])
+    heapPush(open_list, [f_score[start], start])
 
     while (open_list.length > 0) {
-        var [current_f, current] = heappop(open_list)
+        let [current_f, current] = heapPop(open_list)
 
         if (current == end) {
             const path = reconstructPath(came_from, current)
@@ -151,10 +148,10 @@ function astar(start, end, exclude='') {
 
         closed_set.add(current)
 
-        var neighbors = getNeighbours(current, exclude)
+        let neighbors = getNeighbours(current, exclude)
         for (const neighbor of neighbors) {
-            var travelKey = current + ',' + neighbor in travelTime ? current + ',' + neighbor : neighbor + ',' + current
-            var tentative_g_score = g_score[current] + travelTime[travelKey]
+            let travelKey = current + ',' + neighbor in travelTime ? current + ',' + neighbor : neighbor + ',' + current
+            let tentative_g_score = g_score[current] + travelTime[travelKey]
 
             if (tentative_g_score < g_score[neighbor]) {
                 came_from[neighbor] = current
@@ -162,104 +159,185 @@ function astar(start, end, exclude='') {
                 f_score[neighbor] = g_score[neighbor]
 
                 if (!closed_set.has(neighbor)) {
-                    heappush(open_list, [f_score[neighbor], neighbor])
+                    heapPush(open_list, [f_score[neighbor], neighbor])
                 }
             }
         }
     }
-
+    return {'codes': [], 'names': [], 'transfer': [], 'time': 0}
 }
 
 function outputJourney(start, end) {
-    /*
-    def sortTime(journey):
-        return journey[-1]
+    let paths = []
+    let toKeep = []
+    let directPaths = []
 
-    paths = [astar(code_start, code_end) for code_start in stations_dict[start] for code_end in stations_dict[end]]
-    paths.sort(key=sortTime)
+    const code_start_array = stations_dict[start]
+    const code_end_array = stations_dict[end]
 
-    reverse_paths = [astar(code_end, code_start) for code_start in stations_dict[start] for code_end in stations_dict[end]]
-    reverse_paths.sort(key=sortTime)
+    for (const code_start of code_start_array) {
+        for (const code_end of code_end_array) {
+            let path = new astar(code_start, code_end)
+            let reverse_path = new astar(code_end, code_start)
 
-    toKeep = [paths[i] for i in range(len(paths)) if paths[i][-1] == paths[0][-1] or (paths[i][-1] - paths[0][-1] <= 3 and len(paths[i][2]) <= len(paths[0][2]))]
-    toKeepReverse = [reverse_paths[i] for i in range(len(reverse_paths)) if reverse_paths[i][-1] == reverse_paths[0][-1] or (reverse_paths[i][-1] - reverse_paths[0][-1] <= 3 and len(reverse_paths[i][2]) <= len(reverse_paths[0][2]))]
+            reverse_path.codes = reverse_path.codes.reverse()
+            reverse_path.names = reverse_path.names.reverse()
+            reverse_path.transfer = reverse_path.transfer.reverse()
 
-    for path in toKeep:
-        for r_path in toKeepReverse:
-            path_code, path_name = path[:2]
-            r_path_code, r_path_name, r_path_transfer, r_time = r_path[0][::-1], r_path[1][::-1], r_path[2][::-1], r_path[3]
+            if (arraysEqual(path.names, reverse_path.names) && !arraysEqual(path.codes, reverse_path.codes)) {
+                paths.push(reverse_path)
+            }
+            if (checkDirect(path.codes)) {
+                directPaths.push(path)
+            }
+            paths.push(path)
+        }
+    }
 
-            if r_path_name == path_name and r_path_code != path_code:
-                path_transfer_unique = [getStationFromCode(code) for code in path_code if code not in r_path_code]
-                r_path_transfer_unique = [getStationFromCode(code) for code in r_path_code if code not in path_code]
+    paths.sort((a, b) => a.time - b.time)
+    for (let i = 0; i < paths.length; i++) {
+        if (paths[i].time == paths[0].time || (paths[i].time - paths[0].time <= 3 && paths[i].transfer.length <= paths[0].transfer.length)) {
+            toKeep.push(paths[i])
+        }
+    }
 
-                if path_transfer_unique != r_path_transfer_unique:
-                    toKeep.append((r_path_code, r_path_name, r_path_transfer, r_time))
+    //add a direct path to toKeep if it exists but isn't an optimal path
+    const directLines = commonLines(start, end)
 
-    directPaths = [path for path in toKeep if checkDirect(path[0])]
-    directLines = commonLines(start, end)
+    if (directLines.length > 0 && directPaths.length === 0) {
+        let startCode = ''
+        let endCode = ''
 
-    if directLines != [] and len(directPaths) == 0:
-        for line in directLines:
-            directPath = []
-            for code in stations_dict[start]:
-                if code[:2] in directLines:
+        for (const line of directLines) {
+            let directPath = []
+            for (const code of code_start_array) {
+                if (directLines.includes(code.slice(0,2))) {
                     startCode = code
                     break
-            
-            for code in stations_dict[end]:
-                if code[:2] in directLines:
+                }
+            }
+            for (const code of code_end_array) {
+                if (directLines.includes(code.slice(0,2))) {
                     endCode = code
                     break
+                }
+            }
 
-            startNo = int(startCode[2:])
-            endNo = int(endCode[2:])
-            order = -int((startNo - endNo)/abs(startNo - endNo))
+            const startNo = parseInt(startCode.slice(2,))
+            const endNo = parseInt(endCode.slice(2,))
+            //const order = -parseInt((startNo - endNo) / Math.abs(startNo - endNo))
 
-            directPath = [line+str(i) for i in range(startNo, endNo + order, order) if getStationFromCode(line + str(i)) is not None]
+            if (startNo < endNo) {
+                for (let i = startNo; i < endNo + 1; i++) {
+                    if (getStationFromCode(line + i)) {
+                        directPath.push(line + i)
+                    }
+                }
+            } else {
+                for (let i = startNo; i > endNo - 1; i--) {
+                    if (getStationFromCode(line + i)) {
+                        directPath.push(line + i)
+                    }
+                }
+            }
 
-            toKeep.append((directPath, convertPathToStations(directPath), [], totalTime(directPath)))
+            let pathObject = {
+                'codes': directPath,
+                'names': convertPathToStations(directPath),
+                'transfer': [],
+                'time': totalTime(directPath)
+            }
+            toKeep.push(pathObject)
+        }
+    }
 
+    //take into account no bp lrt
+    if (checkLineInPaths('BP', toKeep)) {
+        let newPaths = []
+        for (const code_start of code_start_array) {
+            for (const code_end of code_end_array) {
+                let path = new astar(code_start, code_end, exclude='BP')
+                if (path.time != 0 && !objectInArray(path, toKeep)) {
+                    newPaths.push(path)
+                }
+            }
+        }
 
-    #take into account no bp lrt
-    newPaths = [astar(code_start, code_end, exclude='BP') for code_start in stations_dict[start] for code_end in stations_dict[end]]
-    newPaths = [path for path in newPaths if path is not None]
-    newPaths.sort(key=sortTime)
-    optimalNewPaths = [newPaths[i] for i in range(len(newPaths)) if newPaths[i][-1] == newPaths[0][-1] or (newPaths[i][-1] - newPaths[0][-1] <= 3 and len(newPaths[i][2]) <= len(newPaths[0][2]))]
-    for path in optimalNewPaths:
-        if path not in toKeep:
-            toKeep.append(path)
+        newPaths.sort((a, b) => a.time - b.time)
+        for (let i = 0; i < newPaths.length; i++) {
+            if (newPaths[i].time == newPaths[0].time || (newPaths[i].time - newPaths[0].time <= 3 && newPaths[i].transfer.length <= newPaths[0].transfer.length)) {
+                toKeep.push(newPaths[i])
+            }
+        }
+    }
 
-    toKeep.sort(key=sortTime)
+    //take into account walking time
+    const walkTimeKeys = Object.keys(walkingTime)
+    if (walkTimeKeys.includes(start+','+end)) {
+        const pathObject = {
+            'names': [start, end],
+            'time': walkingTime[start+','+end][1],
+            'walk': walkingTime[start+','+end][0]
+        }
+        toKeep.push(pathObject)
+    } else if (walkTimeKeys.includes(end+','+start)) {
+        const pathObject = {
+            'names': [end, start],
+            'time': walkingTime[end+','+start][1],
+            'walk': walkingTime[end+','+start][0]
+        }
+        toKeep.push(pathObject)
+    } else {
+        for (const pair of walkTimeKeys) {
+            let newPaths = []
+            let [stn1, stn2] = pair.split(',')
+            if (start === stn1 || start === stn2) {
+                let stationKey = start === stn1 ? stn2 : stn2
+                let new_code_start_array = stations_dict[stationKey]
+                for (const code_start of new_code_start_array) {
+                    for (const code_end of code_end_array) {
+                        let path = new astar(code_start, code_end)
+                        newPaths.push(path)
+                    }
+                }
+                
+            } else if (end === stn1 || end === stn2) {
+                let stationKey = end === stn1 ? stn2 : stn2
+                let new_code_end_array = stations_dict[stationKey]
+                for (const code_start of code_start_array) {
+                    for (const code_end of new_code_end_array) {
+                        let path = new astar(code_start, code_end)
+                        newPaths.push(path)
+                    }
+                }
+            }
+            
+            let walkingPaths = []
+            newPaths.sort((a, b) => a.time - b.time)
+            for (let i = 0; i < newPaths.length; i++) {
+                if (newPaths[i].time == newPaths[0].time || (newPaths[i].time - newPaths[0].time <= 3 && newPaths[i].transfer.length <= newPaths[0].transfer.length)) {
+                    walkingPaths.push(newPaths[i])
+                }
+            }
 
-    
-    #take into account walking stations
-    if (start, end) in walkingTime:
-        toKeep.append(tuple(walkingTime[(start, end)]))
-    
-    elif (end, start) in walkingTime:
-        toKeep.append(tuple(walkingTime[(end, start)]))
+            for (const path of walkingPaths) {
+                let totalTime = walkingTime[pair][1] + path.time
+                if (totalTime <= toKeep[0].time) {  //.time + path.time <= toKeep[0].time
+                    let pathObject = {
+                        'codes': path.codes,
+                        'names': path.names,
+                        'transfer': path.transfer,
+                        'time': totalTime,
+                        'walk': walkingTime[pair][0]
+                    }
+                    toKeep.push(pathObject)
+                }
+            }
 
-    else:
-        for pair in walkingTime:
-            newPaths = []
-            if start in pair:
-                newPaths = [astar(code_start, code_end) for code_start in stations_dict[pair[pair.index(start) - 1]] for code_end in stations_dict[end]]
-            elif end in pair:
-                newPaths = [astar(code_start, code_end) for code_start in stations_dict[start] for code_end in stations_dict[pair[pair.index(end) - 1]]]
-
-            newPaths.sort(key=sortTime)
-            lst = [newPaths[i] for i in range(len(newPaths)) if newPaths[i][-1] == newPaths[0][-1] or (newPaths[i][-1] - newPaths[0][-1] <= 3 and len(newPaths[i][2]) <= len(newPaths[0][2]))]
-            for path in lst:
-                if path[-1] + walkingTime[pair][-1] <= toKeep[0][-1]:
-                    toKeep.append((walkingTime[pair], path[0], path[1], path[2], path[-1] + walkingTime[pair][-1]))
-
-    toKeep.sort(key=sortTime)
+        }
+    }
+    toKeep.sort((a, b) => a.time - b.time)
     return toKeep
-    */
-
-    
-   
 }
 
 function getTimings(allPaths) {
@@ -267,7 +345,8 @@ function getTimings(allPaths) {
 }
 
 function testFunction() {
-    const toTest = astar('NS26', 'DT17')
+    //const toTest = astar('NS1', 'NS17')
+    const toTest = outputJourney('Tampines', 'Promenade')
     console.log(toTest)
 }
 
