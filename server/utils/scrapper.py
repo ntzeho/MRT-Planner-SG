@@ -137,8 +137,15 @@ def main():
             scrapeSBS()
             scrapeSMRT()
 
-            with open('./constants/timings.json', mode='w', newline='') as f:
-                f.write(str(timings))
+            with open('./constants/timings.js', mode='w', newline='') as f:
+                f.write('const timings = {\n')
+                for station in timings:
+                    f.write("    '"+station+"' : ")
+                    f.write(str(timings[station]) + ',\n')
+                f.write('}\n')
+                f.write('module.exports = {\n')
+                f.write('    timings\n')
+                f.write('}')
         
     elif len(argv) == 3:
         if argv[1] == '/read':

@@ -2,6 +2,7 @@ const {heapPush, heapPop} = require("./utils/heapQueue.js")
 const {arraysEqual, objectInArray} = require("./utils/utils.js")
 const {stations_dict} = require("./constants/stations.js")
 const {travelTime, walkingTime} = require("./constants/edges.js")
+const {timings} = require('./constants/timings.js')
 
 function getStationFromCode(code) {
     const stationArray = Object.keys(stations_dict)
@@ -342,7 +343,8 @@ function outputJourney(start, end) {
 }
 
 function getTimings(allPaths) {
-
+    console.log(timings['HarbourFront'])
+    
 }
 
 
