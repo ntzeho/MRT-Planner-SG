@@ -170,7 +170,7 @@ function astar(start, end, exclude='') {
 function outputJourney(start, end) {
     let paths = []
     let toKeep = []
-    let directPaths = []
+    let directPaths = false
 
     const code_start_array = stations_dict[start]
     const code_end_array = stations_dict[end]
@@ -180,9 +180,9 @@ function outputJourney(start, end) {
             let path = new astar(code_start, code_end)
             let reverse_path = new astar(code_end, code_start)
 
-            reverse_path.codes = reverse_path.codes.reverse()
-            reverse_path.names = reverse_path.names.reverse()
-            reverse_path.transfer = reverse_path.transfer.reverse()
+            reverse_path.codes.reverse()
+            reverse_path.names.reverse()
+            reverse_path.transfer.reverse()
 
             if (arraysEqual(path.names, reverse_path.names) && !arraysEqual(path.codes, reverse_path.codes)) {
                 paths.push(reverse_path) //path is same but can interchange at different station
@@ -190,7 +190,7 @@ function outputJourney(start, end) {
                 paths.push(reverse_path) //path is different but same travelling time
             }
             if (checkDirect(path.codes)) {
-                directPaths.push(path)
+                directPaths = true
             }
             paths.push(path)
         }
@@ -206,7 +206,7 @@ function outputJourney(start, end) {
     //add a direct path to toKeep if it exists but isn't an optimal path
     const directLines = commonLines(start, end)
 
-    if (directLines.length > 0 && directPaths.length === 0) {
+    if (directLines.length > 0 && !directPaths) {
         let startCode = ''
         let endCode = ''
 
@@ -293,7 +293,7 @@ function outputJourney(start, end) {
             let newPaths = []
             let [stn1, stn2] = pair.split(',')
             if (start === stn1 || start === stn2) {
-                let stationKey = start === stn1 ? stn2 : stn2
+                let stationKey = start === stn1 ? stn2 : stn1
                 let new_code_start_array = stations_dict[stationKey]
                 for (const code_start of new_code_start_array) {
                     for (const code_end of code_end_array) {
@@ -303,7 +303,7 @@ function outputJourney(start, end) {
                 }
                 
             } else if (end === stn1 || end === stn2) {
-                let stationKey = end === stn1 ? stn2 : stn2
+                let stationKey = end === stn1 ? stn2 : stn1
                 let new_code_end_array = stations_dict[stationKey]
                 for (const code_start of code_start_array) {
                     for (const code_end of new_code_end_array) {

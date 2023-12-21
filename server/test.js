@@ -5,4 +5,4 @@ const stationType = {
 
 const {outputJourney, getTimings} = require("./solver.js")
 
-console.log(outputJourney('Bugis', 'Marina Bay'))
+console.log(outputJourney('Bedok', 'one-north'))
