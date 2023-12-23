@@ -1,7 +1,6 @@
 from stations import stations_dict, stationType
 from bs4 import BeautifulSoup
-from sys import argv
-import requests, ast
+import requests
 
 SMRT_DEFAULT_URL = 'http://connect-cdn.smrt.wwprojects.com/autoupdate/mrt-timing/<>.html'
 SBS_URL = 'https://www.sbstransit.com.sg/first-train-last-train'
@@ -126,35 +125,19 @@ def scrapeSBS():
                 timings['Punggol']['sbs_times'][loop] = sbs_master['timing_dict_'+str(i)][loop]
 
 
-def readTimings(station):
-    with open('./constants/timings.json', mode='r') as f:
-        timings_dict = ast.literal_eval(str(f.read()))
-        print(timings_dict[station])
-
 def main():
-    if len(argv) == 2:
-        if argv[1] == '/scrape':
-            scrapeSBS()
-            scrapeSMRT()
+    scrapeSBS()
+    scrapeSMRT()
 
-            with open('./constants/timings.js', mode='w', newline='') as f:
-                f.write('const timings = {\n')
-                for station in timings:
-                    f.write("    '"+station+"' : ")
-                    f.write(str(timings[station]) + ',\n')
-                f.write('}\n')
-                f.write('module.exports = {\n')
-                f.write('    timings\n')
-                f.write('}')
-        
-    elif len(argv) == 3:
-        if argv[1] == '/read':
-            try:
-                readTimings(argv[2])
-            except IndexError:
-                print('Ensure 2nd argument is name of station!')
-            except TypeError:
-                print('Ensure that input is valid station!')
+    with open('./constants/timings.js', mode='w', newline='') as f:
+        f.write('const timings = {\n')
+        for station in timings:
+            f.write("    '"+station+"' : ")
+            f.write(str(timings[station]) + ',\n')
+        f.write('}\n')
+        f.write('module.exports = {\n')
+        f.write('    timings\n')
+        f.write('}')
 
 if __name__ == '__main__':
     main()
