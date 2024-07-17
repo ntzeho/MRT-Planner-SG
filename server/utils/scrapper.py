@@ -1,4 +1,4 @@
-from stations import stations_dict, stationType
+from stations import stations_dict, stationType, SBS_LINES, SMRT_LINES
 from bs4 import BeautifulSoup
 import requests
 
@@ -135,10 +135,13 @@ def main():
             f.write("    '"+station+"' : ")
             f.write(str(timings[station]) + ',\n')
         f.write('}\n')
+        f.write('const SBS_LINES = ' + str(SBS_LINES) + '\n')
+        f.write('const SMRT_LINES = ' + str(SMRT_LINES) + '\n\n')
         f.write('module.exports = {\n')
-        f.write('    timings\n')
+        f.write('    timings,\n')
+        f.write('    SBS_LINES,\n')
+        f.write('    SMRT_LINES\n')
         f.write('}')
 
 if __name__ == '__main__':
     main()
-    
