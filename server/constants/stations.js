@@ -170,6 +170,13 @@ const stations_dict = {
     'Maxwell' : ['TE18'],
     'Shenton Way' : ['TE19'],
     'Gardens by the Bay' : ['TE22'],
+    'Tanjong Rhu' : ['TE23'],
+    'Katong Park' : ['TE24'],
+    'Tanjong Katong' : ['TE25'],
+    'Marine Parade' : ['TE26'],
+    'Marine Terrace' : ['TE27'],
+    'Siglap' : ['TE28'],
+    'Bayshore' : ['TE29'],
 }
 
 module.exports = {
