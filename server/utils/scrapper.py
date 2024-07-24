@@ -134,7 +134,7 @@ def main():
         for station in timings:
             f.write("    '"+station+"' : ")
             f.write(str(timings[station]) + ',\n')
-        f.write('}\n')
+        f.write('}\n\n')
         f.write('const SBS_LINES = ' + str(SBS_LINES) + '\n')
         f.write('const SMRT_LINES = ' + str(SMRT_LINES) + '\n\n')
         f.write('module.exports = {\n')
