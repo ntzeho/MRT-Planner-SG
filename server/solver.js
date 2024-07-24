@@ -1,5 +1,5 @@
 const {heapPush, heapPop} = require("./utils/heapQueue.js")
-const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime} = require("./utils/utils.js")
+const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, addTime} = require("./utils/utils.js")
 const {stations_dict} = require("./constants/stations.js")
 const {travelTime, walkingTime} = require("./constants/edges.js")
 const {timings, SBS_LINES} = require('./constants/timings.js')
@@ -445,27 +445,31 @@ function getTimings(path) {
         for (const key of relevantTimings) {
             for (const entry of relevantEntries) {
                 const time = startTimings[key][entry]
-                if (time) timingObject['lastTrain'].push([key, entry, time])
-            }
-            // let times = startTimings[key]
-            // let timesArray = Object.keys(times)
-            
-            // console.log(times)
-            // console.log(timesArray)
-            // console.log(' ')
-            // for (const timeKey of timesArray) {
-            //     if (times[timeKey] != '-' && timeKey.includes('Last')) {
-
-            //         if (timeKey.includes('|')) { //if there are diff timings
-            //             const keyDay = timeKey.split(' | ')[1].trim()
-            //             console.log(keyDay)
-            //         } else { //same timing for all days
-            //             console.log(timeKey)
-            //             console.log(times[timeKey])
-            //         }
+                if (time) {
+                    let terminateNoStn = key.split(startLine)[1]
+                    let terminate = ''
+                    if (terminateNoStn) terminate = startLine + terminateNoStn
+                    else {
+                        terminateNoStn = key.replace('Towards', '').trim()
+                        for (const code of stations_dict[terminateNoStn]) {
+                            if (code.includes(startLine)) {
+                                terminate = code + ' ' + terminateNoStn
+                            }
+                        }
+                    }
                     
-            //     }
-            // }
+                    const leaveTime = convertTo24hTime(time)
+                    const eta = addTime(leaveTime, path.time)
+                    const lastTrainObject = {
+                        terminate,
+                        entry,
+                        leaveTime,
+                        eta
+                    }
+                    timingObject['lastTrain'].push(lastTrainObject)
+                }
+                    
+            }
         }
         return timingObject
     }

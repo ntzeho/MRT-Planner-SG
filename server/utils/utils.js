@@ -51,13 +51,41 @@ function convertTo24hTime(time) {
       return time_24h
     }
     return '0' + time_24h
+  } else if (time.includes('pm')) {
+    const time_24h = time.replace('pm' ,'')
+    const [hours, minutes] = time_24h.split('.')
+    if (hours == '12') { //12pm
+      return time_24h.replace('.', ':')
+    }
+    return (parseInt(hours) + 12).toString() + ':' + minutes
   }
-  const time_24h = time.replace('pm' ,'')
-  const [hours, minutes] = time_24h.split('.')
-  if (hours == '12') { //12pm
-    return time_24h.replace('.', ':')
+  return time
+}
+
+function addHour(hour) {
+  if (hour <= 22) {
+    const newHour = hour + 1
+    if (newHour < 10) return '0' + newHour.toString()
+    return newHour.toString()
   }
-  return (parseInt(hours) + 12).toString() + ':' + minutes
+  return '00'
+}
+
+function formatMinute(minute) {
+  if (minute < 10) return '0' + minute.toString()
+  return minute.toString()
+}
+
+function addTime(time, minutes) {
+  const [hourString, minuteString] = time.split(':')
+  const [hour, minute] = [parseInt(hourString), parseInt(minuteString)]
+  const diffFromHour = 60 - minute
+  if (minutes < diffFromHour) return hourString + ':' + formatMinute(minute + minutes)
+  else if (minutes === diffFromHour) return addHour(hour) + ':00'
+  
+  let currentHour = addHour(hour) + ':00'
+  let currentMinutesLeft = minutes - diffFromHour
+  return addTime(currentHour, currentMinutesLeft)
 }
 
 module.exports = {
@@ -65,5 +93,6 @@ module.exports = {
     objectInArray,
     arrayStringsInText,
     textInStringsArray,
-    convertTo24hTime
+    convertTo24hTime,
+    addTime
 }
