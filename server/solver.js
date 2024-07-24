@@ -1,8 +1,10 @@
 const {heapPush, heapPop} = require("./utils/heapQueue.js")
-const {arraysEqual, objectInArray} = require("./utils/utils.js")
+const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime} = require("./utils/utils.js")
 const {stations_dict} = require("./constants/stations.js")
 const {travelTime, walkingTime} = require("./constants/edges.js")
-const {timings} = require('./constants/timings.js')
+const {timings, SBS_LINES} = require('./constants/timings.js')
+const { text } = require("express")
+const { dayChecker } = require("./utils/solver_utils.js")
 
 function getStationFromCode(code) {
     const stationArray = Object.keys(stations_dict)
@@ -200,7 +202,7 @@ function outputJourney(start, end) {
     paths.sort((a, b) => a.time - b.time)
     for (let i = 0; i < paths.length; i++) {
         if (paths[i].time == paths[0].time || (paths[i].time - paths[0].time <= 3 && paths[i].transfer.length <= paths[0].transfer.length)) {
-            toKeep.push(paths[i])
+            toKeep.push(paths[i]) //keep paths that differ by 3 mins or less from optimal path
         }
     }
 
@@ -342,9 +344,140 @@ function outputJourney(start, end) {
     return toKeep
 }
 
-function getTimings(allPaths) {
-    console.log(timings['HarbourFront'])
+function getTimings(path) {
+    pathAttributes = Object.keys(path)
+    let timingObject = {
+        firstTrain: [],
+        lastTrain: []
+    }
+
+    //start and end stations are walkable, so no train timings required
+    if (pathAttributes.length === 3) return timingObject
+
+    const startStation = path.names[0]
+    const startCode = path.codes[0]
+    const startLine = startCode.slice(0,2)
+
+    const endStation = path.names[path.names.length - 1]
+    const endCode = path.codes[path.codes.length - 1]
+    const endLine = endCode.slice(0,2)
+
+    const START_MRT_TYPE = SBS_LINES.includes(startLine) ? 'sbs_times' : 'smrt_times'
+    //const END_MRT_TYPE = SBS_LINES.includes(endLine) ? 'sbs_times' : 'smrt_times'
+
+    const startTimings = timings[startStation][START_MRT_TYPE]
+    const startTimingKeys = Object.keys(startTimings)
     
+    for (const key of startTimingKeys) {
+        if (key.includes(startLine)) {
+            // console.log(key)
+            //check if second station in path has lower or higher station no
+            //add key to a list
+        }
+    }
+
+    // console.log(startTimings)
+    // console.log(startTimingKeys)
+    // console.log(startLine)
+
+    //direct path with no transfers
+    if (path.transfer.length === 0) {
+        let relevantTimings = []
+
+        //TO PUT THIS LINE SOMEWHERE ELSE LATER
+        const sengkangPunggolCodes = ['STC', 'SE', 'SW', 'PTC', 'PE', 'PW']
+
+        const startCodeNo = parseInt(startCode.slice(2,))
+        const endCodeNo = parseInt(endCode.slice(2,))
+        const ascending = startCodeNo < endCodeNo //check for direction of travel
+
+        if (!startCodeNo || arrayStringsInText(sengkangPunggolCodes, startCode)) {
+            //Sengkang or Punggol LRT
+            //special case, return stuff in here
+            console.log('Sengkang Punggol LRT')
+
+        } else if (startCode.includes('BP')) { //BP LRT
+            //special case, return stuff in here
+            console.log('BP LRT')
+
+        } else if (START_MRT_TYPE === 'smrt_times') { //check for keys for smrt          
+            /*
+            WHAT COUNTS AS RELEVANT TIMINGS:
+            - same line as stated in codes
+            - if ascending, push if:
+                - startCodeNo < timingCodeNo and endCodeNo <= timingCodeNo
+            - if descending, push if:
+                - startCodeNo > timingCodeNo and endCodeNo >= timingCodeNo
+            */
+            for (const key of startTimingKeys) {
+                if (key.includes(startLine)) {
+                    let timingCodeNo = key.split(startLine)[1].slice(0,2).trim()
+                    if ((ascending && startCodeNo < timingCodeNo && endCodeNo <= timingCodeNo) || (!ascending && startCodeNo > timingCodeNo && endCodeNo >= timingCodeNo)) {
+                        relevantTimings.push(key)
+                    }
+                }
+            }
+        } else if (START_MRT_TYPE === 'sbs_times') { //check for keys for sbs
+            for (const key of startTimingKeys) {
+                if (key.includes('Towards')) {
+                    const keyStn = key.split('Towards ')[1]
+                    const keyCodes = stations_dict[keyStn]
+                    const relevantKeyCode = textInStringsArray(keyCodes, startCode.slice(0,2))
+                    const relevantKeyCodeNo = relevantKeyCode.slice(2,)
+                    if ((ascending && endCodeNo <= relevantKeyCodeNo) || (!ascending && endCodeNo >= relevantKeyCodeNo)) {
+                        relevantTimings.push(key)
+                    }
+                }
+            }
+        } else {
+            //throw error msg
+            console.log('Error start code not found')
+        }
+        /*
+        Sengkang punggol - just use last train timing at STC/PTC depending on loop
+
+        BP -
+
+        SMRT/SBS - split at ' | ' thing and get day/day range. If corroborate with current date get corresponding time. This time will be used
+        */
+        // console.log(relevantTimings)
+        const relevantEntries = dayChecker(START_MRT_TYPE)
+        for (const key of relevantTimings) {
+            for (const entry of relevantEntries) {
+                const time = startTimings[key][entry]
+                if (time) timingObject['lastTrain'].push([key, entry, time])
+            }
+            // let times = startTimings[key]
+            // let timesArray = Object.keys(times)
+            
+            // console.log(times)
+            // console.log(timesArray)
+            // console.log(' ')
+            // for (const timeKey of timesArray) {
+            //     if (times[timeKey] != '-' && timeKey.includes('Last')) {
+
+            //         if (timeKey.includes('|')) { //if there are diff timings
+            //             const keyDay = timeKey.split(' | ')[1].trim()
+            //             console.log(keyDay)
+            //         } else { //same timing for all days
+            //             console.log(timeKey)
+            //             console.log(times[timeKey])
+            //         }
+                    
+            //     }
+            // }
+        }
+        return timingObject
+    }
+
+    
+
+    //no walking involved in the path
+    if (pathAttributes.length === 4) {
+
+    } else {
+
+    }
 }
 
 
