@@ -4,6 +4,29 @@ const stationType = {
 }
 
 const {outputJourney, getTimings} = require("./solver.js")
+const {timings} = require("./constants/timings.js")
+const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime} = require("./utils/utils.js")
+const {dayChecker} = require("./utils/solver_utils.js")
+const sengkangPunggolCodes = ['STC', 'SE', 'SW', 'PTC', 'PE', 'PW']
 
-//console.log(outputJourney('Bedok', 'one-north'))
-getTimings(1)
+//console.log(outputJourney('Bedok Reservoir', 'Yishun'))
+//getTimings(1)
+
+// console.log(arrayStringsInText(sengkangPunggolCodes, 'EW2'))
+
+//console.log(timings['Promenade'])
+
+//prime example of having walking + bp lrt
+//const paths = outputJourney('Choa Chu Kang', 'Esplanade')
+
+//console.log(convertTo24hTime('11.57pm'))
+//process.exit()
+
+//console.log(dayChecker('sbs_times'))
+// process.exit()
+
+const paths = outputJourney('Choa Chu Kang', 'Bishan')
+//const paths = outputJourney('Woodlands' ,'Raffles Place')
+console.log(paths)
+console.log(' ')
+console.log(getTimings(paths[0]))
