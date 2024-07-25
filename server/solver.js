@@ -2,7 +2,7 @@ const {heapPush, heapPop} = require("./utils/heapQueue.js")
 const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, addTime} = require("./utils/utils.js")
 const {stations_dict} = require("./constants/stations.js")
 const {travelTime, walkingTime} = require("./constants/edges.js")
-const {timings, SBS_LINES} = require('./constants/timings.js')
+const {timings, SBS_LINES, SENGKANG_PUNGGOL_LINES} = require('./constants/timings.js')
 const { text } = require("express")
 const { dayChecker } = require("./utils/solver_utils.js")
 
@@ -367,7 +367,7 @@ function getTimings(path) {
 
     const startTimings = timings[startStation][START_MRT_TYPE]
     const startTimingKeys = Object.keys(startTimings)
-    
+    console.log(startTimings)
     for (const key of startTimingKeys) {
         if (key.includes(startLine)) {
             // console.log(key)
@@ -384,18 +384,15 @@ function getTimings(path) {
     if (path.transfer.length === 0) {
         let relevantTimings = []
 
-        //TO PUT THIS LINE SOMEWHERE ELSE LATER
-        const sengkangPunggolCodes = ['STC', 'SE', 'SW', 'PTC', 'PE', 'PW']
-
         const startCodeNo = parseInt(startCode.slice(2,))
         const endCodeNo = parseInt(endCode.slice(2,))
         const ascending = startCodeNo < endCodeNo //check for direction of travel
 
-        if (!startCodeNo || arrayStringsInText(sengkangPunggolCodes, startCode)) {
+        if (!startCodeNo || arrayStringsInText(SENGKANG_PUNGGOL_LINES, startCode)) {
             //Sengkang or Punggol LRT
             //special case, return stuff in here
             console.log('Sengkang Punggol LRT')
-
+            console.log(startTimingKeys)
 
         } else if (startCode.includes('BP')) { //BP LRT
             //special case, return stuff in here

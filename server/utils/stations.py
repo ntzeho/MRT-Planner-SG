@@ -3,6 +3,7 @@ from sys import argv
 
 SMRT_LINES = ['EW', 'CG', 'NS', 'BP', 'CC', 'CE', 'TE']
 SBS_LINES = ['NE', 'DT', 'SW', 'SE', 'PW', 'PE']
+SENGKANG_PUNGGOL_LINES = ['STC', 'SE', 'SW', 'PTC', 'PE', 'PW']
 
 TRANSFER_TIME = 5
 

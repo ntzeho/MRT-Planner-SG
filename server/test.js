@@ -28,7 +28,7 @@ const sengkangPunggolCodes = ['STC', 'SE', 'SW', 'PTC', 'PE', 'PW']
 //console.log(dayChecker('sbs_times'))
 // process.exit()
 
-const paths = outputJourney('Paya Lebar', 'Buona Vista')
+const paths = outputJourney('Compassvale', 'Tongkang')
 for (const path of paths) {
     console.log(path)
     console.log(' ')

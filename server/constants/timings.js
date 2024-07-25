@@ -181,9 +181,11 @@ const timings = {
 
 const SBS_LINES = ['NE', 'DT', 'SW', 'SE', 'PW', 'PE']
 const SMRT_LINES = ['EW', 'CG', 'NS', 'BP', 'CC', 'CE', 'TE']
+const SENGKANG_PUNGGOL_LINES = ['STC', 'SE', 'SW', 'PTC', 'PE', 'PW']
 
 module.exports = {
     timings,
     SBS_LINES,
-    SMRT_LINES
+    SMRT_LINES,
+    SENGKANG_PUNGGOL_LINES
 }
