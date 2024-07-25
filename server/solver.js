@@ -396,6 +396,7 @@ function getTimings(path) {
             //special case, return stuff in here
             console.log('Sengkang Punggol LRT')
 
+
         } else if (startCode.includes('BP')) { //BP LRT
             //special case, return stuff in here
             console.log('BP LRT')
@@ -454,6 +455,7 @@ function getTimings(path) {
                         for (const code of stations_dict[terminateNoStn]) {
                             if (code.includes(startLine)) {
                                 terminate = code + ' ' + terminateNoStn
+                                break
                             }
                         }
                     }
