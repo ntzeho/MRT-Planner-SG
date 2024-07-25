@@ -74,7 +74,7 @@ function dayChecker(type) {
     // const formatDate = '28/07'
     const formatDateYear = formatDate + '/' + year.toString()
 
-    const isPubHol = (genericPublicHolidays.includes(formatDate) | publicHolidays.includes(formatDateYear))
+    const isPubHol = (genericPublicHolidays.includes(formatDate) || publicHolidays.includes(formatDateYear))
 
     if (isPubHol) { //return key immediately if day is public holiday
         for (const key of categories) {
