@@ -5,8 +5,8 @@ const stationType = {
 
 const {outputJourney, getTimings} = require("./solver.js")
 const {timings} = require("./constants/timings.js")
-const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, addTime} = require("./utils/utils.js")
-const {dayChecker} = require("./utils/solver_utils.js")
+const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, editTime, differenceTime} = require("./utils/utils.js")
+const {directPathTimings} = require("./utils/solver_utils.js")
 const sengkangPunggolCodes = ['STC', 'SE', 'SW', 'PTC', 'PE', 'PW']
 
 //console.log(outputJourney('Bedok Reservoir', 'Yishun'))
@@ -17,7 +17,7 @@ const sengkangPunggolCodes = ['STC', 'SE', 'SW', 'PTC', 'PE', 'PW']
 //console.log(timings['Promenade'])
 
 //prime example of having walking + bp lrt
-//const paths = outputJourney('Choa Chu Kang', 'Esplanade')
+// const paths = outputJourney('Tongkang', 'Sam Kee')
 
 // console.log(addTime('00:03', 7))
 // process.exit()
@@ -25,10 +25,11 @@ const sengkangPunggolCodes = ['STC', 'SE', 'SW', 'PTC', 'PE', 'PW']
 //console.log(convertTo24hTime('11.57pm'))
 //process.exit()
 
-//console.log(dayChecker('sbs_times'))
+// console.log(convertTimeToMinutes('00:42'))
 // process.exit()
 
-const paths = outputJourney('Compassvale', 'Tongkang')
+const paths = outputJourney('Marsiling', 'Kranji')
+// const paths = outputJourney('Bencoolen', 'City Hall')
 for (const path of paths) {
     console.log(path)
     console.log(' ')

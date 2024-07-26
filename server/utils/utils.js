@@ -60,30 +60,38 @@ function convertTo24hTime(time) {
   return time
 }
 
-function addHour(hour) {
-  if (hour <= 22) {
-    const newHour = hour + 1
-    if (newHour < 10) return '0' + newHour.toString()
-    return newHour.toString()
-  }
-  return '00'
+function formatMinuteHour(minuteHour) {
+  if (minuteHour < 10) return '0' + minuteHour.toString()
+  return minuteHour.toString()
 }
 
-function formatMinute(minute) {
-  if (minute < 10) return '0' + minute.toString()
-  return minute.toString()
-}
-
-function addTime(time, minutes) {
+function convertTimeToMinutes(time) {
+  //convert 24h time format into total minutes
+  //any time between 00:00 and 04:00 is counted as 24+ * 60 mins
   const [hourString, minuteString] = time.split(':')
   const [hour, minute] = [parseInt(hourString), parseInt(minuteString)]
-  const diffFromHour = 60 - minute
-  if (minutes < diffFromHour) return hourString + ':' + formatMinute(minute + minutes)
-  else if (minutes === diffFromHour) return addHour(hour) + ':00'
-  
-  let currentHour = addHour(hour) + ':00'
-  let currentMinutesLeft = minutes - diffFromHour
-  return addTime(currentHour, currentMinutesLeft)
+  if (hour > 4) return hour * 60 + minute
+  return (hour + 24) * 60 + minute
+}
+
+function convertMinutesToTime(givenMinutes) {
+  //convert minutes into 24h time format
+  //any time between 00:00 and 04:00 is counted as 24+ * 60 mins
+  const hour = Math.floor(givenMinutes / 60)
+  const minutes = givenMinutes % 60
+  if (hour < 24) return formatMinuteHour(hour) + ':' + formatMinuteHour(minutes)
+  return formatMinuteHour(hour - 24) + ':' + formatMinuteHour(minutes)
+}
+
+function editTime(time, minutes) {
+  //add minutes input to time, negative minutes means an earlier time
+  return convertMinutesToTime(convertTimeToMinutes(time) + minutes)
+}
+
+function differenceTime(time1, time2) {
+  //return difference in minutes between time1 and time2, aka time1 - time2
+  if (time1 === time2) return 0
+  return convertTimeToMinutes(time1) - convertTimeToMinutes(time2)
 }
 
 module.exports = {
@@ -92,5 +100,6 @@ module.exports = {
     arrayStringsInText,
     textInStringsArray,
     convertTo24hTime,
-    addTime
+    editTime,
+    differenceTime
 }

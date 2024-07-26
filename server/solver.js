@@ -1,9 +1,9 @@
 const {heapPush, heapPop} = require("./utils/heapQueue.js")
-const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, addTime} = require("./utils/utils.js")
+const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, editTime, differenceTime} = require("./utils/utils.js")
 const {stations_dict} = require("./constants/stations.js")
 const {travelTime, walkingTime, transferTime} = require("./constants/edges.js")
 const {timings, SBS_LINES, SENGKANG_PUNGGOL_LINES} = require('./constants/timings.js')
-const { dayChecker, directPathTimings } = require("./utils/solver_utils.js")
+const { directPathTimings } = require("./utils/solver_utils.js")
 
 function getStationFromCode(code) {
     const stationArray = Object.keys(stations_dict)
@@ -346,139 +346,33 @@ function outputJourney(start, end) {
 function getTimings(path) {
     pathAttributes = Object.keys(path)
     let timingObject = {
-        firstTrain: [],
-        lastTrain: []
+        firstTrain: {},
+        lastTrain: {
+            terminate: [],
+            entry: [],
+            leaveTime: [],
+            eta: 0
+        }
     }
 
     //start and end stations are walkable, so no train timings required
     if (pathAttributes.length === 3) return timingObject
 
-    const startStation = path.names[0]
-    const startCode = path.codes[0]
-    const startLine = startCode.slice(0,2)
-
-    const endStation = path.names[path.names.length - 1]
-    const endCode = path.codes[path.codes.length - 1]
-    const endLine = endCode.slice(0,2)
-
-    const START_MRT_TYPE = SBS_LINES.includes(startLine) ? 'sbs_times' : 'smrt_times'
-    //const END_MRT_TYPE = SBS_LINES.includes(endLine) ? 'sbs_times' : 'smrt_times'
-
-    const startTimings = timings[startStation][START_MRT_TYPE]
-    const startTimingKeys = Object.keys(startTimings)
-    // console.log(startTimings)
-    for (const key of startTimingKeys) {
-        if (key.includes(startLine)) {
-            // console.log(key)
-            //check if second station in path has lower or higher station no
-            //add key to a list
-        }
-    }
-
-    // console.log(startTimings)
-    // console.log(startTimingKeys)
-    // console.log(startLine)
-
     //direct path with no transfers
     if (path.transfer.length === 0) {
-        // const lastTrainObjects = directPathTimings()
-        let relevantTimings = []
-
-        const startCodeNo = parseInt(startCode.slice(2,))
-        const endCodeNo = parseInt(endCode.slice(2,))
-        const ascending = startCodeNo < endCodeNo //check for direction of travel
-
-        if (!startCodeNo || arrayStringsInText(SENGKANG_PUNGGOL_LINES, startCode)) {
-            //Sengkang or Punggol LRT
-            //special case, return stuff in here
-            console.log('Sengkang Punggol LRT')
-            console.log(startTimingKeys)
-
-        } else if (startCode.includes('BP')) { //BP LRT
-            //special case, return stuff in here
-            console.log('BP LRT')
-
-        } else if (START_MRT_TYPE === 'smrt_times') { //check for keys for smrt          
-            /*
-            WHAT COUNTS AS RELEVANT TIMINGS:
-            - same line as stated in codes
-            - if ascending, push if:
-                - startCodeNo < timingCodeNo and endCodeNo <= timingCodeNo
-            - if descending, push if:
-                - startCodeNo > timingCodeNo and endCodeNo >= timingCodeNo
-            */
-            for (const key of startTimingKeys) {
-                if (key.includes(startLine)) {
-                    let timingCodeNo = key.split(startLine)[1].slice(0,2).trim()
-                    if ((ascending && startCodeNo < timingCodeNo && endCodeNo <= timingCodeNo) || (!ascending && startCodeNo > timingCodeNo && endCodeNo >= timingCodeNo)) {
-                        relevantTimings.push(key)
-                    }
-                }
-            }
-        } else if (START_MRT_TYPE === 'sbs_times') { //check for keys for sbs
-            for (const key of startTimingKeys) {
-                if (key.includes('Towards')) {
-                    const keyStn = key.split('Towards ')[1]
-                    const keyCodes = stations_dict[keyStn]
-                    const relevantKeyCode = textInStringsArray(keyCodes, startCode.slice(0,2))
-                    const relevantKeyCodeNo = relevantKeyCode.slice(2,)
-                    if ((ascending && endCodeNo <= relevantKeyCodeNo) || (!ascending && endCodeNo >= relevantKeyCodeNo)) {
-                        relevantTimings.push(key)
-                    }
-                }
-            }
-        } else {
-            //throw error msg
-            console.log('Error start code not found')
-        }
-        /*
-        Sengkang punggol - just use last train timing at STC/PTC depending on loop
-
-        BP -
-
-        SMRT/SBS - split at ' | ' thing and get day/day range. If corroborate with current date get corresponding time. This time will be used
-        */
-        // console.log(relevantTimings)
-        const relevantEntries = dayChecker(START_MRT_TYPE)
-        for (const key of relevantTimings) {
-            for (const entry of relevantEntries) {
-                const time = startTimings[key][entry]
-                if (time) {
-                    let terminateNoStn = key.split(startLine)[1]
-                    let terminate = ''
-                    if (terminateNoStn) terminate = startLine + terminateNoStn
-                    else {
-                        terminateNoStn = key.replace('Towards', '').trim()
-                        for (const code of stations_dict[terminateNoStn]) {
-                            if (code.includes(startLine)) {
-                                terminate = code + ' ' + terminateNoStn
-                                break
-                            }
-                        }
-                    }
-                    
-                    const leaveTime = convertTo24hTime(time)
-                    const eta = addTime(leaveTime, path.time)
-                    const lastTrainObject = {
-                        terminate,
-                        entry,
-                        leaveTime,
-                        eta
-                    }
-                    timingObject['lastTrain'].push(lastTrainObject)
-                }
-                    
-            }
-        }
+        const pathTiming = directPathTimings(path)
+        timingObject.lastTrain.terminate.push(pathTiming.terminate)
+        timingObject.lastTrain.entry.push(pathTiming.entry)
+        timingObject.lastTrain.leaveTime = pathTiming.leaveTime
+        timingObject.lastTrain.eta = pathTiming.eta
         return timingObject
     }
-
     
     //non-direct path
     let stationsBeforeTransfer = 0
-    let transferPath = path
+    let transferPath = JSON.parse(JSON.stringify(path)) //prevent path from being affected
     let pathSubsets = []
-    // console.log(totalTime(path.codes))
+
     while (transferPath.transfer.length > 0) {
         if (transferPath.transfer.includes(transferPath.names[stationsBeforeTransfer])) {
             const codes = transferPath.codes.slice(0, stationsBeforeTransfer + 1)
@@ -505,7 +399,35 @@ function getTimings(path) {
         }
     }
     pathSubsets.push(transferPath)
-    console.log(pathSubsets)
+    // console.log(pathSubsets)
+
+    let pathTimings = []
+    for (const subset of pathSubsets) {
+        pathTimings.push(directPathTimings(subset))
+    }
+    // console.log(pathTimings)
+    //start from second last entry, eta + TRANSFER_TIME <= leaveTime
+    for (let i = pathTimings.length-2; i > -1; i--) {
+        const etaToCompare = pathTimings[i].eta
+        const leaveTimeToCompare = pathTimings[i+1].leaveTime
+        const timeDiff = differenceTime(leaveTimeToCompare, editTime(etaToCompare, transferTime))
+        if (timeDiff < 0) {
+            pathTimings[i].eta = editTime(etaToCompare, timeDiff)
+            pathTimings[i].leaveTime = editTime(pathTimings[i].leaveTime, timeDiff)
+        }
+    }
+    // console.log(' ')
+    // console.log(pathTimings)
+
+    for (const pathTiming of pathTimings) {
+        timingObject.lastTrain.terminate.push(pathTiming.terminate)
+        timingObject.lastTrain.entry.push(pathTiming.entry)
+    }
+
+    const finalLeaveTime = pathTimings[0].leaveTime
+    timingObject.lastTrain.leaveTime = finalLeaveTime
+    timingObject.lastTrain.eta = editTime(finalLeaveTime, path.time)
+    return timingObject
 }
 
 
