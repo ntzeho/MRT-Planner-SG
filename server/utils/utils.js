@@ -1,5 +1,3 @@
-const { text } = require("express");
-
 function arraysEqual(a, b) {
   if (a === b) return true;
   if (a == null || b == null) return false;
