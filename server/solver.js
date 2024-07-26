@@ -1,10 +1,9 @@
 const {heapPush, heapPop} = require("./utils/heapQueue.js")
 const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, addTime} = require("./utils/utils.js")
 const {stations_dict} = require("./constants/stations.js")
-const {travelTime, walkingTime} = require("./constants/edges.js")
+const {travelTime, walkingTime, transferTime} = require("./constants/edges.js")
 const {timings, SBS_LINES, SENGKANG_PUNGGOL_LINES} = require('./constants/timings.js')
-const { text } = require("express")
-const { dayChecker } = require("./utils/solver_utils.js")
+const { dayChecker, directPathTimings } = require("./utils/solver_utils.js")
 
 function getStationFromCode(code) {
     const stationArray = Object.keys(stations_dict)
@@ -70,14 +69,14 @@ function transferStation(path) {
     return transfers
 }
 
-function totalTime(path) {
+function totalTime(pathCode) {
     let time = 0
     const edges = Object.keys(travelTime)
-    for (let i = 0; i < path.length-1; i++) {
-        if (edges.includes(path[i] + ',' + path[i+1])) {
-            time += travelTime[path[i] + ',' + path[i+1]]
+    for (let i = 0; i < pathCode.length-1; i++) {
+        if (edges.includes(pathCode[i] + ',' + pathCode[i+1])) {
+            time += travelTime[pathCode[i] + ',' + pathCode[i+1]]
         } else {
-            time += travelTime[path[i+1] + ',' + path[i]]
+            time += travelTime[pathCode[i+1] + ',' + pathCode[i]]
         }
     }
     return time
@@ -367,7 +366,7 @@ function getTimings(path) {
 
     const startTimings = timings[startStation][START_MRT_TYPE]
     const startTimingKeys = Object.keys(startTimings)
-    console.log(startTimings)
+    // console.log(startTimings)
     for (const key of startTimingKeys) {
         if (key.includes(startLine)) {
             // console.log(key)
@@ -382,6 +381,7 @@ function getTimings(path) {
 
     //direct path with no transfers
     if (path.transfer.length === 0) {
+        // const lastTrainObjects = directPathTimings()
         let relevantTimings = []
 
         const startCodeNo = parseInt(startCode.slice(2,))
@@ -474,13 +474,38 @@ function getTimings(path) {
     }
 
     
+    //non-direct path
+    let stationsBeforeTransfer = 0
+    let transferPath = path
+    let pathSubsets = []
+    // console.log(totalTime(path.codes))
+    while (transferPath.transfer.length > 0) {
+        if (transferPath.transfer.includes(transferPath.names[stationsBeforeTransfer])) {
+            const codes = transferPath.codes.slice(0, stationsBeforeTransfer + 1)
+            const names = transferPath.names.slice(0, stationsBeforeTransfer + 1)
+            const transfer = []
+            const time = totalTime(codes)
+            const pathSubset = {
+                codes,
+                names,
+                transfer,
+                time
+            }
+            pathSubsets.push(pathSubset)
 
-    //no walking involved in the path
-    if (pathAttributes.length === 4) {
+            //remove these stations from transferPath
+            transferPath.codes = transferPath.codes.slice(stationsBeforeTransfer + 1,)
+            transferPath.names = transferPath.names.slice(stationsBeforeTransfer,)
+            transferPath.transfer = transferPath.transfer.slice(1,)
+            transferPath.time = transferPath.time - time - transferTime
 
-    } else {
-
+            stationsBeforeTransfer = 0
+        } else {
+            stationsBeforeTransfer += 1
+        }
     }
+    pathSubsets.push(transferPath)
+    console.log(pathSubsets)
 }
 
 

@@ -100,9 +100,12 @@ def writeEdgesJS():
             f.write('    '+"'"+edge[0]+","+edge[1]+"'"+' : '+str(walkingTime[edge])+',' + '\n')
         f.write('}\n\n')
 
+        f.write('const transferTime = ' + str(TRANSFER_TIME) + '\n\n')
+
         f.write('module.exports = {\n')
         f.write('    travelTime,\n')
         f.write('    walkingTime,\n')
+        f.write('    transferTime\n')
         f.write('}')
 
 def writeStations(): #../constants/stations.js

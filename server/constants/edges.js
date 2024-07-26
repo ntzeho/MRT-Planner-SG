@@ -251,7 +251,10 @@ const walkingTime = {
     'Esplanade,City Hall' : ['--DIRECTIONS--', 5],
 }
 
+const transferTime = 5
+
 module.exports = {
     travelTime,
     walkingTime,
+    transferTime
 }
