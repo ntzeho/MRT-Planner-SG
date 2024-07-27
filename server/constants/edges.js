@@ -246,9 +246,9 @@ const travelTime = {
 }
 
 const walkingTime = {
-    'Bras Basah,Bencoolen' : ['--DIRECTIONS--', 3],
-    'Raffles Place,Downtown' : ['--DIRECTIONS--', 7],
-    'Esplanade,City Hall' : ['--DIRECTIONS--', 5],
+    'Bras Basah,Bencoolen' : ['Bras Basah Exit B/C <-> Bencoolen Exit C for underpass through SMU. Walking on street level is fine as well.', 3],
+    'Raffles Place,Downtown' : ['Raffles Place Exit J <-> Downtown Exit B for underpass through Marina Bay Link Mall', 7],
+    'Esplanade,City Hall' : ['Esplanade Exit G <-> City Hall Exit A for transfer through Raffles City Shopping Mall Basement 2', 5],
 }
 
 const transferTime = 5

@@ -11,9 +11,9 @@ NO_CODE_I = {'Tanah Merah': ['CG'], 'Promenade': ['CE']}
 
 EDGES_TO_ADD = ['CG,CG1,3', 'CE,CE1,2', 'BP6,BP13,1', 'STC,SW1,2', 'STC,SW8,3', 'STC,SE1,2', 'STC,SE5,3', 'PTC,PW1,2', 'PTC,PW7,3', 'PTC,PE1,3', 'PTC,PE7,2']
 
-walkingTime = {('Bras Basah', 'Bencoolen'): ['--DIRECTIONS--', 3], \
-                ('Raffles Place', 'Downtown'): ['--DIRECTIONS--', 7], \
-                    ('Esplanade', 'City Hall'): ['--DIRECTIONS--', 5]}
+walkingTime = {('Bras Basah', 'Bencoolen'): ['Bras Basah Exit B/C <-> Bencoolen Exit C for underpass through SMU. Walking on street level is fine as well.', 3], \
+                ('Raffles Place', 'Downtown'): ['Raffles Place Exit J <-> Downtown Exit B for underpass through Marina Bay Link Mall', 7], \
+                    ('Esplanade', 'City Hall'): ['Esplanade Exit G <-> City Hall Exit A for transfer through Raffles City Shopping Mall Basement 2', 5]}
 
 stations_dict = {}
 lines = {}
