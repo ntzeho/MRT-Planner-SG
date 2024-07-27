@@ -2,7 +2,6 @@ const {heapPush, heapPop} = require("./utils/heapQueue.js")
 const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, editTime, differenceTime} = require("./utils/utils.js")
 const {stations_dict} = require("./constants/stations.js")
 const {travelTime, walkingTime, transferTime} = require("./constants/edges.js")
-const {timings, SBS_LINES, SENGKANG_PUNGGOL_LINES} = require('./constants/timings.js')
 const { directPathTimings } = require("./utils/solver_utils.js")
 
 function getStationFromCode(code) {
