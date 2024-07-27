@@ -3,13 +3,14 @@ from sys import argv
 
 SMRT_LINES = ['EW', 'CG', 'NS', 'BP', 'CC', 'CE', 'TE']
 SBS_LINES = ['NE', 'DT', 'SW', 'SE', 'PW', 'PE']
-SENGKANG_PUNGGOL_LINES = ['STC', 'SE', 'SW', 'PTC', 'PE', 'PW']
+SENGKANG_PUNGGOL_LINES = ['STC_E', 'STC_W', 'SE', 'SW', 'PTC_E','PTC_W', 'PE', 'PW']
+SENGKANG_PUNGGOL_ORIGINAL_CODE = ['STC', 'PTC']
 
 TRANSFER_TIME = 5
 
 NO_CODE_I = {'Tanah Merah': ['CG'], 'Promenade': ['CE']}
 
-EDGES_TO_ADD = ['CG,CG1,3', 'CE,CE1,2', 'BP6,BP13,1', 'STC,SW1,2', 'STC,SW8,3', 'STC,SE1,2', 'STC,SE5,3', 'PTC,PW1,2', 'PTC,PW7,3', 'PTC,PE1,3', 'PTC,PE7,2']
+EDGES_TO_ADD = ['CG,CG1,3', 'CE,CE1,2', 'BP6,BP13,1', 'STC_E,STC_W,5', 'STC_W,SW1,2', 'STC_W,SW8,3', 'STC_E,SE1,2', 'STC_E,SE5,3', 'PTC_E,PTC_W,5', 'PTC_W,PW1,2', 'PTC_W,PW7,3', 'PTC_E,PE1,3', 'PTC_E,PE7,2']
 
 walkingTime = {('Bras Basah', 'Bencoolen'): ['Bras Basah Exit B/C <-> Bencoolen Exit C for underpass through SMU. Walking on street level is fine as well.', 3], \
                 ('Raffles Place', 'Downtown'): ['Raffles Place Exit J <-> Downtown Exit B for underpass through Marina Bay Link Mall', 7], \
@@ -29,7 +30,11 @@ with open('./utils/stations.csv', mode='r') as f:
                 except:
                     stations_dict[station] = [row[0]]
             else:
-                stations_dict[station].append(row[0])
+                if row[0] in SENGKANG_PUNGGOL_ORIGINAL_CODE:
+                    stations_dict[station].append(row[0]+'_E')
+                    stations_dict[station].append(row[0]+'_W')
+                else:
+                    stations_dict[station].append(row[0])
 
             if row[0][:2] not in lines:
                 lines[row[0][:2]] = [row[0]]
