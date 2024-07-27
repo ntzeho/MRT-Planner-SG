@@ -13,16 +13,30 @@ function getStationFromCode(code) {
     }
 }
 
-function getNeighbours(station, exclude='') {
-    let neighbours = [];
-    const edges = Object.keys(travelTime)
+function editEdges(exclude) {
+    //remove excluded edges from travelTime and return new set of edges without
+    let newEdges = JSON.parse(JSON.stringify(travelTime))
+    for (const toExclude of exclude) delete newEdges[toExclude]
+    return newEdges
+}
 
-    for (const edge of edges) {
+function getNeighbours(station, exclusion=[]) {
+    let neighbours = [];
+    const edgeKeys = Object.keys(travelTime)
+
+    for (const edge of edgeKeys) {
         let edgeArray = edge.split(',')
-        if (edgeArray[0] === station && station.slice(0,2) != exclude) {
-            neighbours.push(edgeArray[1])
-        } else if (edgeArray[1] === station && station.slice(0,2) != exclude) {
-            neighbours.push(edgeArray[0])
+        let toPush = true
+        for (const exclude of exclusion) {
+            if (station.slice(0, exclude.length) == exclude) {
+                toPush = false
+                break
+            }
+        }
+                
+        if (toPush) {
+            if (edgeArray[0] === station) neighbours.push(edgeArray[1])
+            else if (edgeArray[1] === station) neighbours.push(edgeArray[0])
         }
     }
     return neighbours
@@ -112,7 +126,7 @@ function checkLineInPaths(line, paths) {
 }
 
 
-function astar(start, end, exclude='') {
+function astar(start, end, exclude=[]) {
     let open_list = []
     let closed_set = new Set()
     let came_from = {}
@@ -258,7 +272,7 @@ function outputJourney(start, end) {
         let newPaths = []
         for (const code_start of code_start_array) {
             for (const code_end of code_end_array) {
-                let path = new astar(code_start, code_end, exclude='BP')
+                let path = new astar(code_start, code_end, exclude=['BP'])
                 if (path.time != 0 && !objectInArray(path, toKeep)) {
                     newPaths.push(path)
                 }
@@ -431,6 +445,7 @@ function getTimings(path) {
 
 
 module.exports = {
+    astar,
     outputJourney,
     getTimings
 }

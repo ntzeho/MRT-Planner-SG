@@ -3,15 +3,41 @@ from sys import argv
 
 SMRT_LINES = ['EW', 'CG', 'NS', 'BP', 'CC', 'CE', 'TE']
 SBS_LINES = ['NE', 'DT', 'SW', 'SE', 'PW', 'PE']
-SENGKANG_PUNGGOL_LINES = ['STC_E', 'STC_W', 'SE', 'SW', 'PTC_E','PTC_W', 'PE', 'PW']
+SENGKANG_PUNGGOL_LINES = ['STC_A', 'STC_B', 'STC_C', 'STC_D', 'SE', 'SW',\
+                          'PTC_A','PTC_B', 'PTC_C','PTC_D', 'PE', 'PW']
 SENGKANG_PUNGGOL_ORIGINAL_CODE = ['STC', 'PTC']
+BUKIT_PANJANG_LRT_ORIGINAL_EDGES = ['BP1,BP2', 'BP2,BP3', 'BP3,BP4', 'BP4,BP5', 'BP5,BP6', 'BP6,BP7']
 
 TRANSFER_TIME = 5
 
 NO_CODE_I = {'Tanah Merah': ['CG'], 'Promenade': ['CE']}
+"""
+BUKIT PANJANG LRT:
+a - BP6 to BP13
+b - BP6 to BP7
 
-EDGES_TO_ADD = ['CG,CG1,3', 'CE,CE1,2', 'BP6,BP13,1', 'STC_E,STC_W,5', 'STC_W,SW1,2', 'STC_W,SW8,3', 'STC_E,SE1,2', 'STC_E,SE5,3', 'PTC_E,PTC_W,5', 'PTC_W,PW1,2', 'PTC_W,PW7,3', 'PTC_E,PE1,3', 'PTC_E,PE7,2']
-SPECIAL_EDGES = ['BP6,BP7','BP6,BP13', 'STC_W,SW1', 'STC_W,SW8', 'STC_E,SE1', 'STC_E,SE5', 'PTC_W,PW1', 'PTC_W,PW7', 'PTC_E,PE1', 'PTC_E,PE7']
+SENGKANG LRT:
+Route A - West high
+Route B - West 1
+Route C - East 1
+Route D - East high
+
+PUNGGOL LRT:
+Route A - West high
+Route B - West 1
+Route C - East high
+Route D - East 1
+"""
+EDGES_TO_ADD = ['CG,CG1,3', 'CE,CE1,2',\
+                'BP1_a,BP2_a,2', 'BP2_a,BP3_a,2', 'BP3_a,BP4_a,1', 'BP4_a,BP5_a,1', 'BP5_a,BP6_a,2',\
+                'BP1_b,BP2_b,2', 'BP2_b,BP3_b,2', 'BP3_b,BP4_b,1', 'BP4_b,BP5_b,1', 'BP5_b,BP6_b,2',\
+                'BP1_a,BP1_b,5', 'BP2_a,BP2_b,5', 'BP3_a,BP3_b,5', 'BP4_a,BP4_b,5', 'BP5_a,BP5_b,5', \
+                'BP6_a,BP6_b,5', 'BP6_b,BP7,1', 'BP6_a,BP13,1',\
+                'STC_A,STC_B,5', 'STC_A,STC_C,5', 'STC_A,STC_D,5', 'STC_B,STC_C,5', 'STC_B,STC_D,5', 'STC_C,STC_D,5',\
+                'PTC_A,PTC_B,5', 'PTC_A,PTC_C,5', 'PTC_A,PTC_D,5', 'PTC_B,PTC_C,5', 'PTC_B,PTC_D,5', 'PTC_C,PTC_D,5',\
+                'STC_B,SW1,2', 'STC_A,SW8,3', 'STC_C,SE1,2', 'STC_D,SE5,3', \
+                'PTC_B,PW1,2', 'PTC_A,PW7,3', 'PTC_D,PE1,3', 'PTC_C,PE7,2']
+# SPECIAL_EDGES = ['BP6,BP7','BP6,BP13']
 
 walkingTime = {('Bras Basah', 'Bencoolen'): ['Bras Basah Exit B/C <-> Bencoolen Exit C for underpass through SMU. Walking on street level is fine as well.', 3], \
                 ('Raffles Place', 'Downtown'): ['Raffles Place Exit J <-> Downtown Exit B for underpass through Marina Bay Link Mall', 7], \
@@ -29,11 +55,19 @@ with open('./utils/stations.csv', mode='r') as f:
                 try:
                     stations_dict[station] = [row[0]] + NO_CODE_I[station]
                 except:
-                    stations_dict[station] = [row[0]]
+                    if 'BP' in row[0] and int(row[0][2:]) <= 6:
+                        stations_dict[station] = [row[0]+'_a', row[0]+'_b']
+                    else:
+                        stations_dict[station] = [row[0]]
             else:
                 if row[0] in SENGKANG_PUNGGOL_ORIGINAL_CODE:
-                    stations_dict[station].append(row[0]+'_E')
-                    stations_dict[station].append(row[0]+'_W')
+                    stations_dict[station].append(row[0]+'_A')
+                    stations_dict[station].append(row[0]+'_B')
+                    stations_dict[station].append(row[0]+'_C')
+                    stations_dict[station].append(row[0]+'_D')
+                elif 'BP' in row[0] and int(row[0][2:]) <= 6:
+                    stations_dict[station].append(row[0]+'_a')
+                    stations_dict[station].append(row[0]+'_b')
                 else:
                     stations_dict[station].append(row[0])
 
@@ -68,7 +102,7 @@ def editEdges():
         for i in range(1,len(rows)-1):
             if rows[i][0][:2] == rows[i+1][0][:2]:
                 edge = rows[i][0] + ',' + rows[i+1][0]
-                if edge not in unweighted_edges:
+                if edge not in unweighted_edges and edge not in BUKIT_PANJANG_LRT_ORIGINAL_EDGES:
                     edges.append(edge)
 
     for station in stations_dict:
@@ -106,13 +140,13 @@ def writeEdgesJS():
             f.write('    '+"'"+edge[0]+","+edge[1]+"'"+' : '+str(walkingTime[edge])+',' + '\n')
         f.write('}\n\n')
 
-        f.write('const specialEdges = ' + str(SPECIAL_EDGES) + '\n\n')
+        # f.write('const specialEdges = ' + str(SPECIAL_EDGES) + '\n\n')
         f.write('const transferTime = ' + str(TRANSFER_TIME) + '\n\n')
 
         f.write('module.exports = {\n')
         f.write('    travelTime,\n')
         f.write('    walkingTime,\n')
-        f.write('    specialEdges,\n')
+        # f.write('    specialEdges,\n')
         f.write('    transferTime\n')
         f.write('}')
 
