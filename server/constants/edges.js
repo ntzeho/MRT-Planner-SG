@@ -255,6 +255,8 @@ const walkingTime = {
     'Esplanade,City Hall' : ['Esplanade Exit G <-> City Hall Exit A for transfer through Raffles City Shopping Mall Basement 2', 5],
 }
 
+const specialEdges = ['BP6,BP7', 'BP6,BP13', 'STC_W,SW1', 'STC_W,SW8', 'STC_E,SE1', 'STC_E,SE5', 'PTC_W,PW1', 'PTC_W,PW7', 'PTC_E,PE1', 'PTC_E,PE7']
+
 const transferTime = 5
 
 module.exports = {

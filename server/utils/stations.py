@@ -11,6 +11,7 @@ TRANSFER_TIME = 5
 NO_CODE_I = {'Tanah Merah': ['CG'], 'Promenade': ['CE']}
 
 EDGES_TO_ADD = ['CG,CG1,3', 'CE,CE1,2', 'BP6,BP13,1', 'STC_E,STC_W,5', 'STC_W,SW1,2', 'STC_W,SW8,3', 'STC_E,SE1,2', 'STC_E,SE5,3', 'PTC_E,PTC_W,5', 'PTC_W,PW1,2', 'PTC_W,PW7,3', 'PTC_E,PE1,3', 'PTC_E,PE7,2']
+SPECIAL_EDGES = ['BP6,BP7','BP6,BP13', 'STC_W,SW1', 'STC_W,SW8', 'STC_E,SE1', 'STC_E,SE5', 'PTC_W,PW1', 'PTC_W,PW7', 'PTC_E,PE1', 'PTC_E,PE7']
 
 walkingTime = {('Bras Basah', 'Bencoolen'): ['Bras Basah Exit B/C <-> Bencoolen Exit C for underpass through SMU. Walking on street level is fine as well.', 3], \
                 ('Raffles Place', 'Downtown'): ['Raffles Place Exit J <-> Downtown Exit B for underpass through Marina Bay Link Mall', 7], \
@@ -105,6 +106,7 @@ def writeEdgesJS():
             f.write('    '+"'"+edge[0]+","+edge[1]+"'"+' : '+str(walkingTime[edge])+',' + '\n')
         f.write('}\n\n')
 
+        f.write('const specialEdges = ' + str(SPECIAL_EDGES) + '\n\n')
         f.write('const transferTime = ' + str(TRANSFER_TIME) + '\n\n')
 
         f.write('module.exports = {\n')
