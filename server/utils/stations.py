@@ -112,6 +112,7 @@ def writeEdgesJS():
         f.write('module.exports = {\n')
         f.write('    travelTime,\n')
         f.write('    walkingTime,\n')
+        f.write('    specialEdges,\n')
         f.write('    transferTime\n')
         f.write('}')
 

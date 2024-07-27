@@ -262,5 +262,6 @@ const transferTime = 5
 module.exports = {
     travelTime,
     walkingTime,
+    specialEdges,
     transferTime
 }
