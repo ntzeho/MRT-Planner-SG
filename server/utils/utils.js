@@ -85,6 +85,7 @@ function convertMinutesToTime(givenMinutes) {
 
 function editTime(time, minutes) {
   //add minutes input to time, negative minutes means an earlier time
+  if (minutes === 0) return time
   return convertMinutesToTime(convertTimeToMinutes(time) + minutes)
 }
 

@@ -110,9 +110,15 @@ function dayChecker(type) {
     return relevantEntries
 }
 
-function directPathTimings(path) {
+function directPathTimings(inputPath) {
+    let path = JSON.parse(JSON.stringify(inputPath))
+    if (Object.keys(inputPath).length === 5) {
+        if (path.walk.includes(path.names[0])) { //walking is at start
+            path.time = totalTime(inputPath.codes)
+        }
+    }
+
     let relevantTimings = []
-    let lastTrainObjects = []
 
     const startStation = path.names[0]
     const startCode = path.codes[0]
@@ -241,10 +247,11 @@ function directPathTimings(path) {
     return lastTrainObject
 }
 
-function nonDirectPathTimings(path) { //no walking inside
+function nonDirectPathTimings(path, pathWalkTime) { //no walking inside
     let stationsBeforeTransfer = 0
     let transferPath = JSON.parse(JSON.stringify(path)) //prevent path from being affected
     let pathSubsets = []
+    let firstDirectPath = true
 
     while (transferPath.transfer.length > 0) {
         if (transferPath.transfer.includes(transferPath.names[stationsBeforeTransfer])) {
@@ -252,11 +259,18 @@ function nonDirectPathTimings(path) { //no walking inside
             const names = transferPath.names.slice(0, stationsBeforeTransfer + 1)
             const transfer = []
             const time = totalTime(codes)
-            const pathSubset = {
+            let pathSubset = {
                 codes,
                 names,
                 transfer,
                 time
+            }
+            if (firstDirectPath && Object.keys(path).length === 5) {
+                pathSubset.walk = path.walk
+                firstDirectPath = false
+                transferPath.time = transferPath.time - time - transferTime - pathWalkTime
+            } else {
+                 transferPath.time = transferPath.time - time - transferTime
             }
             pathSubsets.push(pathSubset)
 
@@ -264,7 +278,6 @@ function nonDirectPathTimings(path) { //no walking inside
             transferPath.codes = transferPath.codes.slice(stationsBeforeTransfer + 1,)
             transferPath.names = transferPath.names.slice(stationsBeforeTransfer,)
             transferPath.transfer = transferPath.transfer.slice(1,)
-            transferPath.time = transferPath.time - time - transferTime
 
             stationsBeforeTransfer = 0
         } else {

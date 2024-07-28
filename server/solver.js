@@ -172,41 +172,51 @@ function outputJourney(start, end) {
 }
 
 function getTimings(path) {
-    pathAttributes = Object.keys(path)
+    const pathAttributes = Object.keys(path)
     let timingObject = {
         firstTrain: {},
         lastTrain: {
             terminate: [],
             entry: [],
             leaveTime: [],
-            eta: 0
+            eta: [],
+            finalLeaveTime: '',
+            finalETA: ''
         }
     }
 
     //start and end stations are walkable, so no train timings required
     if (pathAttributes.length === 3) return timingObject
 
+    let pathWalkTime = 0
+    if (pathAttributes.length === 5) {
+        if (path.walk.includes(path.names[0])) pathWalkTime = path.time - totalTime(path.codes)
+    }
     //direct path with no transfers
     if (path.transfer.length === 0) {
         const pathTiming = directPathTimings(path)
         timingObject.lastTrain.terminate.push(pathTiming.terminate)
         timingObject.lastTrain.entry.push(pathTiming.entry)
-        timingObject.lastTrain.leaveTime = pathTiming.leaveTime
-        timingObject.lastTrain.eta = pathTiming.eta
+        timingObject.lastTrain.leaveTime.push(pathTiming.leaveTime)
+        timingObject.lastTrain.eta.push(pathTiming.eta)
+        timingObject.lastTrain.finalLeaveTime = editTime(pathTiming.leaveTime, -pathWalkTime)
+        timingObject.lastTrain.finalETA = pathTiming.eta
         return timingObject
     }
     
     //non-direct path with no walking
-    if (pathAttributes.length === 4) {
-        const pathTimings = nonDirectPathTimings(path)
+    if (pathAttributes.length >= 4) {
+        const pathTimings = nonDirectPathTimings(path, pathWalkTime)
         for (const pathTiming of pathTimings) {
             timingObject.lastTrain.terminate.push(pathTiming.terminate)
             timingObject.lastTrain.entry.push(pathTiming.entry)
+            timingObject.lastTrain.leaveTime.push(pathTiming.leaveTime)
+            timingObject.lastTrain.eta.push(pathTiming.eta)
         }
 
-        const finalLeaveTime = pathTimings[0].leaveTime
-        timingObject.lastTrain.leaveTime = finalLeaveTime
-        timingObject.lastTrain.eta = editTime(finalLeaveTime, path.time)
+        const finalLeaveTime = editTime(pathTimings[0].leaveTime, -pathWalkTime)
+        timingObject.lastTrain.finalLeaveTime = finalLeaveTime
+        timingObject.lastTrain.finalETA = editTime(finalLeaveTime, path.time)
         return timingObject
     }
 }

@@ -41,19 +41,19 @@ function editEdges(exclude) {
 
 // const paths = outputJourney('Yew Tee', 'Hillview')
 
-paths = outputJourney('Bras Basah', 'Bedok Reservoir')
+const paths = outputJourney('Tampines East', 'Bedok')
 for (const path of paths) {
     console.log(path)
     console.log(' ')
     console.log(getTimings(path))
 }
-console.log('-----------------')
-paths = outputJourney('Bedok Reservoir', 'Bras Basah')
-for (const path of paths) {
-    console.log(path)
-    console.log(' ')
-    console.log(getTimings(path))
-}
+// console.log('-----------------')
+// paths = outputJourney('Bedok Reservoir', 'Bras Basah')
+// for (const path of paths) {
+//     console.log(path)
+//     console.log(' ')
+//     console.log(getTimings(path))
+// }
 
 // let nonWalkingPath = JSON.parse(JSON.stringify(path))
 // const walkingTime = nonWalkingPath.time - totalTime(path.codes)
