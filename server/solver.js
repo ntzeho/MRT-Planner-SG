@@ -204,7 +204,7 @@ function getTimings(path) {
         return timingObject
     }
     
-    //non-direct path with no walking
+    //non-direct path
     if (pathAttributes.length >= 4) {
         const pathTimings = nonDirectPathTimings(path, pathWalkTime)
         for (const pathTiming of pathTimings) {
