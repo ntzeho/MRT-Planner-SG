@@ -1,7 +1,9 @@
 const {timings, SBS_LINES, SENGKANG_PUNGGOL_LINES} = require('../constants/timings.js')
 const {genericPublicHolidays, publicHolidays, dayDict} = require('../constants/publicHolidays.js')
 const {stations_dict} = require("../constants/stations.js")
+const {travelTime, walkingTime, transferTime} = require("../constants/edges.js")
 const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, editTime, differenceTime} = require("./utils.js")
+const {getStationFromCode, commonLines, checkDirect, totalTime, checkLineInPaths, astar} = require("./solverUtils.js")
 
 function getCategories(stationsDictKey, type = 'Last') {
     /*
@@ -62,7 +64,8 @@ function dayChecker(type) {
     // go to day before if its past midnight
     const date = hour < 3 ? yesterday : now 
 
-    //obtain today's day (1 to 7) based on time when checking for last train
+    //obtain today's day based on time when checking for last train
+    //Sunday is 0, Monday is 1, Tuesday is 2 etc ... Saturday is 6
     const dayOfWeek = date.getDay()
     //const dayOfWeek = 6
 
@@ -211,7 +214,7 @@ function directPathTimings(path) {
             }
         }
     }
-    
+
     let terminateNoStn = latestTimeObject.key.split(startLine)[1]
     let terminate = ''
     if (terminateNoStn) terminate = startLine + terminateNoStn
@@ -238,7 +241,60 @@ function directPathTimings(path) {
     return lastTrainObject
 }
 
+function nonDirectPathTimings(path) { //no walking inside
+    let stationsBeforeTransfer = 0
+    let transferPath = JSON.parse(JSON.stringify(path)) //prevent path from being affected
+    let pathSubsets = []
+
+    while (transferPath.transfer.length > 0) {
+        if (transferPath.transfer.includes(transferPath.names[stationsBeforeTransfer])) {
+            const codes = transferPath.codes.slice(0, stationsBeforeTransfer + 1)
+            const names = transferPath.names.slice(0, stationsBeforeTransfer + 1)
+            const transfer = []
+            const time = totalTime(codes)
+            const pathSubset = {
+                codes,
+                names,
+                transfer,
+                time
+            }
+            pathSubsets.push(pathSubset)
+
+            //remove these stations from transferPath
+            transferPath.codes = transferPath.codes.slice(stationsBeforeTransfer + 1,)
+            transferPath.names = transferPath.names.slice(stationsBeforeTransfer,)
+            transferPath.transfer = transferPath.transfer.slice(1,)
+            transferPath.time = transferPath.time - time - transferTime
+
+            stationsBeforeTransfer = 0
+        } else {
+            stationsBeforeTransfer += 1
+        }
+    }
+    pathSubsets.push(transferPath)
+    // console.log(pathSubsets)
+
+    let pathTimings = []
+    for (const subset of pathSubsets) {
+        pathTimings.push(directPathTimings(subset))
+    }
+    // console.log(pathTimings)
+    //start from second last entry, eta + TRANSFER_TIME <= leaveTime
+    for (let i = pathTimings.length-2; i > -1; i--) {
+        const etaToCompare = pathTimings[i].eta
+        const leaveTimeToCompare = pathTimings[i+1].leaveTime
+        const timeDiff = differenceTime(leaveTimeToCompare, editTime(etaToCompare, transferTime))
+        if (timeDiff < 0) {
+            pathTimings[i].eta = editTime(etaToCompare, timeDiff)
+            pathTimings[i].leaveTime = editTime(pathTimings[i].leaveTime, timeDiff)
+        }
+    }
+
+    return pathTimings
+}
+
 
 module.exports = {
-    directPathTimings
+    directPathTimings,
+    nonDirectPathTimings
 }

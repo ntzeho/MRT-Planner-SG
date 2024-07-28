@@ -1,186 +1,8 @@
-const {heapPush, heapPop} = require("./utils/heapQueue.js")
 const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, editTime, differenceTime} = require("./utils/utils.js")
 const {stations_dict} = require("./constants/stations.js")
 const {travelTime, walkingTime, transferTime} = require("./constants/edges.js")
-const { directPathTimings } = require("./utils/solver_utils.js")
-
-function getStationFromCode(code) {
-    const stationArray = Object.keys(stations_dict)
-    for (const station of stationArray) {
-        if (stations_dict[station].includes(code)) {
-            return station
-        }
-    }
-}
-
-function editEdges(exclude) {
-    //remove excluded edges from travelTime and return new set of edges without
-    let newEdges = JSON.parse(JSON.stringify(travelTime))
-    for (const toExclude of exclude) delete newEdges[toExclude]
-    return newEdges
-}
-
-function getNeighbours(station, exclusion=[]) {
-    let neighbours = [];
-    const edgeKeys = Object.keys(travelTime)
-
-    for (const edge of edgeKeys) {
-        let edgeArray = edge.split(',')
-        let toPush = true
-        for (const exclude of exclusion) {
-            if (station.slice(0, exclude.length) == exclude) {
-                toPush = false
-                break
-            }
-        }
-                
-        if (toPush) {
-            if (edgeArray[0] === station) neighbours.push(edgeArray[1])
-            else if (edgeArray[1] === station) neighbours.push(edgeArray[0])
-        }
-    }
-    return neighbours
-}
-
-function commonLines(stn1, stn2) {
-    const codes1 = stations_dict[stn1]
-    const codes2 = stations_dict[stn2]
-    let lines1 = []
-    let lines2 = []
-    let cLines = []
-
-    for (let i = 0; i < codes1.length; i++) {
-        lines1[i] = codes1[i].slice(0,2)
-    }
-    for (let i = 0; i < codes2.length; i++) {
-        lines2[i] = codes2[i].slice(0,2)
-    }
-    for (let i = 0; i < lines1.length; i++) {
-        if (lines2.includes(lines1[i])) {
-            cLines.push(lines1[i])
-        }
-    }
-    return cLines
-}
-
-function checkDirect(path) {
-    for (let i = 0; i < path.length-1; i++) {
-        if (path[i].slice(0,2) != path[i+1].slice(0,2)) {
-            return false
-        }
-    }
-    return true
-}
-
-function transferStation(path) {
-    let transfers = []
-    for (let i = 0; i < path.length-1; i++) {
-        if (getStationFromCode(path[i]) == getStationFromCode(path[i+1])) {
-            transfers.push(getStationFromCode(path[i]))
-        }
-    }
-    return transfers
-}
-
-function totalTime(pathCode) {
-    let time = 0
-    const edges = Object.keys(travelTime)
-    for (let i = 0; i < pathCode.length-1; i++) {
-        if (edges.includes(pathCode[i] + ',' + pathCode[i+1])) {
-            time += travelTime[pathCode[i] + ',' + pathCode[i+1]]
-        } else {
-            time += travelTime[pathCode[i+1] + ',' + pathCode[i]]
-        }
-    }
-    return time
-}
-
-function reconstructPath(came_from, current) {
-    let path = [current]
-    while (current in came_from) {
-        current = came_from[current]
-        path.push(current)
-    }
-    path.reverse()
-    return path
-}
-
-function convertPathToStations(path) {
-    let namePath = []
-    for (const code of path) {
-        let stationName = getStationFromCode(code)
-        if (!namePath.includes(stationName)) {
-            namePath.push(stationName)
-        }
-    }
-    return namePath
-}
-
-function checkLineInPaths(line, paths) {
-    for (const path of paths) {
-        for (const code of path.codes) {
-            if (code.slice(0,2) == line) return true
-        }
-    }
-    return false
-}
-
-
-function astar(start, end, exclude=[]) {
-    let open_list = []
-    let closed_set = new Set()
-    let came_from = {}
-    let g_score = {}
-    let f_score = {}
-    const stationArray = Object.keys(stations_dict)
-
-    for (const station of stationArray) {
-        let codeArray = stations_dict[station]
-        for (const code of codeArray) {
-            g_score[code] = Infinity
-            f_score[code] = Infinity
-        }
-    }
-
-    g_score[start] = 0
-    f_score[start] = 0
-
-    heapPush(open_list, [f_score[start], start])
-
-    while (open_list.length > 0) {
-        let [current_f, current] = heapPop(open_list)
-
-        if (current == end) {
-            const path = reconstructPath(came_from, current)
-            const pathObject = {
-                'codes' : path,
-                'names' : convertPathToStations(path),
-                'transfer' : transferStation(path),
-                'time' : g_score[current]
-            }
-            return pathObject
-        }
-
-        closed_set.add(current)
-
-        let neighbors = getNeighbours(current, exclude)
-        for (const neighbor of neighbors) {
-            let travelKey = current + ',' + neighbor in travelTime ? current + ',' + neighbor : neighbor + ',' + current
-            let tentative_g_score = g_score[current] + travelTime[travelKey]
-
-            if (tentative_g_score < g_score[neighbor]) {
-                came_from[neighbor] = current
-                g_score[neighbor] = tentative_g_score
-                f_score[neighbor] = g_score[neighbor]
-
-                if (!closed_set.has(neighbor)) {
-                    heapPush(open_list, [f_score[neighbor], neighbor])
-                }
-            }
-        }
-    }
-    return {'codes': [], 'names': [], 'transfer': [], 'time': 0}
-}
+const { directPathTimings, nonDirectPathTimings } = require("./utils/timingUtils.js")
+const {getStationFromCode, commonLines, checkDirect, totalTime, convertPathToStations, checkLineInPaths, astar} = require("./utils/solverUtils.js")
 
 function outputJourney(start, end) {
     let paths = []
@@ -289,18 +111,11 @@ function outputJourney(start, end) {
 
     //take into account walking time
     const walkTimeKeys = Object.keys(walkingTime)
-    if (walkTimeKeys.includes(start+','+end)) {
+    if (walkTimeKeys.includes(start+','+end) || walkTimeKeys.includes(end+','+start)) {
         const pathObject = {
             'names': [start, end],
             'time': walkingTime[start+','+end][1],
             'walk': walkingTime[start+','+end][0]
-        }
-        toKeep.push(pathObject)
-    } else if (walkTimeKeys.includes(end+','+start)) {
-        const pathObject = {
-            'names': [start, end],
-            'time': walkingTime[end+','+start][1],
-            'walk': walkingTime[end+','+start][0]
         }
         toKeep.push(pathObject)
     } else {
@@ -381,71 +196,23 @@ function getTimings(path) {
         return timingObject
     }
     
-    //non-direct path
-    let stationsBeforeTransfer = 0
-    let transferPath = JSON.parse(JSON.stringify(path)) //prevent path from being affected
-    let pathSubsets = []
-
-    while (transferPath.transfer.length > 0) {
-        if (transferPath.transfer.includes(transferPath.names[stationsBeforeTransfer])) {
-            const codes = transferPath.codes.slice(0, stationsBeforeTransfer + 1)
-            const names = transferPath.names.slice(0, stationsBeforeTransfer + 1)
-            const transfer = []
-            const time = totalTime(codes)
-            const pathSubset = {
-                codes,
-                names,
-                transfer,
-                time
-            }
-            pathSubsets.push(pathSubset)
-
-            //remove these stations from transferPath
-            transferPath.codes = transferPath.codes.slice(stationsBeforeTransfer + 1,)
-            transferPath.names = transferPath.names.slice(stationsBeforeTransfer,)
-            transferPath.transfer = transferPath.transfer.slice(1,)
-            transferPath.time = transferPath.time - time - transferTime
-
-            stationsBeforeTransfer = 0
-        } else {
-            stationsBeforeTransfer += 1
+    //non-direct path with no walking
+    if (pathAttributes.length === 4) {
+        const pathTimings = nonDirectPathTimings(path)
+        for (const pathTiming of pathTimings) {
+            timingObject.lastTrain.terminate.push(pathTiming.terminate)
+            timingObject.lastTrain.entry.push(pathTiming.entry)
         }
-    }
-    pathSubsets.push(transferPath)
-    // console.log(pathSubsets)
 
-    let pathTimings = []
-    for (const subset of pathSubsets) {
-        pathTimings.push(directPathTimings(subset))
+        const finalLeaveTime = pathTimings[0].leaveTime
+        timingObject.lastTrain.leaveTime = finalLeaveTime
+        timingObject.lastTrain.eta = editTime(finalLeaveTime, path.time)
+        return timingObject
     }
-    // console.log(pathTimings)
-    //start from second last entry, eta + TRANSFER_TIME <= leaveTime
-    for (let i = pathTimings.length-2; i > -1; i--) {
-        const etaToCompare = pathTimings[i].eta
-        const leaveTimeToCompare = pathTimings[i+1].leaveTime
-        const timeDiff = differenceTime(leaveTimeToCompare, editTime(etaToCompare, transferTime))
-        if (timeDiff < 0) {
-            pathTimings[i].eta = editTime(etaToCompare, timeDiff)
-            pathTimings[i].leaveTime = editTime(pathTimings[i].leaveTime, timeDiff)
-        }
-    }
-    // console.log(' ')
-    // console.log(pathTimings)
-
-    for (const pathTiming of pathTimings) {
-        timingObject.lastTrain.terminate.push(pathTiming.terminate)
-        timingObject.lastTrain.entry.push(pathTiming.entry)
-    }
-
-    const finalLeaveTime = pathTimings[0].leaveTime
-    timingObject.lastTrain.leaveTime = finalLeaveTime
-    timingObject.lastTrain.eta = editTime(finalLeaveTime, path.time)
-    return timingObject
 }
 
 
 module.exports = {
-    astar,
     outputJourney,
     getTimings
 }

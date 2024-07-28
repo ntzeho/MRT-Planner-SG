@@ -3,12 +3,12 @@ const stationType = {
     'sbs': ['Newton', 'Dhoby Ghaut', 'Tampines', 'Bugis', 'Outram Park', 'Expo', 'HarbourFront', 'Chinatown', 'Clarke Quay', 'Little India', 'Farrer Park', 'Boon Keng', 'Potong Pasir', 'Woodleigh', 'Serangoon', 'Kovan', 'Hougang', 'Buangkok', 'Sengkang', 'Punggol', 'Promenade', 'MacPherson', 'Botanic Gardens', 'Bayfront', 'Bukit Panjang', 'Cashew', 'Hillview', 'Beauty World', 'King Albert Park', 'Sixth Avenue', 'Tan Kah Kee', 'Stevens', 'Rochor', 'Downtown', 'Telok Ayer', 'Fort Canning', 'Bencoolen', 'Jalan Besar', 'Bendemeer', 'Geylang Bahru', 'Mattar', 'Ubi', 'Kaki Bukit', 'Bedok North', 'Bedok Reservoir', 'Tampines West', 'Tampines East', 'Upper Changi', 'Compassvale', 'Rumbia', 'Bakau', 'Kangkar', 'Ranggung', 'Cheng Lim', 'Farmway', 'Kupang', 'Thanggam', 'Fernvale', 'Layar', 'Tongkang', 'Renjong', 'Cove', 'Meridian', 'Coral Edge', 'Riviera', 'Kadaloor', 'Oasis', 'Damai', 'Sam Kee', 'Punggol Point', 'Samudera', 'Nibong', 'Sumang', 'Soo Teck']
 }
 
-const {astar, outputJourney, getTimings} = require("./solver.js")
+const {outputJourney, getTimings} = require("./solver.js")
 const {timings} = require("./constants/timings.js")
 const {travelTime, walkingTime, specialEdges ,transferTime} = require("./constants/edges.js")
 
 const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, editTime, differenceTime} = require("./utils/utils.js")
-const {directPathTimings} = require("./utils/solver_utils.js")
+const {directPathTimings} = require("./utils/solverUtils.js")
 const sengkangPunggolCodes = ['STC', 'SE', 'SW', 'PTC', 'PE', 'PW']
 
 function editEdges(exclude) {
@@ -18,9 +18,6 @@ function editEdges(exclude) {
     return newEdges
 }
 
-console.log(astar('NE15', 'SW7', exclude=['STC_A']))
-
-process.exit()
 // console.log(editEdges(['BP6,BP13']))
 
 //console.log(outputJourney('Bedok Reservoir', 'Yishun'))
@@ -43,10 +40,26 @@ process.exit()
 // process.exit()
 
 // const paths = outputJourney('Yew Tee', 'Hillview')
-// const paths = outputJourney('Bencoolen', 'City Hall')
+
+paths = outputJourney('Bras Basah', 'Bedok Reservoir')
 for (const path of paths) {
     console.log(path)
     console.log(' ')
     console.log(getTimings(path))
 }
+console.log('-----------------')
+paths = outputJourney('Bedok Reservoir', 'Bras Basah')
+for (const path of paths) {
+    console.log(path)
+    console.log(' ')
+    console.log(getTimings(path))
+}
+
+// let nonWalkingPath = JSON.parse(JSON.stringify(path))
+// const walkingTime = nonWalkingPath.time - totalTime(path.codes)
+// if (pathAttributes.length === 5) {
+//     if (path.walk.includes(path.names[0])) { //walking is at start
+//         nonWalkingPath.time = totalTime(path.codes)
+//     }
+// }
 //const paths = outputJourney('Woodlands' ,'Raffles Place')
