@@ -1,8 +1,8 @@
 const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, editTime, differenceTime} = require("./utils/utils.js")
 const {stations_dict} = require("./constants/stations.js")
-const {travelTime, walkingTime, transferTime} = require("./constants/edges.js")
+const {travelTime, walkingTime, specialStations, transferTime} = require("./constants/edges.js")
 const { directPathTimings, nonDirectPathTimings } = require("./utils/timingUtils.js")
-const {getStationFromCode, commonLines, checkDirect, totalTime, convertPathToStations, checkLineInPaths, astar} = require("./utils/solverUtils.js")
+const {redundantTransfer, getStationFromCode, commonLines, checkDirect, totalTime, convertPathToStations, checkLineInPaths, astar} = require("./utils/solverUtils.js")
 
 function outputJourney(start, end) {
     let paths = []
@@ -35,8 +35,8 @@ function outputJourney(start, end) {
 
     paths.sort((a, b) => a.time - b.time)
     for (let i = 0; i < paths.length; i++) {
-        if (paths[i].time == paths[0].time || (paths[i].time - paths[0].time <= 3 && paths[i].transfer.length <= paths[0].transfer.length)) {
-            toKeep.push(paths[i]) //keep paths that differ by 3 mins or less from optimal path
+        if (paths[i].time == paths[0].time || (paths[i].time - paths[0].time < transferTime && paths[i].transfer.length <= paths[0].transfer.length)) {
+            toKeep.push(paths[i]) //keep paths that differ by less than transferTime from optimal path
         }
     }
 
@@ -110,14 +110,17 @@ function outputJourney(start, end) {
     }
 
     //take into account walking time
+    let directWalk = false
     const walkTimeKeys = Object.keys(walkingTime)
     if (walkTimeKeys.includes(start+','+end) || walkTimeKeys.includes(end+','+start)) {
+        const walkKey = walkTimeKeys.includes(start+','+end) ? start+','+end : end+','+start
         const pathObject = {
             'names': [start, end],
-            'time': walkingTime[start+','+end][1],
-            'walk': walkingTime[start+','+end][0]
+            'time': walkingTime[walkKey][1],
+            'walk': walkingTime[walkKey][0]
         }
         toKeep.push(pathObject)
+        directWalk = true
     } else {
         for (const pair of walkTimeKeys) {
             let newPaths = []
@@ -167,6 +170,76 @@ function outputJourney(start, end) {
 
         }
     }
+
+    if (directWalk) { //can immediately output as no lrt involved
+        toKeep.sort((a, b) => a.time - b.time)
+        return toKeep
+    }
+
+    //consider alternate paths for BP/STC/PTC lrt
+    let altPaths = []
+    for (const path of toKeep) {
+        const needWalk = Object.keys(path).length === 5
+        let altPairs = []
+        
+        // const [code_start, code_end] = [path.codes[0], path.codes[path.codes.length - 1]]
+        for (const pair of specialStations) {
+            // if (path.codes.includes(pair[0]) && path.codes.includes(pair[1])) continue
+            // if (path.transfer.length > 0 && sameLine(path.codes)) continue
+            if (path.codes.includes(pair[0]) && !altPairs.includes([pair[0], pair[1], 0])) {
+                altPairs.push([pair[0], pair[1], 0])
+            }
+            if (path.codes.includes(pair[1]) && !altPairs.includes([pair[0], pair[1], 1])) {
+                altPairs.push([pair[0], pair[1], 1])
+            }
+        }
+
+        // console.log('altPairs = ', altPairs)
+        if (altPairs.length === 1 && !needWalk) {
+            for (const code_start of code_start_array) {
+                for (const code_end of code_end_array) {
+                    let newAltPath = new astar(code_start, code_end, [altPairs[0][altPairs[0][2]]])
+                    if (newAltPath.time != 0 && !objectInArray(newAltPath, altPaths) && !objectInArray(newAltPath, toKeep) && !redundantTransfer(newAltPath)) {
+                        altPaths.push(newAltPath)
+                    }
+                }
+            }    
+        } else if (altPairs.length === 1 && needWalk) { //walking involved
+            const walkAtStart = path.walk.includes(path.names[0])
+            const newCode = walkAtStart ? path.codes[0] : path.codes[path.codes.length - 1]
+            const codeArrayIterate = walkAtStart ? code_end_array : code_start_array
+            
+            for (const code of codeArrayIterate) {
+                let newAltPath = walkAtStart ? new astar(newCode, code, [altPairs[0][altPairs[0][2]]]) : new astar(code, newCode, [altPairs[0][altPairs[0][2]]])
+                if (newAltPath.time != 0 && !objectInArray(newAltPath, altPaths) && !objectInArray(newAltPath, toKeep) && !redundantTransfer(newAltPath)) {
+                    newAltPath.walk = path.walk
+                    newAltPath.time += path.time - totalTime(path.codes)
+                    altPaths.push(newAltPath)
+                }
+            }
+            
+        } else if (altPairs.length === 2) {
+            for (const code_start of code_start_array) {
+                for (const code_end of code_end_array) {
+                    let newAltPath1 = new astar(code_start, code_end, [altPairs[0][altPairs[0][2]]])
+                    let newAltPath2 = new astar(code_start, code_end, [altPairs[1][altPairs[1][2]]])
+                    let newAltPath3 = new astar(code_start, code_end, [altPairs[0][altPairs[0][2]], altPairs[1][altPairs[1][2]]])
+                    if (newAltPath1.time != 0 && !objectInArray(newAltPath1, altPaths) && !objectInArray(newAltPath1, toKeep) && !redundantTransfer(newAltPath1)) {
+                        altPaths.push(newAltPath1)
+                    }
+                    if (newAltPath2.time != 0 && !objectInArray(newAltPath2, altPaths) && !objectInArray(newAltPath2, toKeep) && !redundantTransfer(newAltPath2)) {
+                        altPaths.push(newAltPath2)
+                    }
+                    if (newAltPath3.time != 0 && !objectInArray(newAltPath3, altPaths) && !objectInArray(newAltPath3, toKeep) && !redundantTransfer(newAltPath3)) {
+                        altPaths.push(newAltPath3)
+                    }
+                }
+            }
+        }
+    }
+
+    if (altPaths.length > 0) for (const path of altPaths) toKeep.push(path)
+
     toKeep.sort((a, b) => a.time - b.time)
     return toKeep
 }

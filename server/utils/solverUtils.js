@@ -1,6 +1,23 @@
 const {heapPush, heapPop} = require("./heapQueue.js")
 const {stations_dict} = require("../constants/stations.js")
-const {travelTime, walkingTime, transferTime} = require("../constants/edges.js")
+const {travelTime, walkingTime, specialStations, transferTime} = require("../constants/edges.js")
+
+function sameLine(pathCode) {
+    return pathCode[0].slice(0,2) == pathCode[pathCode.length - 1].slice(0,2)
+}
+
+function redundantTransfer(path) {
+    //return true if path contains a redundant transfer e.g. BP5_a to BP5_b
+    const transferLength = path.transfer.length
+    if (transferLength === 0) return false
+    if (path.names[0] === path.transfer[0] || path.names[path.names.length - 1] === path.transfer[transferLength]) return true
+
+    for (const transferStn of path.transfer) {
+        const stnCodes = stations_dict[transferStn]
+        if (stnCodes.length === 2 && sameLine(stnCodes)) return true
+    }
+    return false
+}
 
 function getStationFromCode(code) {
     const stationArray = Object.keys(stations_dict)
@@ -175,6 +192,7 @@ function astar(start, end, exclude=[]) {
 
 
 module.exports = {
+    redundantTransfer,
     getStationFromCode,
     commonLines,
     checkDirect,

@@ -5,11 +5,12 @@ const stationType = {
 
 const {outputJourney, getTimings} = require("./solver.js")
 const {timings} = require("./constants/timings.js")
-const {travelTime, walkingTime, specialEdges ,transferTime} = require("./constants/edges.js")
+const {travelTime, walkingTime, specialStations ,transferTime} = require("./constants/edges.js")
 
 const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, editTime, differenceTime} = require("./utils/utils.js")
 const {directPathTimings} = require("./utils/solverUtils.js")
 const sengkangPunggolCodes = ['STC', 'SE', 'SW', 'PTC', 'PE', 'PW']
+const {redundantTransfer, getStationFromCode, commonLines, checkDirect, totalTime, convertPathToStations, checkLineInPaths, astar} = require("./utils/solverUtils.js")
 
 function editEdges(exclude) {
     //remove excluded edges from travelTime
@@ -17,6 +18,8 @@ function editEdges(exclude) {
     for (const toExclude of exclude) delete newEdges[toExclude]
     return newEdges
 }
+
+const fs = require('fs')
 
 // console.log(editEdges(['BP6,BP13']))
 
@@ -40,19 +43,36 @@ function editEdges(exclude) {
 // process.exit()
 
 // const paths = outputJourney('Yew Tee', 'Hillview')
+// const BP_STNS = ['Choa Chu Kang', 'South View', 'Keat Hong', 'Teck Whye', 'Phoenix', 'Bukit Panjang', 'Petir', 'Pending', 'Bangkit', 'Fajar', 'Segar', 'Jelapang', 'Senja']
+// let ALL = []
 
-const paths = outputJourney('Tampines East', 'Bedok')
+// function sleep(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+//   }
+// for (let i = 0; i < BP_STNS.length - 1; i++) {
+//     for (let j = i+1; j < BP_STNS.length; j++) {
+//         const paths = outputJourney(BP_STNS[i], BP_STNS[j])
+//         console.log(paths)
+//         sleep(2000)
+//     }
+// }
+// fs.writeFile('output.txt', ALL, (err) => {
+//     if (err) throw err;
+// })
+// process.exit()
+
+const paths = outputJourney('Bukit Panjang', 'Senja')
 for (const path of paths) {
     console.log(path)
     console.log(' ')
-    console.log(getTimings(path))
+    // console.log(getTimings(path))
 }
 // console.log('-----------------')
 // paths = outputJourney('Bedok Reservoir', 'Bras Basah')
 // for (const path of paths) {
 //     console.log(path)
 //     console.log(' ')
-//     console.log(getTimings(path))
+//     // console.log(getTimings(path))
 // }
 
 // let nonWalkingPath = JSON.parse(JSON.stringify(path))
