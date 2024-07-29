@@ -1,4 +1,4 @@
-const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, editTime, differenceTime} = require("./utils/utils.js")
+const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, stringInArrayInArray, convertTo24hTime, editTime, differenceTime} = require("./utils/utils.js")
 const {stations_dict} = require("./constants/stations.js")
 const {travelTime, walkingTime, specialStations, transferTime} = require("./constants/edges.js")
 const { directPathTimings, nonDirectPathTimings } = require("./utils/timingUtils.js")
@@ -110,7 +110,6 @@ function outputJourney(start, end) {
     }
 
     //take into account walking time
-    let directWalk = false
     const walkTimeKeys = Object.keys(walkingTime)
     if (walkTimeKeys.includes(start+','+end) || walkTimeKeys.includes(end+','+start)) {
         const walkKey = walkTimeKeys.includes(start+','+end) ? start+','+end : end+','+start
@@ -120,7 +119,8 @@ function outputJourney(start, end) {
             'walk': walkingTime[walkKey][0]
         }
         toKeep.push(pathObject)
-        directWalk = true
+        toKeep.sort((a, b) => a.time - b.time) //immediately return output
+        return toKeep
     } else {
         for (const pair of walkTimeKeys) {
             let newPaths = []
@@ -171,10 +171,31 @@ function outputJourney(start, end) {
         }
     }
 
-    if (directWalk) { //can immediately output as no lrt involved
+    //consider case where start and end station in separate pairs of walkingTime
+    const startWalkCheck = stringInArrayInArray(walkTimeKeys, start)
+    const endWalkCheck = stringInArrayInArray(walkTimeKeys, end)
+    if (startWalkCheck[0] && endWalkCheck[0]) {
+        const [startStn1, startStn2] = walkTimeKeys[startWalkCheck[1]].split(',')
+        const [endStn1, endStn2] = walkTimeKeys[endWalkCheck[1]].split(',')
+        const newStart = start == startStn1 ? startStn2 : startStn1
+        const newEnd = end == endStn1 ? endStn2 : endStn1
+
         toKeep.sort((a, b) => a.time - b.time)
+        for (const code_start of stations_dict[newStart]) {
+            for (const code_end of stations_dict[newEnd]) {
+                let path = new astar(code_start, code_end)
+                path.time += walkingTime[walkTimeKeys[startWalkCheck[1]]][1] + walkingTime[walkTimeKeys[endWalkCheck[1]]][1]
+                path.walk = walkingTime[walkTimeKeys[startWalkCheck[1]]][0] + ' /// ' + walkingTime[walkTimeKeys[endWalkCheck[1]]][0]
+                if (path.time != 0 && path.time <= toKeep[0].time && !objectInArray(path, toKeep)) {
+                    toKeep.push(path)
+                }
+                
+            }
+        }
+        toKeep.sort((a, b) => a.time - b.time) //immediately return output
         return toKeep
-    }
+    } 
+
 
     //consider alternate paths for BP/STC/PTC lrt
     let altPaths = []

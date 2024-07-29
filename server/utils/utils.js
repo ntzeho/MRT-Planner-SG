@@ -40,6 +40,14 @@ function textInStringsArray(arr, text) {
   return NaN
 }
 
+function stringInArrayInArray(bigArr, text) {
+  //returns index of arr in bigArr
+  for (let i = 0; i < bigArr.length; i++) {
+    if (bigArr[i].includes(text)) return [true, i]
+  }
+  return [false]
+}
+
 function convertTo24hTime(time) {
   if (time.includes('am')) {
     let time_24h = time.replace('am', '').replace('.', ':')
@@ -100,6 +108,7 @@ module.exports = {
     objectInArray,
     arrayStringsInText,
     textInStringsArray,
+    stringInArrayInArray,
     convertTo24hTime,
     editTime,
     differenceTime
