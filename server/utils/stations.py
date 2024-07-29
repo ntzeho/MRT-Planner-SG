@@ -37,11 +37,11 @@ EDGES_TO_ADD = ['CG,CG1,3', 'CE,CE1,2',\
                 'PTC_A,PTC_B,5', 'PTC_A,PTC_C,5', 'PTC_A,PTC_D,5', 'PTC_B,PTC_C,5', 'PTC_B,PTC_D,5', 'PTC_C,PTC_D,5',\
                 'STC_B,SW1,2', 'STC_A,SW8,3', 'STC_C,SE1,2', 'STC_D,SE5,3', \
                 'PTC_B,PW1,2', 'PTC_A,PW7,3', 'PTC_D,PE1,3', 'PTC_C,PE7,2']
-# SPECIAL_EDGES = ['BP6,BP7','BP6,BP13']
+SPECIAL_STATIONS = [['BP6_a', 'BP6_b'], ['STC_A', 'STC_B'], ['STC_C', 'STC_D'], ['PTC_A', 'PTC_B'], ['PTC_C', 'PTC_D']]
 
-walkingTime = {('Bras Basah', 'Bencoolen'): ['Bras Basah Exit B/C <-> Bencoolen Exit C for underpass through SMU. Walking on street level is fine as well.', 3], \
-                ('Raffles Place', 'Downtown'): ['Raffles Place Exit J <-> Downtown Exit B for underpass through Marina Bay Link Mall', 7], \
-                    ('Esplanade', 'City Hall'): ['Esplanade Exit G <-> City Hall Exit A for transfer through Raffles City Shopping Mall Basement 2', 5]}
+walkingTime = {('Bras Basah', 'Bencoolen'): ['3 minutes walk | Bras Basah Exit B/C <-> Bencoolen Exit C for underpass through SMU. Walking on street level is fine as well.', 3], \
+                ('Raffles Place', 'Downtown'): ['7 minutes walk | Raffles Place Exit J <-> Downtown Exit B for underpass through Marina Bay Link Mall', 7], \
+                    ('Esplanade', 'City Hall'): ['5 minutes walk | Esplanade Exit G <-> City Hall Exit A for transfer through Raffles City Shopping Mall Basement 2', 5]}
 
 stations_dict = {}
 lines = {}
@@ -140,13 +140,13 @@ def writeEdgesJS():
             f.write('    '+"'"+edge[0]+","+edge[1]+"'"+' : '+str(walkingTime[edge])+',' + '\n')
         f.write('}\n\n')
 
-        # f.write('const specialEdges = ' + str(SPECIAL_EDGES) + '\n\n')
+        f.write('const specialStations = ' + str(SPECIAL_STATIONS) + '\n\n')
         f.write('const transferTime = ' + str(TRANSFER_TIME) + '\n\n')
 
         f.write('module.exports = {\n')
         f.write('    travelTime,\n')
         f.write('    walkingTime,\n')
-        # f.write('    specialEdges,\n')
+        f.write('    specialStations,\n')
         f.write('    transferTime\n')
         f.write('}')
 

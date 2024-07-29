@@ -277,15 +277,18 @@ const travelTime = {
 }
 
 const walkingTime = {
-    'Bras Basah,Bencoolen' : ['Bras Basah Exit B/C <-> Bencoolen Exit C for underpass through SMU. Walking on street level is fine as well.', 3],
-    'Raffles Place,Downtown' : ['Raffles Place Exit J <-> Downtown Exit B for underpass through Marina Bay Link Mall', 7],
-    'Esplanade,City Hall' : ['Esplanade Exit G <-> City Hall Exit A for transfer through Raffles City Shopping Mall Basement 2', 5],
+    'Bras Basah,Bencoolen' : ['3 minutes walk | Bras Basah Exit B/C <-> Bencoolen Exit C for underpass through SMU. Walking on street level is fine as well.', 3],
+    'Raffles Place,Downtown' : ['7 minutes walk | Raffles Place Exit J <-> Downtown Exit B for underpass through Marina Bay Link Mall', 7],
+    'Esplanade,City Hall' : ['5 minutes walk | Esplanade Exit G <-> City Hall Exit A for transfer through Raffles City Shopping Mall Basement 2', 5],
 }
+
+const specialStations = [['BP6_a', 'BP6_b'], ['STC_A', 'STC_B'], ['STC_C', 'STC_D'], ['PTC_A', 'PTC_B'], ['PTC_C', 'PTC_D']]
 
 const transferTime = 5
 
 module.exports = {
     travelTime,
     walkingTime,
+    specialStations,
     transferTime
 }
