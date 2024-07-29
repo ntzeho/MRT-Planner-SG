@@ -1,7 +1,7 @@
 const {timings, SBS_LINES, SENGKANG_PUNGGOL_LINES} = require('../constants/timings.js')
 const {genericPublicHolidays, publicHolidays, dayDict} = require('../constants/publicHolidays.js')
 const {stations_dict} = require("../constants/stations.js")
-const {travelTime, walkingTime, transferTime} = require("../constants/edges.js")
+const {travelTime, walkingTime, specialStations, transferTime} = require("../constants/edges.js")
 const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, editTime, differenceTime} = require("./utils.js")
 const {getStationFromCode, commonLines, checkDirect, totalTime, checkLineInPaths, astar} = require("./solverUtils.js")
 
