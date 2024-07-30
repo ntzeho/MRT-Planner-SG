@@ -61,11 +61,11 @@ const fs = require('fs')
 // })
 // process.exit()
 
-const paths = outputJourney('Bencoolen', 'City Hall')
+const paths = outputJourney('Orchard', 'Bedok')
 for (const path of paths) {
     console.log(path)
     console.log(' ')
-    // console.log(getTimings(path))
+    console.log(getTimings(path))
 }
 // console.log('-----------------')
 // paths = outputJourney('Bedok Reservoir', 'Bras Basah')

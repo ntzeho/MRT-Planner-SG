@@ -283,8 +283,8 @@ function getTimings(path) {
     if (pathAttributes.length === 3) return timingObject
 
     let pathWalkTime = 0
-    if (pathAttributes.length === 5) {
-        if (path.walk.includes(path.names[0])) pathWalkTime = path.time - totalTime(path.codes)
+    if (pathAttributes.length === 5) { //obtain walking time at start
+        if (path.walk.includes(path.names[0])) pathWalkTime = parseInt(path.walk.slice(0,1))
     }
     //direct path with no transfers
     if (path.transfer.length === 0) {
@@ -294,7 +294,7 @@ function getTimings(path) {
         timingObject.lastTrain.leaveTime.push(pathTiming.leaveTime)
         timingObject.lastTrain.eta.push(pathTiming.eta)
         timingObject.lastTrain.finalLeaveTime = editTime(pathTiming.leaveTime, -pathWalkTime)
-        timingObject.lastTrain.finalETA = pathTiming.eta
+        timingObject.lastTrain.finalETA = editTime(timingObject.lastTrain.finalLeaveTime, path.time)
         return timingObject
     }
     
