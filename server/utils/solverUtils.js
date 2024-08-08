@@ -10,7 +10,7 @@ function redundantTransfer(path) {
     //return true if path contains a redundant transfer e.g. BP5_a to BP5_b
     const transferLength = path.transfer.length
     if (transferLength === 0) return false
-    if (path.names[0] === path.transfer[0] || path.names[path.names.length - 1] === path.transfer[transferLength]) return true
+    if (path.names[0] === path.transfer[0] || path.names[path.names.length - 1] === path.transfer[transferLength - 1]) return true
 
     for (const transferStn of path.transfer) {
         const stnCodes = stations_dict[transferStn]
