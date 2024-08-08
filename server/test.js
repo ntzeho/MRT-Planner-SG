@@ -61,7 +61,8 @@ const fs = require('fs')
 // })
 // process.exit()
 
-const paths = outputJourney('Orchard', 'Bedok')
+const paths = outputJourney('Jurong East', 'City Hall')
+// const paths = outputJourney('Bedok', 'Kembangan')
 for (const path of paths) {
     console.log(path)
     console.log(' ')

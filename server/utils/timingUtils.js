@@ -146,6 +146,10 @@ function directPathTimings(inputPath) {
     const endCodeNo = parseInt(endCode.slice(2,))
     const ascending = startCodeNo < endCodeNo //check for direction of travel
 
+    const relevantEntries = dayChecker(START_MRT_TYPE)
+    let latestTime = '05:00'
+    let latestTimeObject = {}
+
     /*
     Sengkang punggol - just use last train timing at STC/PTC depending on loop
 
@@ -163,8 +167,110 @@ function directPathTimings(inputPath) {
 
     } else if (startCode.includes('BP')) { //BP LRT
         //special case, return stuff in here
-        console.log('BP LRT')
-        return
+        let BP_KEYS = []
+        let relevantKey = ''
+
+        //obtain bukit panjang lrt keys
+        for (const key of startTimingKeys) if (key.includes('BP6')) BP_KEYS.push(key)
+        
+        if (path.names[0] === 'Choa Chu Kang') {
+            //start station of path is BP1 choa chu kang
+            relevantKey = BP_KEYS[0] //both keys are same so doesn't matter
+        } else if ([2,3,4,5,6].includes(startCodeNo) && ascending) {
+            //start station before loop and is going towards loop
+            for (const key of BP_KEYS) if (key.includes('Platform 2')) relevantKey = key
+        } else if ([2,3,4,5,6].includes(startCodeNo)) {
+            //start station before loop and is going away from loop
+            for (const key of BP_KEYS) if (key.includes('Platform 1')) relevantKey = key
+        } else if (path.names[path.names.length - 1] === 'Bukit Panjang') {
+            //start station in loop, last station is bukit panjang
+            const secondLastCodeNo = parseInt(path.codes[path.codes.length - 2].slice(2,))
+            if (secondLastCodeNo === 7) { //7 to 6 is platform 2
+                for (const key of BP_KEYS) if (key.includes('Platform 2')) relevantKey = key
+            } else { //13 to 7 is platform 1
+                for (const key of BP_KEYS) if (key.includes('Platform 1')) relevantKey = key
+            }
+        } else if (path.names.includes('Bukit Panjang')) {
+            //bukit panjang is in path but not the final destination
+            //must reach bukit panjang by 2330
+            //return seperately here
+            let bukitPanjangKey = ''
+            
+            for (const key of BP_KEYS) {
+                if (key.includes('BP6') && key.includes('Platform 1')) {
+                    bukitPanjangKey = key
+                    break
+                }
+            }
+
+            for (const entry of relevantEntries) {
+                const time = timings['Bukit Panjang']['smrt_times'][bukitPanjangKey][entry]
+                if (time) {
+                    const time24HourFormat = convertTo24hTime(time)
+                    if (differenceTime(time24HourFormat, latestTime) > 0) {
+                        latestTime = time24HourFormat
+                        latestTimeObject = {
+                            'key': relevantKey,
+                            entry,
+                            latestTime
+                        }
+                    }
+                }
+            }
+
+            const extraTime = totalTime(path.codes.slice(0, path.names.indexOf('Bukit Panjang')+1))
+            const entry = latestTimeObject.entry
+            const leaveTime = editTime(convertTo24hTime(latestTimeObject.latestTime), -extraTime)
+            const eta = editTime(leaveTime, path.time)
+            
+            const lastTrainObject = {
+                'terminate': 'BP6 Bukit Panjang',
+                entry,
+                leaveTime,
+                eta
+            }
+    
+            return lastTrainObject
+
+        }
+        else { //path within loop
+            if (ascending) {
+                for (const key of BP_KEYS) if (key.includes('Platform 1')) relevantKey = key
+            } else {
+                for (const key of BP_KEYS) if (key.includes('Platform 2')) relevantKey = key
+            }
+        }
+
+        // console.log(relevantKey)
+        // console.log(relevantKey, startTimings[relevantKey])
+        
+        for (const entry of relevantEntries) {
+            const time = startTimings[relevantKey][entry]
+            if (time) {
+                const time24HourFormat = convertTo24hTime(time)
+                if (differenceTime(time24HourFormat, latestTime) > 0) {
+                    latestTime = time24HourFormat
+                    latestTimeObject = {
+                        'key': relevantKey,
+                        entry,
+                        latestTime
+                    }
+                }
+            }
+        }
+
+        const entry = latestTimeObject.entry
+        const leaveTime = convertTo24hTime(latestTimeObject.latestTime)
+        const eta = editTime(latestTimeObject.latestTime, path.time)
+
+        const lastTrainObject = {
+            'terminate': 'BP6 Bukit Panjang',
+            entry,
+            leaveTime,
+            eta
+        }
+
+        return lastTrainObject
 
     } else if (START_MRT_TYPE === 'smrt_times') { //check for keys for smrt          
         /*
@@ -201,9 +307,9 @@ function directPathTimings(inputPath) {
         console.log('Error start code not found')
     }
 
-    const relevantEntries = dayChecker(START_MRT_TYPE)
-    let latestTime = '05:00'
-    let latestTimeObject = {}
+    // const relevantEntries = dayChecker(START_MRT_TYPE)
+    // let latestTime = '05:00'
+    // let latestTimeObject = {}
     for (const key of relevantTimings) {
         for (const entry of relevantEntries) {
             const time = startTimings[key][entry]
