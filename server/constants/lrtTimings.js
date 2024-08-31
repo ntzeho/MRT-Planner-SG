@@ -28,9 +28,19 @@ East Loop Outer via PE7 Damai
 East Loop Inner via PE1 Cove
 (Platform 1 | Route D)                  5:25am	                5:45am	                12:38am
 
+SENGKANG LRT
+    A - west loop descending
+    B - west loop ascending
+    C - east loop ascending
+    D - east loop descending
+PUNGGOL LRT
+    A - west loop descending
+    B - west loop ascending
+    C - east loop descending
+    D - east loop ascending
 */
 
-lrtTimings = {
+const lrtTimings = {
     'Sengkang': {'codes': ['STC_A', 'STC_B', 'STC_C', 'STC_D'], 'A': {'First Trains | Mondays to Saturdays': '5.33am', 'First Trains | Sundays/Public Holidays': '5.53am', 'Last Trains': '12.37am'}, 'B': {'First Trains | Mondays to Saturdays': '5.30am', 'First Trains | Sundays/Public Holidays': '5.50am', 'Last Trains': '12.13am'}, 'C': {'First Trains | Mondays to Saturdays': '5.25am', 'First Trains | Sundays/Public Holidays': '5.45am', 'Last Trains': '12.21am'}, 'D': {'First Trains | Mondays to Saturdays': '5.29am', 'First Trains | Sundays/Public Holidays': '5.49am', 'Last Trains': '12.35am'}},
     'Compassvale' : {'codes': ['SE1'], 'C': {'First Trains | Mondays to Saturdays': '5.26am', 'First Trains | Sundays/Public Holidays': '5.46am', 'Last Trains': '12.23am'}, 'D': {'First Trains | Mondays to Saturdays': '5.37am', 'First Trains | Sundays/Public Holidays': '5.57am', 'Last Trains': '12.48am'}},
     'Rumbia' : {'codes': ['SE2'], 'C': {'First Trains | Mondays to Saturdays': '5.28am', 'First Trains | Sundays/Public Holidays': '5.48am', 'Last Trains': '12.25am'}, 'D': {'First Trains | Mondays to Saturdays': '5.36am', 'First Trains | Sundays/Public Holidays': '5.56am', 'Last Trains': '12.46am'}},
@@ -63,6 +73,17 @@ lrtTimings = {
     'Soo Teck' : {'codes': ['PW7'], 'A': {'First Trains | Mondays to Saturdays': '5.30am', 'First Trains | Sundays/Public Holidays': '5.50am', 'Last Trains': '12.43am'}, 'B': {'First Trains | Mondays to Saturdays': '5.25am', 'First Trains | Sundays/Public Holidays': '5.45am', 'Last Trains': '12.22am'}},
 }
 
+const routePairs = {'A': 'B', 'B': 'A', 'C': 'D', 'D': 'C'}
+
+const routeLetterDecider = { //true if station order in path is ascending, false otherwise
+    'SW': {true: 'B', false: 'A'},
+    'SE': {true: 'C', false: 'D'},
+    'PW': {true: 'B', false: 'A'},
+    'PE': {true: 'D', false: 'C'},
+}
+
 module.exports = {
-    lrtTimings
+    lrtTimings,
+    routePairs,
+    routeLetterDecider
 }
