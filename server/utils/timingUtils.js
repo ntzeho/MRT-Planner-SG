@@ -1,8 +1,9 @@
 const {timings, SBS_LINES, SENGKANG_PUNGGOL_LINES} = require('../constants/timings.js')
+const {lrtTimings, routePairs, routeLetterDecider} = require('../constants/lrtTimings.js')
 const {genericPublicHolidays, publicHolidays, dayDict} = require('../constants/publicHolidays.js')
 const {stations_dict} = require("../constants/stations.js")
 const {travelTime, walkingTime, specialStations, transferTime} = require("../constants/edges.js")
-const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, editTime, differenceTime} = require("./utils.js")
+const {arraysEqual, objectInArray, arrayStringsInText, textInStringsArray, convertTo24hTime, editTime, differenceTime, stringInArrayInArray} = require("./utils.js")
 const {getStationFromCode, commonLines, checkDirect, totalTime, checkLineInPaths, astar} = require("./solverUtils.js")
 
 function getCategories(stationsDictKey, type = 'Last') {
@@ -128,7 +129,7 @@ function directPathTimings(inputPath) {
     const endCode = path.codes[path.codes.length - 1]
     const endLine = endCode.slice(0,2)
 
-    const START_MRT_TYPE = SBS_LINES.includes(startLine) ? 'sbs_times' : 'smrt_times'
+    const START_MRT_TYPE = SBS_LINES.includes(startLine) || SENGKANG_PUNGGOL_LINES.includes(startCode) ? 'sbs_times' : 'smrt_times'
     //const END_MRT_TYPE = SBS_LINES.includes(endLine) ? 'sbs_times' : 'smrt_times'
 
     const startTimings = timings[startStation][START_MRT_TYPE]
@@ -161,9 +162,31 @@ function directPathTimings(inputPath) {
     if (!startCodeNo || arrayStringsInText(SENGKANG_PUNGGOL_LINES, startCode)) {
         //Sengkang or Punggol LRT
         //special case, return stuff in here
-        console.log('Sengkang Punggol LRT')
-        console.log(startTimingKeys)
-        return
+
+        let routeLetter = ''
+        if (!startCodeNo) { //start stn is sengkang or punggol
+            routeLetter = startCode.split('_')[1]
+        } else if (!endCodeNo) { //end stn is sengkang or punggol
+            routeLetter = routePairs[endCode.split('_')[1]]
+        } else { //no sengkang or punggol in path
+            routeLetter = routeLetterDecider[startCode.slice(0,2)][ascending]
+        }
+
+        const lastTrainTime = convertTo24hTime(lrtTimings[startStation][routeLetter]['Last Trains'])
+        const entry = 'Last Trains'
+        const terminate = startCode.slice(0,1) + 'TC ' + (startCode.slice(0,1) === 'S' ? 'Sengkang' : 'Punggol')
+
+        // const loopType = startCode.slice(1,2) === 'E' || path.codes[1].slice(1,2) === 'E' ? 'East Loop' : 'West Loop'
+        //const extraTime = totalTime(path.codes.slice(0, path.names.indexOf('Bukit Panjang')+1))
+
+        const lastTrainObject = {
+            terminate,
+            entry,
+            'leaveTime': lastTrainTime,
+            'eta': editTime(lastTrainTime, path.time)
+        }
+
+        return lastTrainObject
 
     } else if (startCode.includes('BP')) { //BP LRT
         //special case, return stuff in here
@@ -404,8 +427,14 @@ function nonDirectPathTimings(path, pathWalkTime) { //no walking inside
         const leaveTimeToCompare = pathTimings[i+1].leaveTime
         const timeDiff = differenceTime(leaveTimeToCompare, editTime(etaToCompare, transferTime))
         if (timeDiff < 0) {
-            pathTimings[i].eta = editTime(etaToCompare, timeDiff)
-            pathTimings[i].leaveTime = editTime(pathTimings[i].leaveTime, timeDiff)
+            //time difference to be subtracted off eta to be in multiples of transferTime
+            //better account for real-world scenario as trains are infrequent nearing closing hours
+            const timeToSubtract = -Math.ceil(-timeDiff / transferTime) * transferTime
+            pathTimings[i].eta = editTime(etaToCompare, timeToSubtract)
+            pathTimings[i].leaveTime = editTime(pathTimings[i].leaveTime, timeToSubtract)
+
+            // pathTimings[i].eta = editTime(etaToCompare, timeDiff)
+            // pathTimings[i].leaveTime = editTime(pathTimings[i].leaveTime, timeDiff)
         }
     }
 
