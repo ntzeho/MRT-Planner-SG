@@ -151,6 +151,7 @@ const stations_dict = {
     'Oasis' : ['PE6'],
     'Damai' : ['PE7'],
     'Sam Kee' : ['PW1'],
+    'Teck Lee' : ['PW2'],
     'Punggol Point' : ['PW3'],
     'Samudera' : ['PW4'],
     'Nibong' : ['PW5'],
