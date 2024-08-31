@@ -5,7 +5,7 @@ const cors = require("cors");
 const port = process.env.PORT || 5000;
 
 // const mongoose = require("mongoose");
-const {solve, scrapeTimings, writeStations, editEdges, writeEdges} = require("./controller.js")
+const {solve, getStations} = require("./controller.js")
 
 // const Db = process.env.ATLAS_URI;
 // mongoose.connect(Db, { useNewUrlParser: true, useUnifiedTopology: true, dbName: "timings"});
@@ -26,13 +26,6 @@ app.use('/api', router).all((_, res) => {
 })
 router.get('/', (_, res) => res.send('hello world from user service'));
 router.post('/solve', solve);
-router.get('/timings', scrapeTimings);
-router.get('/stations', writeStations);
-router.put('/edges', editEdges);
-router.get('/edges', writeEdges);
-// router.get('/user', getUsers);
-// router.post('/user/login', getUser);
-// router.post('/user', createUser);
-
+router.get('/stations', getStations);
 
 app.listen(port, () => console.log(`Server is running on port: ${port}`));

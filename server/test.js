@@ -84,3 +84,461 @@ for (const path of paths) {
 //     }
 // }
 //const paths = outputJourney('Woodlands' ,'Raffles Place')
+
+
+/*
+async function scrapeTimings(req, res) {
+    //scrape train timings from sbs and smrt websites
+    //scrapper.py
+
+
+}
+
+async function writeStations(req, res) {
+    //write stations.js
+    //stations.py
+
+}
+
+async function editEdges(req, res) {
+    //edit edges.csv file
+    //stations.py
+}
+
+async function writeEdges(req, res) {
+    //write edges.js
+    //stations.py
+
+}
+
+// router.get('/timings', scrapeTimings);
+// router.get('/stations', writeStations);
+// router.put('/edges', editEdges);
+// router.get('/edges', writeEdges);
+// router.get('/user', getUsers);
+// router.post('/user/login', getUser);
+// router.post('/user', createUser);
+
+[
+    {
+        "path": {
+            "codes": [
+                "SW7",
+                "SW8",
+                "STC_A",
+                "NE16",
+                "NE15",
+                "NE14",
+                "NE13",
+                "NE12",
+                "NE11",
+                "NE10",
+                "NE9",
+                "NE8",
+                "NE7",
+                "DT12",
+                "DT11",
+                "DT10",
+                "DT9",
+                "DT8",
+                "DT7",
+                "DT6",
+                "DT5",
+                "DT3",
+                "DT2",
+                "DT1",
+                "BP6_a",
+                "BP13"
+            ],
+            "names": [
+                "Tongkang",
+                "Renjong",
+                "Sengkang",
+                "Buangkok",
+                "Hougang",
+                "Kovan",
+                "Serangoon",
+                "Woodleigh",
+                "Potong Pasir",
+                "Boon Keng",
+                "Farrer Park",
+                "Little India",
+                "Newton",
+                "Stevens",
+                "Botanic Gardens",
+                "Tan Kah Kee",
+                "Sixth Avenue",
+                "King Albert Park",
+                "Beauty World",
+                "Hillview",
+                "Cashew",
+                "Bukit Panjang",
+                "Senja"
+            ],
+            "transfer": [
+                "Sengkang",
+                "Little India",
+                "Bukit Panjang"
+            ],
+            "time": 64
+        },
+        "timings": {
+            "firstTrain": {},
+            "lastTrain": {
+                "terminate": [
+                    "STC Sengkang",
+                    "NE1 HarbourFront",
+                    "DT1 Bukit Panjang",
+                    "BP6 Bukit Panjang"
+                ],
+                "entry": [
+                    "Last Trains",
+                    "Last Trains | Weekends/Public Holidays",
+                    "Last Trains",
+                    "Last Train | Saturday"
+                ],
+                "leaveTime": [
+                    "22:29",
+                    "22:40",
+                    "23:06",
+                    "23:37"
+                ],
+                "eta": [
+                    "22:33",
+                    "22:59",
+                    "23:31",
+                    "23:38"
+                ],
+                "finalLeaveTime": "22:29",
+                "finalETA": "23:33"
+            }
+        }
+    },
+    {
+        "path": {
+            "codes": [
+                "SW7",
+                "SW6",
+                "SW5",
+                "SW4",
+                "SW3",
+                "SW2",
+                "SW1",
+                "STC_B",
+                "NE16",
+                "NE15",
+                "NE14",
+                "NE13",
+                "NE12",
+                "NE11",
+                "NE10",
+                "NE9",
+                "NE8",
+                "NE7",
+                "DT12",
+                "DT11",
+                "DT10",
+                "DT9",
+                "DT8",
+                "DT7",
+                "DT6",
+                "DT5",
+                "DT3",
+                "DT2",
+                "DT1",
+                "BP6_a",
+                "BP13"
+            ],
+            "names": [
+                "Tongkang",
+                "Layar",
+                "Fernvale",
+                "Thanggam",
+                "Kupang",
+                "Farmway",
+                "Cheng Lim",
+                "Sengkang",
+                "Buangkok",
+                "Hougang",
+                "Kovan",
+                "Serangoon",
+                "Woodleigh",
+                "Potong Pasir",
+                "Boon Keng",
+                "Farrer Park",
+                "Little India",
+                "Newton",
+                "Stevens",
+                "Botanic Gardens",
+                "Tan Kah Kee",
+                "Sixth Avenue",
+                "King Albert Park",
+                "Beauty World",
+                "Hillview",
+                "Cashew",
+                "Bukit Panjang",
+                "Senja"
+            ],
+            "transfer": [
+                "Sengkang",
+                "Little India",
+                "Bukit Panjang"
+            ],
+            "time": 68
+        },
+        "timings": {
+            "firstTrain": {},
+            "lastTrain": {
+                "terminate": [
+                    "STC Sengkang",
+                    "NE1 HarbourFront",
+                    "DT1 Bukit Panjang",
+                    "BP6 Bukit Panjang"
+                ],
+                "entry": [
+                    "Last Trains",
+                    "Last Trains | Weekends/Public Holidays",
+                    "Last Trains",
+                    "Last Train | Saturday"
+                ],
+                "leaveTime": [
+                    "22:25",
+                    "22:40",
+                    "23:06",
+                    "23:37"
+                ],
+                "eta": [
+                    "22:33",
+                    "22:59",
+                    "23:31",
+                    "23:38"
+                ],
+                "finalLeaveTime": "22:25",
+                "finalETA": "23:33"
+            }
+        }
+    },
+    {
+        "path": {
+            "codes": [
+                "SW7",
+                "SW8",
+                "STC_A",
+                "NE16",
+                "NE15",
+                "NE14",
+                "NE13",
+                "NE12",
+                "NE11",
+                "NE10",
+                "NE9",
+                "NE8",
+                "NE7",
+                "DT12",
+                "DT11",
+                "DT10",
+                "DT9",
+                "DT8",
+                "DT7",
+                "DT6",
+                "DT5",
+                "DT3",
+                "DT2",
+                "DT1",
+                "BP6_b",
+                "BP7",
+                "BP8",
+                "BP9",
+                "BP10",
+                "BP11",
+                "BP12",
+                "BP13"
+            ],
+            "names": [
+                "Tongkang",
+                "Renjong",
+                "Sengkang",
+                "Buangkok",
+                "Hougang",
+                "Kovan",
+                "Serangoon",
+                "Woodleigh",
+                "Potong Pasir",
+                "Boon Keng",
+                "Farrer Park",
+                "Little India",
+                "Newton",
+                "Stevens",
+                "Botanic Gardens",
+                "Tan Kah Kee",
+                "Sixth Avenue",
+                "King Albert Park",
+                "Beauty World",
+                "Hillview",
+                "Cashew",
+                "Bukit Panjang",
+                "Petir",
+                "Pending",
+                "Bangkit",
+                "Fajar",
+                "Segar",
+                "Jelapang",
+                "Senja"
+            ],
+            "transfer": [
+                "Sengkang",
+                "Little India",
+                "Bukit Panjang"
+            ],
+            "time": 73
+        },
+        "timings": {
+            "firstTrain": {},
+            "lastTrain": {
+                "terminate": [
+                    "STC Sengkang",
+                    "NE1 HarbourFront",
+                    "DT1 Bukit Panjang",
+                    "BP6 Bukit Panjang"
+                ],
+                "entry": [
+                    "Last Trains",
+                    "Last Trains | Weekends/Public Holidays",
+                    "Last Trains",
+                    "Last Train | Saturday"
+                ],
+                "leaveTime": [
+                    "22:29",
+                    "22:40",
+                    "23:06",
+                    "23:37"
+                ],
+                "eta": [
+                    "22:33",
+                    "22:59",
+                    "23:31",
+                    "23:47"
+                ],
+                "finalLeaveTime": "22:29",
+                "finalETA": "23:42"
+            }
+        }
+    },
+    {
+        "path": {
+            "codes": [
+                "SW7",
+                "SW6",
+                "SW5",
+                "SW4",
+                "SW3",
+                "SW2",
+                "SW1",
+                "STC_B",
+                "NE16",
+                "NE15",
+                "NE14",
+                "NE13",
+                "NE12",
+                "NE11",
+                "NE10",
+                "NE9",
+                "NE8",
+                "NE7",
+                "DT12",
+                "DT11",
+                "DT10",
+                "DT9",
+                "DT8",
+                "DT7",
+                "DT6",
+                "DT5",
+                "DT3",
+                "DT2",
+                "DT1",
+                "BP6_b",
+                "BP7",
+                "BP8",
+                "BP9",
+                "BP10",
+                "BP11",
+                "BP12",
+                "BP13"
+            ],
+            "names": [
+                "Tongkang",
+                "Layar",
+                "Fernvale",
+                "Thanggam",
+                "Kupang",
+                "Farmway",
+                "Cheng Lim",
+                "Sengkang",
+                "Buangkok",
+                "Hougang",
+                "Kovan",
+                "Serangoon",
+                "Woodleigh",
+                "Potong Pasir",
+                "Boon Keng",
+                "Farrer Park",
+                "Little India",
+                "Newton",
+                "Stevens",
+                "Botanic Gardens",
+                "Tan Kah Kee",
+                "Sixth Avenue",
+                "King Albert Park",
+                "Beauty World",
+                "Hillview",
+                "Cashew",
+                "Bukit Panjang",
+                "Petir",
+                "Pending",
+                "Bangkit",
+                "Fajar",
+                "Segar",
+                "Jelapang",
+                "Senja"
+            ],
+            "transfer": [
+                "Sengkang",
+                "Little India",
+                "Bukit Panjang"
+            ],
+            "time": 77
+        },
+        "timings": {
+            "firstTrain": {},
+            "lastTrain": {
+                "terminate": [
+                    "STC Sengkang",
+                    "NE1 HarbourFront",
+                    "DT1 Bukit Panjang",
+                    "BP6 Bukit Panjang"
+                ],
+                "entry": [
+                    "Last Trains",
+                    "Last Trains | Weekends/Public Holidays",
+                    "Last Trains",
+                    "Last Train | Saturday"
+                ],
+                "leaveTime": [
+                    "22:25",
+                    "22:40",
+                    "23:06",
+                    "23:37"
+                ],
+                "eta": [
+                    "22:33",
+                    "22:59",
+                    "23:31",
+                    "23:47"
+                ],
+                "finalLeaveTime": "22:25",
+                "finalETA": "23:42"
+            }
+        }
+    }
+]
+*/
