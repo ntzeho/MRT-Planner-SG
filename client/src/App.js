@@ -110,10 +110,19 @@ function App() {
                     <div className="route-item">
                       <div className="path-info">
                         <h4>Route {index + 1}</h4>
-                        <p><strong>Path Codes:</strong> {result.path.codes.join(' -> ')}</p>
-                        <p><strong>Path Stations:</strong> {result.path.names.join(' -> ')}</p>
-                        <p><strong>Transfer Stations:</strong> {result.path.transfer.join(', ')}</p>
+                        {result.path.codes && (
+                          <p><strong>Path Codes:</strong> {result.path.codes.join(' -> ')}</p>
+                        )}
+                        {result.path.names && (
+                          <p><strong>Path Stations:</strong> {result.path.names.join(' -> ')}</p>
+                        )}
+                        {result.path.transfer && (
+                          <p><strong>Transfer Stations:</strong> {result.path.transfer.join(', ')}</p>
+                        )}
                         <p><strong>Total Time:</strong> {result.path.time} minutes</p>
+                        {result.path.walk && (
+                          <p><strong>Walking Path:</strong> {result.path.walk}</p>
+                        )}
                       </div>
                       <div className="timing-info">
                         {/* <h4>Timing Information</h4> */}
