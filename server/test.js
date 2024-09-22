@@ -46,20 +46,15 @@ const fs = require('fs')
 // const BP_STNS = ['Choa Chu Kang', 'South View', 'Keat Hong', 'Teck Whye', 'Phoenix', 'Bukit Panjang', 'Petir', 'Pending', 'Bangkit', 'Fajar', 'Segar', 'Jelapang', 'Senja']
 // let ALL = []
 
-// function sleep(ms) {
-//     return new Promise(resolve => setTimeout(resolve, ms));
-//   }
-// for (let i = 0; i < BP_STNS.length - 1; i++) {
-//     for (let j = i+1; j < BP_STNS.length; j++) {
-//         const paths = outputJourney(BP_STNS[i], BP_STNS[j])
-//         console.log(paths)
-//         sleep(2000)
-//     }
-// }
-// fs.writeFile('output.txt', ALL, (err) => {
-//     if (err) throw err;
-// })
-// process.exit()
+/* 
+1. install node (https://nodejs.org/en) and git
+2. clone the repo into ur desired folder using "git clone <link to repo, click on the green code button to see>"
+3. use "npm install" command in both server and client folder to get the dependencies
+4. use "git checkout -b <branchName>" to make new branch
+5. inside the server folder theres a file called config.env.sample, duplicate file, rename to config.env and replace <password> with cdchacx
+6. to start the server, use "node ./server.js"
+7. to start app, use "npm start"
+*/
 
 const paths = outputJourney('Senja', 'Kangkar')
 // const paths = outputJourney('Bedok', 'Kembangan')
