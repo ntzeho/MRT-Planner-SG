@@ -1,29 +1,44 @@
 const {outputJourney, getTimings} = require("./solver.js")
 const {stations_dict} = require("./constants/stations.js")
+const {arraysEqual} = require("./utils/utils.js")
 
 async function solve(req, res) {
     const {start, end} = req.body
     const paths = outputJourney(start, end)
 
-    //add code to remove paths that are identical for BP line cos of _a and _b
+    //remove duplicate journeys
+    let pathPairs = []
     for (const path of paths) {
-        let pathCode = path.codes
-        //add function in utils? to replace _a with _b & vice versa
-
-        for (const path_compare of paths) {
-            if (pathCode === path_compare.codes && path.time === path_compare.time) {
-                //remove path_compare from paths
+        let pathFinalCode = []
+        for (const code of path.codes) pathFinalCode.push(code)
+        if (path.codes) {
+            for (let i = 0; i < path.codes.length; i++) {
+                if (path.codes[i].includes('_')) pathFinalCode[i] = pathFinalCode[i].split('_')[0]
+                else if (path.codes[i] === 'CE') pathFinalCode[i] = 'CC4'
+                else if (path.codes[i] === 'CG') pathFinalCode[i] = 'EW4'
             }
+        }
+
+        toAddPath = true
+        if (pathPairs.length === 0) pathPairs.push([path, pathFinalCode])
+        else {
+            for (const [currentPath, currentPathFinalCode] of pathPairs) {
+                if (arraysEqual(currentPathFinalCode, pathFinalCode)) {
+                    toAddPath = false //final codes same means path is same
+                    break
+                }
+            }
+            if (toAddPath) pathPairs.push([path, pathFinalCode])
         }
     }
 
     let fullPathsWithTimings = []
-    for (const path of paths) {
-        const timings = getTimings(path)
+    for (const [pathOriginal, pathFinalCode] of pathPairs) {
+        const timings = getTimings(pathOriginal)
+        let path = pathOriginal
+        path.codes = pathFinalCode
         fullPathsWithTimings.push({path, timings})
     }
-
-    //add code to modify station codes back to original codes
 
     return res.status(200).json(fullPathsWithTimings)
 }
