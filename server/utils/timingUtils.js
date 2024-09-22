@@ -143,8 +143,8 @@ function directPathTimings(inputPath) {
         }
     }
 
-    const startCodeNo = parseInt(startCode.slice(2,))
-    const endCodeNo = parseInt(endCode.slice(2,))
+    const startCodeNo = startCode.length > 2 ? parseInt(startCode.slice(2,)) : 0
+    const endCodeNo = endCode.length > 2 ? parseInt(endCode.slice(2,)) : 0
     const ascending = startCodeNo < endCodeNo //check for direction of travel
 
     const relevantEntries = dayChecker(START_MRT_TYPE)
@@ -158,8 +158,8 @@ function directPathTimings(inputPath) {
 
     SMRT/SBS - split at ' | ' thing and get day/day range. If corroborate with current date get corresponding time. This time will be used
     */
-
-    if (!startCodeNo || arrayStringsInText(SENGKANG_PUNGGOL_LINES, startCode)) {
+    if (arrayStringsInText(SENGKANG_PUNGGOL_LINES, startCode)) {
+    // if (!startCodeNo || arrayStringsInText(SENGKANG_PUNGGOL_LINES, startCode)) {
         //Sengkang or Punggol LRT
         //special case, return stuff in here
 
@@ -330,6 +330,46 @@ function directPathTimings(inputPath) {
         console.log('Error start code not found')
     }
 
+    if (relevantTimings.length === 0) {
+        //start station is changi airport or expo on green line
+        /* 
+        'First/Last train service terminating at EW33 Tuas Link',
+        'First/Last train service terminating at EW4 Tanah Merah connect to EW1 Pasir Ris'
+        */
+        // console.log(startCode)
+        for (const key of startTimingKeys) {
+            if (!key.includes('CG2')) { //not key for terminating at changi airport
+                for (const entry of relevantEntries) {
+                    const time = startTimings[key][entry]
+                    if (time) {
+                        const time24HourFormat = convertTo24hTime(time)
+                        if (differenceTime(time24HourFormat, latestTime) > 0) {
+                            latestTime = time24HourFormat
+                            latestTimeObject = {
+                                key,
+                                entry,
+                                latestTime
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        const terminate = 'EW4 Tanah Merah'
+        const entry = latestTimeObject.entry
+        const leaveTime = convertTo24hTime(latestTimeObject.latestTime)
+        const eta = editTime(latestTimeObject.latestTime, path.time)
+        const lastTrainObject = {
+            terminate,
+            entry,
+            leaveTime,
+            eta
+        }
+
+        return lastTrainObject
+    }
+
     // const relevantEntries = dayChecker(START_MRT_TYPE)
     // let latestTime = '05:00'
     // let latestTimeObject = {}
@@ -421,6 +461,9 @@ function nonDirectPathTimings(path, pathWalkTime) { //no walking inside
         pathTimings.push(directPathTimings(subset))
     }
     // console.log(pathTimings)
+
+    //account for different train frequency from Changi Airport
+    const timeDiffSpecial = path.names[0] === 'Changi Airport' ? 7 : 0
     //start from second last entry, eta + TRANSFER_TIME <= leaveTime
     for (let i = pathTimings.length-2; i > -1; i--) {
         const etaToCompare = pathTimings[i].eta
@@ -429,7 +472,7 @@ function nonDirectPathTimings(path, pathWalkTime) { //no walking inside
         if (timeDiff < 0) {
             //time difference to be subtracted off eta to be in multiples of transferTime
             //better account for real-world scenario as trains are infrequent nearing closing hours
-            const timeToSubtract = -Math.ceil(-timeDiff / transferTime) * transferTime
+            const timeToSubtract = -Math.ceil(-timeDiff / (transferTime + timeDiffSpecial)) * (transferTime + timeDiffSpecial)
             pathTimings[i].eta = editTime(etaToCompare, timeToSubtract)
             pathTimings[i].leaveTime = editTime(pathTimings[i].leaveTime, timeToSubtract)
 
