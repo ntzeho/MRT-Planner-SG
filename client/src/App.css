@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +35,71 @@
   to {
     transform: rotate(360deg);
   }
+} */
+
+
+/* Basic styling for the App */
+.App {
+  text-align: center;
+  /* background-color: black;
+  color: white; */
+}
+
+/* Flexbox layout for top-row-content */
+.top-row-content, .second-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+/* Styling for the logo */
+.logo {
+  max-width: 150px;
+  height: auto;
+}
+
+/* Styling for the station-form */
+.station-form {
+  flex-grow: 1;
+  margin-left: 20px;
+}
+
+.station-form table {
+  width: 100%;
+}
+
+.station-form select,
+.station-form button {
+  margin: 5px;
+  padding: 5px;
+}
+
+/* Styling for the MRT map */
+.mrt-map {
+  max-width: 100%;
+  height: auto;
+}
+
+/* styling for paragraph beside MRT map*/
+.paragraph {
+  flex-grow: 1;
+  margin-left: 20px;
+}
+
+/* Results section */
+.third-row .results {
+  margin-top: 20px;
+}
+
+.results ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.results li {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-radius: 5px;
 }
