@@ -19,7 +19,7 @@ async function solve(req, res) {
             }
         }
 
-        toAddPath = true
+        let toAddPath = true
         if (pathPairs.length === 0) pathPairs.push([path, pathFinalCode])
         else {
             for (const [currentPath, currentPathFinalCode] of pathPairs) {
