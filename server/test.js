@@ -56,7 +56,7 @@ const fs = require('fs')
 7. to start app, use "npm start"
 */
 
-const paths = outputJourney('Changi Airport', 'Bayfront')
+const paths = outputJourney('Bras Basah', 'Bencoolen')
 // const paths = outputJourney('Bedok', 'Kembangan')
 for (const path of paths) {
     console.log(path)

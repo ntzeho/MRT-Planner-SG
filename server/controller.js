@@ -2,6 +2,37 @@ const {outputJourney, getTimings} = require("./solver.js")
 const {stations_dict} = require("./constants/stations.js")
 const {arraysEqual} = require("./utils/utils.js")
 
+function addSectionsToPath(path) {
+    const sections = [];
+    let currentSection = [];
+
+    let codeCount = 0
+    let stationCount = 0
+    while (codeCount < path.codes.length) {
+        if (path.codes && path.walk) { //both walking and taking train
+            
+        }
+        const stationCode = path.codes[codeCount]
+        const stationName = path.names[stationCount]
+
+        currentSection.push([stationCode, stationName])
+
+        if (path.transfer.includes(stationName) || codeCount === path.codes.length - 1) {
+            sections.push(currentSection);
+            //start a new section from the transfer station if not the last station
+            if (codeCount !== path.codes.length - 1) {
+                codeCount += 1
+                currentSection = [[path.codes[codeCount], stationName]];
+            }
+          }
+        codeCount += 1
+        stationCount += 1
+    }
+  
+    //add sections to the path object
+    path.sections = sections;
+  }
+
 async function solve(req, res) {
     const {start, end} = req.body
     const paths = outputJourney(start, end)
@@ -9,6 +40,11 @@ async function solve(req, res) {
     //remove duplicate journeys
     let pathPairs = []
     for (const path of paths) {
+        if (!path.codes) { //consider pure walking paths
+            pathPairs.push([path, []])
+            continue
+        }
+
         let pathFinalCode = []
         for (const code of path.codes) pathFinalCode.push(code)
         if (path.codes) {
@@ -36,7 +72,13 @@ async function solve(req, res) {
     for (const [pathOriginal, pathFinalCode] of pathPairs) {
         const timings = getTimings(pathOriginal)
         let path = pathOriginal
-        path.codes = pathFinalCode
+        if (pathOriginal.codes) path.codes = pathFinalCode
+
+        //add code to add a "sections" attribute for path so that path.sections = [[], [], []]
+        //each section is an array of code + station name e.g. "CG2 Changi Airport"
+        //if more than 1 section, start of 2nd and above section is the end station from previous section
+        if (path.codes) addSectionsToPath(path)
+
         fullPathsWithTimings.push({path, timings})
     }
 
