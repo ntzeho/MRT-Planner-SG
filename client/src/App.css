@@ -103,3 +103,26 @@
   background-color: #f1f1f1;
   border-radius: 5px;
 }
+
+/* Center the table on the page */
+.centered-table {
+  margin: auto; /* Centers the table horizontally */
+  width: 100%; /* Optional: Set a width to better control table size */
+  border-collapse: collapse; /* Remove gaps between cells */
+  border: none;
+}
+
+/* Center the table headers and data cells */
+.centered-table th,
+.centered-table td {
+  /* border: 1px solid #ddd; */
+  padding: 8px; /* Add some padding to the cells */
+  border: none; /* Remove cell borders */
+  text-align: left; /* Ensure the text within each element is left-aligned */ 
+}
+
+/* Ensure that the content inside the table cells is left-aligned */
+.centered-table p {
+  margin: 0;
+  text-align: left;
+}

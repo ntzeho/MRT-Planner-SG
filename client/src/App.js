@@ -3,6 +3,7 @@ import axios from 'axios';
 import logo from './images/MRT-Planner-SG-Logo.png';
 import mrtMap from './images/mrt-map.jpg';
 import './App.css';
+import { stationColours, outputPadding } from './constants';
 
 function App() {
   //use state for storing stations data, start station, end station and results
@@ -31,6 +32,12 @@ function App() {
         .catch(error => console.error('Error submitting request:', error));
     }
     
+  };
+
+  //get the color for a station code
+  const getStationColor = (code) => {
+    const line = code.slice(0, 2); // Get the first two characters (e.g., 'EW')
+    return stationColours[line] || 'black'; // Default to 'black' if no match
   };
 
   //handle reset
@@ -110,24 +117,65 @@ function App() {
                     <div className="route-item">
                       <div className="path-info">
                         <h4>Route {index + 1}</h4>
-                        {result.path.codes && (
+                        <p><strong>Total Time:</strong> {result.path.time} minutes</p>
+                        <p><strong>Latest Time to Leave:</strong> {result.timings.lastTrain.finalLeaveTime}</p>
+                        <p><strong>Estimated Time of Arrival:</strong> {result.timings.lastTrain.finalETA}</p>
+                        {result.path.transfer && (
+                          <p>
+                            <strong>Transfer Stations: </strong> 
+                            {result.path.transfer.length > 0 
+                              ? result.path.transfer.join(', ')
+                              : '-'}                             
+                          </p>
+                        )}
+                        {result.path.sections && (
+                          <div className="sections-table">
+                            <table className="centered-table">
+                              <tbody>
+                                {Array.from({ length: Math.max(...result.path.sections.map(s => s.length)) }).map((_, rowIndex) => (
+                                  <tr key={rowIndex}>
+                                    {result.path.sections.map((section, sectionIndex) => (
+                                      <td 
+                                        key={sectionIndex}
+                                        style={{ 
+                                          paddingLeft: outputPadding[result.path.sections.length] || '0px' // Dynamically set padding-left
+                                        }}
+                                      >
+                                        {section[rowIndex] ? (
+                                          <p>
+                                            <span 
+                                              style={{ 
+                                                backgroundColor: getStationColor(section[rowIndex][0]), // Background color for station code
+                                                color: 'white', // Text color to ensure it's readable on colored background
+                                                padding: '2px 5px', // Padding for visual clarity
+                                                borderRadius: '4px', // Optional: Add rounded corners for better appearance
+                                                display: 'inline-block' // Ensure the span behaves like a block with padding
+                                              }}>
+                                              {section[rowIndex][0]}
+                                            </span> 
+                                            {' ' + section[rowIndex][1]}
+                                          </p>
+                                        ) : (
+                                          <p></p>
+                                        )}
+                                      </td>
+                                    ))}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+
+                        {/* {result.path.codes && (
                           <p><strong>Path Codes:</strong> {result.path.codes.join(' -> ')}</p>
                         )}
                         {result.path.names && (
                           <p><strong>Path Stations:</strong> {result.path.names.join(' -> ')}</p>
-                        )}
-                        {result.path.transfer && (
-                          <p><strong>Transfer Stations:</strong> {result.path.transfer.join(', ')}</p>
-                        )}
-                        <p><strong>Total Time:</strong> {result.path.time} minutes</p>
+                        )} */}
                         {result.path.walk && (
                           <p><strong>Walking Path:</strong> {result.path.walk}</p>
                         )}
-                      </div>
-                      <div className="timing-info">
-                        {/* <h4>Timing Information</h4> */}
-                        <p><strong>Latest Time to Leave:</strong> {result.timings.lastTrain.finalLeaveTime}</p>
-                        <p><strong>Estimated Time of Arrival:</strong> {result.timings.lastTrain.finalETA}</p>
                         {/* <p><strong>Leave Times:</strong> {result.timings.lastTrain.leaveTime.join(', ')}</p> */}
                         {/* <p><strong>Train Termination:</strong> {result.timings.lastTrain.terminate.join(' -> ')}</p> */}
                       </div>
