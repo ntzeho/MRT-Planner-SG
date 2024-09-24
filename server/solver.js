@@ -274,8 +274,8 @@ function getTimings(path) {
             entry: [],
             leaveTime: [],
             eta: [],
-            finalLeaveTime: '',
-            finalETA: ''
+            finalLeaveTime: '-',
+            finalETA: '-'
         }
     }
 
