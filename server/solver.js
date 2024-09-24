@@ -116,7 +116,7 @@ function outputJourney(start, end) {
         const pathObject = {
             'names': [start, end],
             'time': walkingTime[walkKey][1],
-            'walk': walkingTime[walkKey][0]
+            'walk': [walkingTime[walkKey][0]]
         }
         toKeep.push(pathObject)
         toKeep.sort((a, b) => a.time - b.time) //immediately return output
@@ -162,7 +162,7 @@ function outputJourney(start, end) {
                         'names': path.names,
                         'transfer': path.transfer,
                         'time': totalTime,
-                        'walk': walkingTime[pair][0]
+                        'walk': [walkingTime[pair][0]]
                     }
                     toKeep.push(pathObject)
                 }
@@ -185,7 +185,7 @@ function outputJourney(start, end) {
             for (const code_end of stations_dict[newEnd]) {
                 let path = new astar(code_start, code_end)
                 path.time += walkingTime[walkTimeKeys[startWalkCheck[1]]][1] + walkingTime[walkTimeKeys[endWalkCheck[1]]][1]
-                path.walk = walkingTime[walkTimeKeys[startWalkCheck[1]]][0] + ' /// ' + walkingTime[walkTimeKeys[endWalkCheck[1]]][0]
+                path.walk = [walkingTime[walkTimeKeys[startWalkCheck[1]]][0], walkingTime[walkTimeKeys[endWalkCheck[1]]][0]]
                 if (path.time != 0 && path.time <= toKeep[0].time && !objectInArray(path, toKeep)) {
                     toKeep.push(path)
                 }

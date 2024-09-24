@@ -173,9 +173,29 @@ function App() {
                         {result.path.names && (
                           <p><strong>Path Stations:</strong> {result.path.names.join(' -> ')}</p>
                         )} */}
+                        {/* {result.path.walk && (
+                          <div>
+                            <strong>Walking Path:</strong>
+                            <ul>
+                              {result.path.walk.map((step, index) => (
+                                <li key={index}>{step}</li> // Each step in the walking path is rendered in a new list item
+                              ))}
+                            </ul>
+                          </div>
+                        )} */}
+
                         {result.path.walk && (
-                          <p><strong>Walking Path:</strong> {result.path.walk}</p>
+                          <div>
+                            {/* <strong>Walking Path:</strong> */}
+                            {result.path.walk.map((step, index) => (
+                              <p key={index}>{step}</p> // Each step in the walking path is rendered in a new paragraph
+                            ))}
+                          </div>
                         )}
+
+                        {/* {result.path.walk && (
+                          <p><strong>Walking Path:</strong> {result.path.walk}</p>
+                        )} */}
                         {/* <p><strong>Leave Times:</strong> {result.timings.lastTrain.leaveTime.join(', ')}</p> */}
                         {/* <p><strong>Train Termination:</strong> {result.timings.lastTrain.terminate.join(' -> ')}</p> */}
                       </div>

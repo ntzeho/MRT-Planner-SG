@@ -56,12 +56,22 @@ const fs = require('fs')
 7. to start app, use "npm start"
 */
 
-const paths = outputJourney('Bras Basah', 'Bencoolen')
+function walkingStatusInPath(path) {
+    if (!path.walk) return 0
+    if (path.walk.length === 2) return 2
+    if (path.walk[0].includes(path.names[0])) return 'start'
+    return 'end'
+}
+
+const paths = outputJourney('Bencoolen', 'Bras Basah')
 // const paths = outputJourney('Bedok', 'Kembangan')
 for (const path of paths) {
     console.log(path)
     console.log(' ')
+    console.log(walkingStatusInPath(path))
+    console.log(' ')
     console.log(getTimings(path))
+    break
 }
 // console.log('-----------------')
 // paths = outputJourney('Bedok Reservoir', 'Bras Basah')
