@@ -117,7 +117,7 @@ function App() {
                     <div className="route-item">
                       <div className="path-info">
                         <h4>Route {index + 1}</h4>
-                        <p><strong>Total Time:</strong> {result.path.time} minutes</p>
+                        <p><strong>Total Travelling Time:</strong> {result.path.time} minutes</p>
                         <p><strong>Latest Time to Leave:</strong> {result.timings.lastTrain.finalLeaveTime}</p>
                         <p><strong>Estimated Time of Arrival:</strong> {result.timings.lastTrain.finalETA}</p>
                         {result.path.transfer && (
