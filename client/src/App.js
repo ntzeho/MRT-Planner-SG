@@ -36,8 +36,8 @@ function App() {
 
   //get the color for a station code
   const getStationColor = (code) => {
-    const line = code.slice(0, 2); // Get the first two characters (e.g., 'EW')
-    return stationColours[line] || 'black'; // Default to 'black' if no match
+    const line = code.slice(0, 2);
+    return stationColours[line] || 'black'; //default to 'black' if no match
   };
 
   //handle reset
@@ -47,7 +47,7 @@ function App() {
 
   return (
     <div className="App">
-      {/* Top row with logo and table */}
+      {/* top row with logo and table containing dropboxes */}
       <div className="top-row">
         <div className="top-row-content">
           <img src={logo} alt="MRT Planner SG Logo" className="logo" />
@@ -93,7 +93,7 @@ function App() {
         </div>
       </div>
 
-      {/* Second row with MRT map */}
+      {/* second row with MRT map and project description */}
       <div className="second-row">
         <img src={mrtMap} alt="MRT Map" className="mrt-map" width = "750" height = "750"/>
         <div className="paragraph">
@@ -101,7 +101,7 @@ function App() {
         </div>
       </div>
 
-      {/* Third row with dynamic results */}
+      {/* third row with dynamic results */}
       <div className="third-row">
         {results ? (
           results.error ? (
@@ -145,11 +145,11 @@ function App() {
                                           <p>
                                             <span 
                                               style={{ 
-                                                backgroundColor: getStationColor(section[rowIndex][0]), // Background color for station code
-                                                color: 'white', // Text color to ensure it's readable on colored background
-                                                padding: '2px 5px', // Padding for visual clarity
-                                                borderRadius: '4px', // Optional: Add rounded corners for better appearance
-                                                display: 'inline-block' // Ensure the span behaves like a block with padding
+                                                backgroundColor: getStationColor(section[rowIndex][0]), //background color for stn code
+                                                color: 'white', //text color to ensure readability on colored background
+                                                padding: '2px 5px', // visual clarity
+                                                borderRadius: '4px', //rounded corners for better appearance
+                                                display: 'inline-block' //ensure the span behaves like a block with padding
                                               }}>
                                               {section[rowIndex][0]}
                                             </span> 

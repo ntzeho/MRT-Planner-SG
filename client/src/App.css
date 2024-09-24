@@ -38,14 +38,14 @@
 } */
 
 
-/* Basic styling for the App */
+/* basic styling for app */
 .App {
   text-align: center;
   /* background-color: black;
   color: white; */
 }
 
-/* Flexbox layout for top-row-content */
+/* flexbox layout for top-row-content */
 .top-row-content, .second-row{
   display: flex;
   align-items: center;
@@ -53,13 +53,13 @@
   padding: 20px;
 }
 
-/* Styling for the logo */
+/* styling for logo */
 .logo {
   max-width: 150px;
   height: auto;
 }
 
-/* Styling for the station-form */
+/* styling for station-form */
 .station-form {
   flex-grow: 1;
   margin-left: 20px;
@@ -75,19 +75,19 @@
   padding: 5px;
 }
 
-/* Styling for the MRT map */
+/* styling for MRT map */
 .mrt-map {
   max-width: 100%;
   height: auto;
 }
 
-/* styling for paragraph beside MRT map*/
+/* styling for paragraph beside MRT map */
 .paragraph {
   flex-grow: 1;
   margin-left: 20px;
 }
 
-/* Results section */
+/* results section */
 .third-row .results {
   margin-top: 20px;
 }
@@ -104,24 +104,24 @@
   border-radius: 5px;
 }
 
-/* Center the table on the page */
+/* center the table on the page */
 .centered-table {
-  margin: auto; /* Centers the table horizontally */
-  width: 100%; /* Optional: Set a width to better control table size */
-  border-collapse: collapse; /* Remove gaps between cells */
+  margin: auto; /* centers table horizontally */
+  width: 100%; /* can be optional; set width to better control table size */
+  border-collapse: collapse; /* remove gaps between cells */
   border: none;
 }
 
-/* Center the table headers and data cells */
+/* center table headers and data cells */
 .centered-table th,
 .centered-table td {
   /* border: 1px solid #ddd; */
-  padding: 8px; /* Add some padding to the cells */
-  border: none; /* Remove cell borders */
-  text-align: left; /* Ensure the text within each element is left-aligned */ 
+  padding: 8px;
+  border: none;
+  text-align: left;
 }
 
-/* Ensure that the content inside the table cells is left-aligned */
+/* ensure that content inside table cells is left-aligned */
 .centered-table p {
   margin: 0;
   text-align: left;
