@@ -365,7 +365,10 @@ function App() {
 
       {/* third row with MRT map */}
       <div className="map-row">
-        <img src={mrtMap} alt="MRT Map" className="mrt-map" width="750" height="750" />
+        {/* image wrapped in an anchor tag that opens in a new tab */}
+        <a href={mrtMap} target="_blank" rel="noopener noreferrer">
+          <img src={mrtMap} alt="MRT Map" className="mrt-map" width="750" height="750" />
+        </a>
         <div className="project-description-box">
           <h2 className="project-heading">Overview</h2>
           <div className="paragraph">
