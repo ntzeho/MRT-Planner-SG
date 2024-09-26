@@ -9,10 +9,11 @@ import './App.css';
 import { stationColours } from './constants';
 
 function App() {
-  //use states for stations, start & end station, results, expanded description state
+  //use states
   const [stations, setStations] = useState([]);
   const [startStation, setStartStation] = useState('');
   const [endStation, setEndStation] = useState('');
+
   const [results, setResults] = useState(null);
   const [expandedSections, setExpandedSections] = useState([]);
   const [expandedRoutes, setExpandedRoutes] = useState({});
@@ -65,10 +66,10 @@ function App() {
   const toggleRoute = (routeIndex) => {
     setExpandedRoutes((prev) => ({
       ...prev,
-      [routeIndex]: !prev[routeIndex], // Toggle the current route's state
+      [routeIndex]: !prev[routeIndex], //toggle the current route's state
     }));
   };
-  
+
 
   return (
     <div className="App">
@@ -138,7 +139,7 @@ function App() {
                         <p><strong>Latest Time to Leave:</strong> {result.timings.lastTrain.finalLeaveTime}</p>
                         <p><strong>Estimated Latest Time of Arrival:</strong> {result.timings.lastTrain.finalETA}</p>
 
-                        {/* Route summary graphic as a toggle button */}
+                        {/* route summary graphic as a toggle button */}
                         <button 
                         onClick={() => toggleRoute(index)} 
                         style={{ 
@@ -160,10 +161,10 @@ function App() {
                                     <span
                                     style={{
                                         backgroundColor: getStationColor(section[2][0]), // Station code color
-                                        color: 'white', // Text color
+                                        color: 'white', //text color
                                         padding: '2px 5px',
                                         borderRadius: '4px',
-                                        marginLeft: '5px', // Small space before the station code
+                                        marginLeft: '5px', //small space before the station code
                                         display: 'inline-block',
                                     }}
                                     >
@@ -174,7 +175,7 @@ function App() {
                                 </>
                                 ) : null}
 
-                                {/* Add '>' for transitions between sections */}
+                                {/* add '>' for transitions between sections */}
                                 {sectionIndex < result.path.sections.length - 1 && result.path.sections[sectionIndex + 1][0] !== 'Transfer' && (
                                 <span className="transition-arrow"> {'>'} </span>
                                 )}
@@ -183,7 +184,7 @@ function App() {
                         </div>
                         </button>
 
-                        {/* Route summary graphic */}
+                        {/* route summary graphic */}
                         {/* <div className="route-summary">
                             {result.path.sections.map((section, sectionIndex) => (
                             <React.Fragment key={sectionIndex}>
@@ -365,11 +366,16 @@ function App() {
       {/* third row with MRT map */}
       <div className="map-row">
         <img src={mrtMap} alt="MRT Map" className="mrt-map" width="750" height="750" />
-        <div className="paragraph">
-          <p>As its name suggests, MRT Planner SG plans your MRT/LRT routes for you by simply entering your boarding and alighting stations. All feasible routes will be shown, including estimated travelling times and the latest times you should be boarding your train at the boarding station. As there are no public real-time data on train arrival times, knowing the latest possible time you should board your train to reach your destination will be useful in planning a late night out with friends/family!</p>
-          <p>- Transfer times at interchanges are always assumed to be 5 minutes.</p>
-          <p>- Last train timings are scrapped from the SBS and SMRT websites, so they are only as accurate as the websites are. Do reach at least 10mins earlier than the stated time to avoid potentially missing your train.</p>
-          <p>- Last train timings do not account for adjustments in train service hours and are based on the scheduled train departure times. They do, however, account for different timings on weekdays and weekends and public holidays.</p>
+        <div className="project-description-box">
+          <h2 className="project-heading">Overview</h2>
+          <div className="paragraph">
+            <p>
+              As its name suggests, MRT Planner SG plans your MRT/LRT journeys for you! Simply enter your boarding and alighting stations, and click the submit button. All feasible routes, including estimated travelling times and the latest times you should be boarding your train at the boarding station, will be displayed. As there are no public real-time data on train arrival times, knowing the latest possible time you should board your train to reach your destination will be useful in planning a late night out with friends/family!
+            </p>
+            <p className="highlight">- Transfer times at interchanges are always assumed to be 5 minutes.</p>
+            <p className="highlight">- Last train timings are scrapped from the SBS and SMRT websites, so they are only as accurate as the websites are. Do reach at least 10 minutes earlier than the stated time to avoid potentially missing your train.</p>
+            <p className="highlight">- Last train timings do not account for adjustments in train service hours and are based on the scheduled train departure times. They do, however, account for different timings on weekdays, weekends, and public holidays.</p>
+          </div>
         </div>
       </div>
     </div>
