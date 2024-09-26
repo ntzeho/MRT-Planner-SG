@@ -63,6 +63,10 @@ function walkingStatusInPath(path) {
     return 'end'
 }
 
+let testlst = []
+testlst.push(1,2,3,4,5)
+console.log(testlst)
+
 const paths = outputJourney('Bencoolen', 'Bras Basah')
 // const paths = outputJourney('Bedok', 'Kembangan')
 for (const path of paths) {

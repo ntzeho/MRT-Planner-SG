@@ -39,10 +39,9 @@ async function solve(req, res) {
     }
 
     let fullPathsWithTimings = []
-    for (const [pathOriginal, pathFinalCode] of pathPairs) {
-        const timings = getTimings(pathOriginal)
-        let path = pathOriginal
-        if (pathOriginal.codes) path.codes = pathFinalCode
+    for (const [path, pathFinalCode] of pathPairs) {
+        const timings = getTimings(path)
+        // if (pathOriginal.codes) path.codes = pathFinalCode
 
         //path.sections = [[], [], []]
         //each section is an array of code + station name e.g. "CG2 Changi Airport"

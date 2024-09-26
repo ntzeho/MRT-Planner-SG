@@ -46,7 +46,7 @@
 }
 
 /* flexbox layout for top-row-content */
-.top-row-content, .second-row{
+.top-row-content, .map-row{
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -88,7 +88,7 @@
 }
 
 /* results section */
-.third-row .results {
+.result-row .results {
   margin-top: 20px;
 }
 
@@ -119,10 +119,60 @@
   padding: 8px;
   border: none;
   text-align: left;
+  vertical-align: top;
 }
 
 /* ensure that content inside table cells is left-aligned */
 .centered-table p {
   margin: 0;
-  text-align: left;
+  text-align: center;
+}
+
+.station-list {
+  padding-left: 0;
+  margin-top: 1px;
+}
+
+.station-item {
+  margin: 2px 0;
+  line-height: 1.2;
+  list-style-type: none;
+}
+
+/* Style for the icons in the route summary */
+.icon {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle; /* Aligns icon with text */
+  margin-right: 5px;
+}
+
+/* Style for the transition arrow in the route summary */
+.transition-arrow {
+  margin: 0 10px;
+  font-size: 18px;
+}
+
+/* Style for the description list to reduce spacing */
+.description-list {
+  padding-left: 0;
+  margin: 5px 0;
+}
+
+.description-list li {
+  margin: 2px 0;
+  line-height: 1.2;
+  list-style-type: none;
+}
+
+.transfer-icons {
+  display: inline-flex;
+  align-items: center; /* Vertically align the icons and arrow */
+}
+
+.transfer-arrow {
+  margin: 0 0px; /* Space around the arrow */
+  margin-right: 5px;
+  font-weight: bold;
+  font-size: 18px;
 }

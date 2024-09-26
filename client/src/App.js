@@ -2,17 +2,23 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import logo from './images/MRT-Planner-SG-Logo.png';
 import mrtMap from './images/mrt-map.jpg';
+import walkPic from './images/walk.svg'
+import railPic from './images/rail2.svg'
+
 import './App.css';
-import { stationColours, outputPadding } from './constants';
+import { stationColours } from './constants';
 
 function App() {
-  //use state for storing stations data, start station, end station and results
+  //use states for stations, start & end station, results, expanded description state
   const [stations, setStations] = useState([]);
   const [startStation, setStartStation] = useState('');
   const [endStation, setEndStation] = useState('');
   const [results, setResults] = useState(null);
+  const [expandedSections, setExpandedSections] = useState([]);
+  const [expandedRoutes, setExpandedRoutes] = useState({});
 
-  //fetch stations data when component mounts
+
+  //fetch stations data on component mount
   useEffect(() => {
     axios.get('http://localhost:5000/api/stations')
       .then(response => setStations(response.data))
@@ -21,33 +27,52 @@ function App() {
 
   //handle form submission to obtain routes
   const handleSubmit = () => {
-    if (startStation === endStation) { //cannot have same start and end stations
+    if (startStation === endStation) {
       setResults({ error: "Boarding and alighting stations must be different!" });
     } else {
-      //remove station codes from name
-      const start = startStation.slice(0, startStation.indexOf('[')-1)
-      const end = endStation.slice(0, endStation.indexOf('[')-1)
+      const start = startStation.slice(0, startStation.indexOf('[') - 1);
+      const end = endStation.slice(0, endStation.indexOf('[') - 1);
       axios.post('http://localhost:5000/api/solve', { start, end })
-        .then(response => setResults(response.data))
+        .then(response => {
+          setResults(response.data);
+          setExpandedSections(response.data.map(() => false)); //initialize all sections as minimized
+        })
         .catch(error => console.error('Error submitting request:', error));
     }
-    
   };
 
-  //get the color for a station code
+  //reset inputs by refreshing page
+  const handleReset = () => {
+    window.location.reload();
+  };
+
+  //get station color based on stn code
   const getStationColor = (code) => {
     const line = code.slice(0, 2);
-    return stationColours[line] || 'black'; //default to 'black' if no match
+    return stationColours[line] || '#f1f1f1'; //default to same background color if no match
   };
 
-  //handle reset
-  const handleReset = () => {
-    window.location.reload(); //refresh page
+  //toggle description expansion
+  const toggleSection = (index) => {
+    setExpandedSections(prevState => {
+      const newState = [...prevState];
+      newState[index] = !newState[index]; //toggle the specific section
+      return newState;
+    });
   };
+
+  //toggle route
+  const toggleRoute = (routeIndex) => {
+    setExpandedRoutes((prev) => ({
+      ...prev,
+      [routeIndex]: !prev[routeIndex], // Toggle the current route's state
+    }));
+  };
+  
 
   return (
     <div className="App">
-      {/* top row with logo and table containing dropboxes */}
+      {/* top row with logo and station form */}
       <div className="top-row">
         <div className="top-row-content">
           <img src={logo} alt="MRT Planner SG Logo" className="logo" />
@@ -93,121 +118,259 @@ function App() {
         </div>
       </div>
 
-      {/* second row with MRT map and project description */}
-      <div className="second-row">
-        <img src={mrtMap} alt="MRT Map" className="mrt-map" width = "750" height = "750"/>
-        <div className="paragraph">
-          <p>This is a personal project.</p>
-        </div>
-      </div>
-
-      {/* third row with dynamic results */}
-      <div className="third-row">
+        {/* second row with dynamic results */}
+        <div className="result-row">
         {results ? (
-          results.error ? (
+            results.error ? (
             <div className="error-message">
-              <p>{results.error}</p>
+                <p>{results.error}</p>
             </div>
-          ) : (
+            ) : (
             <div className="results">
-              <h3>Possible Routes</h3>
-              <ul>
+                <h3>Possible Routes</h3>
+                <ul>
                 {results.map((result, index) => (
-                  <li key={index}>
+                    <li key={index}>
                     <div className="route-item">
-                      <div className="path-info">
+                        <div className="path-info">
                         <h4>Route {index + 1}</h4>
                         <p><strong>Total Travelling Time:</strong> {result.path.time} minutes</p>
                         <p><strong>Latest Time to Leave:</strong> {result.timings.lastTrain.finalLeaveTime}</p>
-                        <p><strong>Estimated Time of Arrival:</strong> {result.timings.lastTrain.finalETA}</p>
-                        {result.path.transfer && (
-                          <p>
-                            <strong>Transfer Stations: </strong> 
-                            {result.path.transfer.length > 0 
-                              ? result.path.transfer.join(', ')
-                              : '-'}                             
-                          </p>
-                        )}
-                        {result.path.sections && (
-                          <div className="sections-table">
-                            <table className="centered-table">
-                              <tbody>
-                                {Array.from({ length: Math.max(...result.path.sections.map(s => s.length)) }).map((_, rowIndex) => (
-                                  <tr key={rowIndex}>
-                                    {result.path.sections.map((section, sectionIndex) => (
-                                      <td 
-                                        key={sectionIndex}
-                                        style={{ 
-                                          paddingLeft: outputPadding[result.path.sections.length] || '0px' // Dynamically set padding-left
-                                        }}
-                                      >
-                                        {section[rowIndex] ? (
-                                          <p>
-                                            <span 
-                                              style={{ 
-                                                backgroundColor: getStationColor(section[rowIndex][0]), //background color for stn code
-                                                color: 'white', //text color to ensure readability on colored background
-                                                padding: '2px 5px', // visual clarity
-                                                borderRadius: '4px', //rounded corners for better appearance
-                                                display: 'inline-block' //ensure the span behaves like a block with padding
-                                              }}>
-                                              {section[rowIndex][0]}
-                                            </span> 
-                                            {' ' + section[rowIndex][1]}
-                                          </p>
-                                        ) : (
-                                          <p></p>
-                                        )}
-                                      </td>
-                                    ))}
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        )}
+                        <p><strong>Estimated Latest Time of Arrival:</strong> {result.timings.lastTrain.finalETA}</p>
 
-                        {/* {result.path.codes && (
-                          <p><strong>Path Codes:</strong> {result.path.codes.join(' -> ')}</p>
-                        )}
-                        {result.path.names && (
-                          <p><strong>Path Stations:</strong> {result.path.names.join(' -> ')}</p>
-                        )} */}
-                        {/* {result.path.walk && (
-                          <div>
-                            <strong>Walking Path:</strong>
-                            <ul>
-                              {result.path.walk.map((step, index) => (
-                                <li key={index}>{step}</li> // Each step in the walking path is rendered in a new list item
-                              ))}
-                            </ul>
-                          </div>
-                        )} */}
+                        {/* Route summary graphic as a toggle button */}
+                        <button 
+                        onClick={() => toggleRoute(index)} 
+                        style={{ 
+                            border: 'none', 
+                            background: 'none', 
+                            padding: 0, 
+                            cursor: 'pointer', 
+                            display: 'inline-block'
+                        }}
+                        >
+                        <div className="route-summary">
+                            {result.path.sections.map((section, sectionIndex) => (
+                            <React.Fragment key={sectionIndex}>
+                                {section[0] === 'Walk' ? (
+                                <img src={walkPic} alt="Walk" className="icon" />
+                                ) : section[0] === 'Train' ? (
+                                <>
+                                    <img src={railPic} alt="Train" className="icon" />
+                                    <span
+                                    style={{
+                                        backgroundColor: getStationColor(section[2][0]), // Station code color
+                                        color: 'white', // Text color
+                                        padding: '2px 5px',
+                                        borderRadius: '4px',
+                                        marginLeft: '5px', // Small space before the station code
+                                        display: 'inline-block',
+                                    }}
+                                    >
+                                    {section[2][0].slice(0, 2) !==  section[3][0].slice(0, 2)
+                                        ? section[3][0].slice(0, 2) //display end station code if condition is met otherwise display start station code
+                                        : section[2][0].slice(0, 2)}
+                                    </span>
+                                </>
+                                ) : null}
 
-                        {result.path.walk && (
-                          <div>
-                            {/* <strong>Walking Path:</strong> */}
-                            {result.path.walk.map((step, index) => (
-                              <p key={index}>{step}</p> // Each step in the walking path is rendered in a new paragraph
+                                {/* Add '>' for transitions between sections */}
+                                {sectionIndex < result.path.sections.length - 1 && result.path.sections[sectionIndex + 1][0] !== 'Transfer' && (
+                                <span className="transition-arrow"> {'>'} </span>
+                                )}
+                            </React.Fragment>
                             ))}
-                          </div>
-                        )}
+                        </div>
+                        </button>
 
-                        {/* {result.path.walk && (
-                          <p><strong>Walking Path:</strong> {result.path.walk}</p>
-                        )} */}
-                        {/* <p><strong>Leave Times:</strong> {result.timings.lastTrain.leaveTime.join(', ')}</p> */}
-                        {/* <p><strong>Train Termination:</strong> {result.timings.lastTrain.terminate.join(' -> ')}</p> */}
-                      </div>
+                        {/* Route summary graphic */}
+                        {/* <div className="route-summary">
+                            {result.path.sections.map((section, sectionIndex) => (
+                            <React.Fragment key={sectionIndex}>
+                                {section[0] === 'Walk' ? (
+                                <img src={walkPic} alt="Walk" className="icon" />
+                                ) : section[0] === 'Train' ? (
+                                <>
+                                    <img src={railPic} alt="Train" className="icon" />
+                                    <span
+                                    style={{
+                                        backgroundColor: getStationColor(section[2][0]), // Station code color
+                                        color: 'white', // Text color
+                                        padding: '2px 5px',
+                                        borderRadius: '4px',
+                                        marginLeft: '5px', // Small space before the station code
+                                        display: 'inline-block',
+                                    }}
+                                    >
+                                    {['ST', 'PT'].includes(section[2][0].slice(0, 2)) 
+                                        ? section[3][0].slice(0, 2) // Display end station code if condition is met otherwise display start station code
+                                        : section[2][0].slice(0, 2)} 
+                                    </span>
+                                </>
+                                ) : null} */}
+
+                                {/* Add '>' for transitions between sections */}
+                                {/* {sectionIndex < result.path.sections.length - 1 && result.path.sections[sectionIndex + 1][0] !== 'Transfer' && (
+                                <span className="transition-arrow"> {'>'} </span>
+                                )}
+                            </React.Fragment>
+                            ))}
+                        </div> */}
+
+                        {/* toggle button for the entire route table */}
+                        {/* <button onClick={() => toggleRoute(index)}>
+                            {expandedRoutes[index] ? 'Minimize Details' : 'Expand Details'}
+                        </button> */}
+
+                        {/* conditionally render the table based on expandedRoutes state */}
+                        {expandedRoutes[index] && (
+                            <div className="sections-table">
+                            <table className="centered-table">
+                                <tbody>
+                                {result.path.sections.map((section, sectionIndex) => (
+                                    <tr key={sectionIndex}>
+                                    {/* Start Station (boarding) */}
+                                    <td>
+                                        <span
+                                        style={{
+                                            backgroundColor: getStationColor(section[2][0]), // Boarding station code color
+                                            color: 'white',
+                                            padding: '2px 5px',
+                                            borderRadius: '4px',
+                                            display: 'inline-block',
+                                        }}
+                                        >
+                                        {section[2][0]}
+                                        </span>
+                                        {' ' + section[2][1]} {/* boarding station name */}
+                                    </td>
+
+                                    {/* Mode (icon) */}
+                                    <td>
+                                        {section[0] === 'Walk' ? (
+                                        <img src={walkPic} alt="Walk" className="icon" />
+                                        ) : section[0] === 'Train' ? (
+                                        <img src={railPic} alt="Train" className="icon" />
+                                        ) : section[0] === 'Transfer' ? (
+                                        // <img src={transferPic} alt="Transfer" className="icon" />
+                                        <div className="transfer-icons">
+                                            <img src={railPic} alt="Train" className="icon" />
+                                            <span className="transfer-arrow"> → </span>
+                                            <img src={railPic} alt="Train" className="icon" />
+                                        </div>
+                                        ) : null}
+                                    </td>
+
+                                    {/* Travel Time */}
+                                    <td>{section[1]} minutes</td>
+
+                                    {/* End Station (alighting) */}
+                                    <td>
+                                        <span
+                                        style={{
+                                            backgroundColor: getStationColor(section[3][0]), // Alighting station code color
+                                            color: 'white',
+                                            padding: '2px 5px',
+                                            borderRadius: '4px',
+                                            display: 'inline-block',
+                                        }}
+                                        >
+                                        {section[3][0]}
+                                        </span>
+                                        {' ' + section[3][1]} {/* alighting station name */}
+                                    </td>
+
+                                    {/* Description */}
+                                    <td>
+                                        {section[0] === 'Walk' ? (
+                                        section[4]
+                                        ) : section[0] === 'Transfer' ? (
+                                        section[4]
+                                        ) : (
+                                        <>
+                                            {/* toggle button for individual section description */}
+                                            <button onClick={() => toggleSection(sectionIndex)}>
+                                            {expandedSections[sectionIndex] ? 'Minimize view' : 'View detailed route'}
+                                            </button>
+
+                                            {/* conditionally render description */}
+                                            {expandedSections[sectionIndex] && (
+                                            <ul className="description-list">
+                                                {section[4].map((station, stationIndex) => (
+                                                <li key={stationIndex}>
+                                                    <span
+                                                    style={{
+                                                        backgroundColor: getStationColor(station[0]),
+                                                        color: 'white',
+                                                        padding: '2px 5px',
+                                                        borderRadius: '4px',
+                                                        display: 'inline-block',
+                                                    }}
+                                                    >
+                                                    {station[0]}
+                                                    </span>
+                                                    {' ' + station[1]}
+                                                </li>
+                                                ))}
+                                            </ul>
+                                            )}
+
+                                            {/* {expandedSections[sectionIndex] && (
+                                            <div className="description-inline">
+                                                {section[4]
+                                                .map(
+                                                    (station) => (
+                                                    <>
+                                                        <span
+                                                        style={{
+                                                            backgroundColor: getStationColor(station[0]), // Station code background color
+                                                            color: 'white',
+                                                            padding: '2px 5px',
+                                                            borderRadius: '4px',
+                                                            display: 'inline-block',
+                                                            marginRight: '5px', // Add space between stations
+                                                        }}
+                                                        >
+                                                        {station[0]}
+                                                        </span>
+                                                        {' ' + station[1]}
+                                                    </>
+                                                    )
+                                                )
+                                                .reduce((prev, curr) => [prev, ' > ', curr])}
+                                            </div>
+                                            )} */}
+                                        </>
+                                        )}
+                                    </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                            </div>
+                          )}
+                        </div>
                     </div>
-                  </li>
+                    </li>
                 ))}
-              </ul>
+                </ul>
             </div>
-          )
+            )
         ) : (
-          <p>Please submit your stations to see possible routes.</p>
+            <p>Please submit your stations to see possible routes.</p>
         )}
+        </div>
+
+
+      {/* third row with MRT map */}
+      <div className="map-row">
+        <img src={mrtMap} alt="MRT Map" className="mrt-map" width="750" height="750" />
+        <div className="paragraph">
+          <p>As its name suggests, MRT Planner SG plans your MRT/LRT routes for you by simply entering your boarding and alighting stations. All feasible routes will be shown, including estimated travelling times and the latest times you should be boarding your train at the boarding station. As there are no public real-time data on train arrival times, knowing the latest possible time you should board your train to reach your destination will be useful in planning a late night out with friends/family!</p>
+          <p>- Transfer times at interchanges are always assumed to be 5 minutes.</p>
+          <p>- Last train timings are scrapped from the SBS and SMRT websites, so they are only as accurate as the websites are. Do reach at least 10mins earlier than the stated time to avoid potentially missing your train.</p>
+          <p>- Last train timings do not account for adjustments in train service hours and are based on the scheduled train departure times. They do, however, account for different timings on weekdays and weekends and public holidays.</p>
+        </div>
       </div>
     </div>
   );
