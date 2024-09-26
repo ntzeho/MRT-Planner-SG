@@ -358,7 +358,7 @@ function App() {
             </div>
             )
         ) : (
-            <p>Please submit your stations to see possible routes.</p>
+            <p>Please select the relevant boarding and alighting stations to see possible routes.</p>
         )}
         </div>
 
@@ -373,11 +373,21 @@ function App() {
           <h2 className="project-heading">Overview</h2>
           <div className="paragraph">
             <p>
-              As its name suggests, MRT Planner SG plans your MRT/LRT journeys for you! Simply enter your boarding and alighting stations, and click the submit button. All feasible routes, including estimated travelling times and the latest times you should be boarding your train at the boarding station, will be displayed. As there are no public real-time data on train arrival times, knowing the latest possible time you should board your train to reach your destination will be useful in planning a late night out with friends/family!
+              As its name suggests, MRT Planner SG plans your MRT/LRT journeys for you! Upon entering your boarding and alighting stations, all feasible routes, including estimated travelling times as well as the latest timings you should be boarding your train, will be displayed. As there are no public real-time data on train arrival times, knowing the latest possible time you should board your train to reach your destination will be useful in planning a late night out with friends/family!
             </p>
             <p className="highlight">- Transfer times at interchanges are always assumed to be 5 minutes.</p>
             <p className="highlight">- Last train timings are scrapped from the SBS and SMRT websites, so they are only as accurate as the websites are. Do reach at least 10 minutes earlier than the stated time to avoid potentially missing your train.</p>
             <p className="highlight">- Last train timings do not account for adjustments in train service hours and are based on the scheduled train departure times. They do, however, account for different timings on weekdays, weekends, and public holidays.</p>
+          </div>
+          <h2 className="project-heading">Coming soon?</h2>
+          <div className="paragraph">
+            <p className="comingSoonHighlight">- Real time data from LTA on train service status and disruptions</p>
+            <p className="comingSoonHighlight">- Better user interface?</p>
+            <p className="comingSoonHighlight">- Future stations and lines</p>
+          </div>
+          <h2 className="project-heading">Source code</h2>
+          <div className="paragraph">
+            <p className="comingSoonHighlight">- To be added soon</p>
           </div>
         </div>
       </div>
