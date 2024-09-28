@@ -6,7 +6,7 @@ import walkPic from './images/walk.svg'
 import railPic from './images/rail2.svg'
 
 import './App.css';
-import { stationColours, serverURL } from './constants';
+import { stationColours, stationsURL, solveURL } from './constants';
 
 function App() {
   //use states
@@ -21,7 +21,7 @@ function App() {
 
   //fetch stations data on component mount
   useEffect(() => {
-    axios.get(serverURL + 'stations')
+    axios.get(stationsURL)
       .then(response => setStations(response.data))
       .catch(error => console.error('Error fetching stations:', error));
   }, []);
@@ -33,7 +33,7 @@ function App() {
     } else {
       const start = startStation.slice(0, startStation.indexOf('[') - 1);
       const end = endStation.slice(0, endStation.indexOf('[') - 1);
-      axios.post(serverURL + 'solve', { start, end })
+      axios.post(solveURL, { start, end })
         .then(response => {
           setResults(response.data);
           setExpandedSections(response.data.map(() => false)); //initialize all sections as minimized
