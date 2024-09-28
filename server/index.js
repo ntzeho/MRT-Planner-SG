@@ -20,9 +20,10 @@ app.use(express.urlencoded({ extended: true }))
 
 
 const router = express.Router();
-app.use('/api', router).all((_, res) => {
+app.use('/', router).all((_, res) => {
   res.setHeader('content-type', 'application/json')
   res.setHeader('Access-Control-Allow-Origin', '*')
+  res.send('Server is running')
 })
 // router.get('/', (_, res) => res.send('hello world from user service'));
 router.post('/solve', solve);
