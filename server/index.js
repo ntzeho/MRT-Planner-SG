@@ -41,7 +41,7 @@ app.use('/', router).all((_, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.send('Server is running')
 })
-// router.get('/', (_, res) => res.send('hello world from user service'));
+router.get('/', (_, res) => res.send('Server is running'));
 router.post('/solve', solve);
 router.get('/stations', getStations);
 
