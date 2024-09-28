@@ -169,8 +169,8 @@ button {
   }
 
   .icon-summary {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     vertical-align: middle; /* Aligns icon with text */
     margin-right: 1px;
   }
@@ -179,7 +179,7 @@ button {
     margin: 0 0px; /* Space around the arrow */
     margin-right: 3px;
     font-weight: bold;
-    font-size: 15px;
+    font-size: 12px;
   }
 
   .description-list {
