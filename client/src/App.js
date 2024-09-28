@@ -243,7 +243,7 @@ function App() {
                                 {result.path.sections.map((section, sectionIndex) => (
                                     <tr key={sectionIndex}>
                                     {/* Start Station (boarding) */}
-                                    <td>
+                                    <td className="route-summary">
                                         <span
                                         style={{
                                             backgroundColor: getStationColor(section[2][0]), // Boarding station code color
@@ -261,24 +261,24 @@ function App() {
                                     {/* Mode (icon) */}
                                     <td>
                                         {section[0] === 'Walk' ? (
-                                        <img src={walkPic} alt="Walk" className="icon" />
+                                        <img src={walkPic} alt="Walk" className="icon-summary" />
                                         ) : section[0] === 'Train' ? (
-                                        <img src={railPic} alt="Train" className="icon" />
+                                        <img src={railPic} alt="Train" className="icon-summary" />
                                         ) : section[0] === 'Transfer' ? (
                                         // <img src={transferPic} alt="Transfer" className="icon" />
                                         <div className="transfer-icons">
-                                            <img src={railPic} alt="Train" className="icon" />
+                                            <img src={railPic} alt="Train" className="icon-summary" />
                                             <span className="transfer-arrow"> → </span>
-                                            <img src={railPic} alt="Train" className="icon" />
+                                            <img src={railPic} alt="Train" className="icon-summary" />
                                         </div>
                                         ) : null}
                                     </td>
 
                                     {/* Travel Time */}
-                                    <td>{section[1]} mins</td>
+                                    <td className="route-summary">{section[1]} mins</td>
 
                                     {/* End Station (alighting) */}
-                                    <td>
+                                    <td className="route-summary">
                                         <span
                                         style={{
                                             backgroundColor: getStationColor(section[3][0]), // Alighting station code color
@@ -294,7 +294,7 @@ function App() {
                                     </td>
 
                                     {/* Description */}
-                                    <td>
+                                    <td className='route-summary'>
                                         {section[0] === 'Walk' ? (
                                         section[4]
                                         ) : section[0] === 'Transfer' ? (

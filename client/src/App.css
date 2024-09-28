@@ -43,23 +43,6 @@ button {
   width: 100%;
 }
 
-/* Media query for smaller screens */
-@media (max-width: 500px) {
-  .top-row-content {
-    flex-direction: column;
-    align-items: center; /* Center items on small screens */
-  }
-
-  .station-form {
-    width: 100%; /* Full width on smaller screens */
-  }
-
-  .station-form button {
-    width: 45%; /* Ensure buttons are side by side with enough space */
-    max-width: 60px;
-  }
-}
-
 .map-row{
   display: flex;
   align-items: center;
@@ -132,7 +115,7 @@ button {
 }
 
 /* Style for the icons in the route summary */
-.icon {
+.icon, .icon-summary {
   width: 24px;
   height: 24px;
   vertical-align: middle; /* Aligns icon with text */
@@ -167,6 +150,47 @@ button {
   margin-right: 5px;
   font-weight: bold;
   font-size: 18px;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 500px) {
+  .top-row-content {
+    flex-direction: column;
+    align-items: center; /* Center items on small screens */
+  }
+
+  .station-form {
+    width: 100%; /* Full width on smaller screens */
+  }
+
+  .station-form button {
+    width: 45%; /* Ensure buttons are side by side with enough space */
+    max-width: 60px;
+  }
+
+  .icon-summary {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle; /* Aligns icon with text */
+    margin-right: 1px;
+  }
+
+  .transfer-arrow {
+    margin: 0 0px; /* Space around the arrow */
+    margin-right: 3px;
+    font-weight: bold;
+    font-size: 15px;
+  }
+
+  .description-list {
+    padding-left: 0;
+    margin: 5px 0;
+    font-size: 12px;
+  }
+
+  .route-summary {
+    font-size: 15px;
+  }
 }
 
 .project-description-box {
