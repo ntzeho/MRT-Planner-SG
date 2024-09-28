@@ -40,6 +40,7 @@ const router = express.Router();
 app.use('/', router).all((_, res) => {
   res.setHeader('content-type', 'application/json')
   res.setHeader('Access-Control-Allow-Origin', '*')
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.send('Server is running')
 })
 router.get('/', (_, res) => res.send('Server is running'));
