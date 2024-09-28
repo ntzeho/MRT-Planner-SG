@@ -4,6 +4,7 @@ const cors = require("cors");
 // require("dotenv").config({ path: "./config.env" });
 // const port = process.env.PORT || 5000;
 const port = 5000;
+process.env.TZ = 'Asia/Singapore'
 
 // const mongoose = require("mongoose");
 const {solve, getStations} = require("./controller.js")
