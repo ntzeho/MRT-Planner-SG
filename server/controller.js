@@ -71,6 +71,7 @@ async function getStations(req, res) {
         toAdd = toAdd.slice(0, -1) + ']'
         stationsList[i] += toAdd
     }
+    stationsList.sort()
     return res.status(200).json(stationsList)
 }
 
