@@ -24,7 +24,7 @@ app.use('/api', router).all((_, res) => {
   res.setHeader('content-type', 'application/json')
   res.setHeader('Access-Control-Allow-Origin', '*')
 })
-router.get('/', (_, res) => res.send('hello world from user service'));
+// router.get('/', (_, res) => res.send('hello world from user service'));
 router.post('/solve', solve);
 router.get('/stations', getStations);
 
