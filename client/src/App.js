@@ -367,9 +367,11 @@ function App() {
       <div className="map-row">
         {/* image wrapped in an anchor tag that opens in a new tab */}
         <a href={mrtMap} target="_blank" rel="noopener noreferrer">
-          <img src={mrtMap} alt="MRT Map" className="mrt-map" width="750" height="750" />
+          <img src={mrtMap} alt="MRT Map" className="mrt-map" />
         </a>
-        <div className="project-description-box">
+        
+      </div>
+      <div className="project-description-box">
           <h2 className="project-heading">Overview</h2>
           <div className="paragraph">
             <p>
@@ -390,7 +392,6 @@ function App() {
             <p className="comingSoonHighlight">- To be added soon</p>
           </div>
         </div>
-      </div>
     </div>
   );
 }
