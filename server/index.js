@@ -14,7 +14,23 @@ const {solve, getStations} = require("./controller.js")
 // db.on('connected', () => console.log("MongoDB connected: "));
 // db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-app.use(cors());
+// app.use(cors());
+/* 
+{
+    "version": 2,
+    "builds": [{"src": "./index.js", "use": "@vercel/node"}],
+    "routes": [{"src": "/(.*)", "dest": "index.js"}]
+}
+*/
+const corsConfig = {
+  origin: '',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+}
+app.use(cors(corsConfig))
+app.options("", cors(corsConfig))
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 
