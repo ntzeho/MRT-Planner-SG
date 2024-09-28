@@ -36,6 +36,7 @@ button {
 .logo {
   max-width: 150px;
   height: auto;
+  margin-bottom: 15px;
 }
 
 .station-form table {
@@ -53,7 +54,7 @@ button {
     width: 100%; /* Full width on smaller screens */
   }
 
-  button {
+  .station-form button {
     width: 45%; /* Ensure buttons are side by side with enough space */
     max-width: 60px;
   }
