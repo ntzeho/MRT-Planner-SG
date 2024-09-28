@@ -76,14 +76,14 @@ function App() {
       {/* top row with logo and station form */}
       <div className="top-row">
         <div className="top-row-content">
-          <img src={logo} alt="MRT Planner SG Logo" className="logo" />
+          <div className="logo-container">
+            <img src={logo} alt="MRT Planner SG Logo" className="logo" />
+          </div>
           <div className="station-form">
             <table>
               <tbody>
                 <tr>
                   <td>Boarding Station</td>
-                  <td>Alighting Station</td>
-                  <td></td>
                 </tr>
                 <tr>
                   <td>
@@ -93,10 +93,17 @@ function App() {
                     >
                       <option value="">Select</option>
                       {stations.map((station) => (
-                        <option key={station} value={station}>{station}</option>
+                        <option key={station} value={station}>
+                          {station}
+                        </option>
                       ))}
                     </select>
                   </td>
+                </tr>
+                <tr>
+                  <td>Alighting Station</td>
+                </tr>
+                <tr>
                   <td>
                     <select
                       value={endStation}
@@ -104,10 +111,14 @@ function App() {
                     >
                       <option value="">Select</option>
                       {stations.map((station) => (
-                        <option key={station} value={station}>{station}</option>
+                        <option key={station} value={station}>
+                          {station}
+                        </option>
                       ))}
                     </select>
                   </td>
+                </tr>
+                <tr>
                   <td>
                     <button onClick={handleSubmit}>Submit</button>
                     <button onClick={handleReset}>Reset</button>
@@ -118,6 +129,7 @@ function App() {
           </div>
         </div>
       </div>
+
 
         {/* second row with dynamic results */}
         <div className="result-row">
@@ -135,7 +147,7 @@ function App() {
                     <div className="route-item">
                         <div className="path-info">
                         <h4>Route {index + 1}</h4>
-                        <p><strong>Total Travelling Time:</strong> {result.path.time} minutes</p>
+                        <p><strong>Total Travelling Time:</strong> {result.path.time} mins</p>
                         <p><strong>Latest Time to Leave:</strong> {result.timings.lastTrain.finalLeaveTime}</p>
                         <p><strong>Estimated Latest Time of Arrival:</strong> {result.timings.lastTrain.finalETA}</p>
 
@@ -263,7 +275,7 @@ function App() {
                                     </td>
 
                                     {/* Travel Time */}
-                                    <td>{section[1]} minutes</td>
+                                    <td>{section[1]} mins</td>
 
                                     {/* End Station (alighting) */}
                                     <td>
