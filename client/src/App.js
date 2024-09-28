@@ -6,7 +6,7 @@ import walkPic from './images/walk.svg'
 import railPic from './images/rail2.svg'
 
 import './App.css';
-import { stationColours, stationsURL, solveURL } from './constants';
+import { stationColours, stationsURL, solveURL } from './constants.js';
 
 function App() {
   //use states
@@ -367,7 +367,7 @@ function App() {
       <div className="map-row">
         {/* image wrapped in an anchor tag that opens in a new tab */}
         <a href={mrtMap} target="_blank" rel="noopener noreferrer">
-          <img src={mrtMap} alt="MRT Map" className="mrt-map" />
+          <img src={mrtMap} alt="MRT Map" className="mrt-map" width="750" height="750" />
         </a>
         <div className="project-description-box">
           <h2 className="project-heading">Overview</h2>

@@ -1,26 +1,65 @@
-/* Flexbox for layout */
-.App {
+/* .App {
   text-align: center;
-  width: 100%;
 }
 
-/* Responsive layout for top-row content */
-.top-row-content,
-.map-row {
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} */
+
+
+/* basic styling for app */
+.App {
+  text-align: center;
+  /* background-color: black;
+  color: white; */
+}
+
+/* flexbox layout for top-row-content */
+.top-row-content, .map-row{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap; /* Allow content to wrap on smaller screens */
   padding: 20px;
-  width: 100%;
 }
 
-/* Logo styling for responsiveness */
+/* styling for logo */
 .logo {
   max-width: 150px;
   height: auto;
 }
 
+/* styling for station-form */
 .station-form {
   flex-grow: 1;
   margin-left: 20px;
@@ -34,63 +73,146 @@
 .station-form button {
   margin: 5px;
   padding: 5px;
-  width: 100%; /* Allow form inputs to be responsive */
 }
 
-/* Responsive MRT Map */
-.mrt-map {
-  width: 100%; /* Make image take up available space */
-  max-width: 100%; /* Ensure it doesn't exceed its container */
+/* styling for MRT map */
+/* .mrt-map {
+  max-width: 100%;
   height: auto;
-  cursor: pointer;
-}
+} */
 
-/* Responsive project description */
-.project-description-box {
+/* styling for paragraph beside MRT map */
+.paragraph {
   flex-grow: 1;
+  margin-left: 20px;
+}
+
+/* results section */
+.result-row .results {
   margin-top: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
 }
 
-/* Responsive text */
+.results ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.results li {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+}
+
+/* center the table on the page */
+.centered-table {
+  margin: auto; /* centers table horizontally */
+  width: 100%; /* can be optional; set width to better control table size */
+  border-collapse: collapse; /* remove gaps between cells */
+  border: none;
+}
+
+/* center table headers and data cells */
+.centered-table th,
+.centered-table td {
+  /* border: 1px solid #ddd; */
+  padding: 8px;
+  border: none;
+  text-align: left;
+  vertical-align: top;
+}
+
+/* ensure that content inside table cells is left-aligned */
+.centered-table p {
+  margin: 0;
+  text-align: center;
+}
+
+.station-list {
+  padding-left: 0;
+  margin-top: 1px;
+}
+
+.station-item {
+  margin: 2px 0;
+  line-height: 1.2;
+  list-style-type: none;
+}
+
+/* Style for the icons in the route summary */
+.icon {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle; /* Aligns icon with text */
+  margin-right: 5px;
+}
+
+/* Style for the transition arrow in the route summary */
+.transition-arrow {
+  margin: 0 10px;
+  font-size: 18px;
+}
+
+/* Style for the description list to reduce spacing */
+.description-list {
+  padding-left: 0;
+  margin: 5px 0;
+}
+
+.description-list li {
+  margin: 2px 0;
+  line-height: 1.2;
+  list-style-type: none;
+}
+
+.transfer-icons {
+  display: inline-flex;
+  align-items: center; /* Vertically align the icons and arrow */
+}
+
+.transfer-arrow {
+  margin: 0 0px; /* Space around the arrow */
+  margin-right: 5px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.project-description-box {
+  background-color: #f9f9f9; /* Light grey background for the box */
+  border: 1px solid #dcdcdc; /* Subtle border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px; /* Space inside the box */
+  margin-top: 0px; /* Add space above the box */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+.project-heading {
+  font-family: 'Arial', sans-serif; /* Modern and clean font */
+  color: #333; /* Dark grey text */
+  font-size: 24px; /* Heading size */
+  font-weight: 600; /* Bold heading */
+  margin-bottom: 15px; /* Space between heading and content */
+}
+
 .paragraph p {
-  font-size: 1em;
-  text-align: justify;
+  font-family: 'Roboto', sans-serif; /* Clear and readable font */
+  font-size: 16px; /* Standard paragraph size */
+  color: #555; /* Slightly lighter grey for readability */
+  line-height: 1.6; /* Increased line height for readability */
+  margin-bottom: 15px; /* Space between paragraphs */
+  text-align: justify; /* Apply justification to paragraphs */
 }
 
-/* Responsive design for smaller screens */
-@media (max-width: 768px) {
-  .logo {
-    max-width: 100px;
-  }
+.paragraph p.highlight {
+  color: #d9534f; /* Red for important points */
+  font-weight: 500; /* Make the important points bold */
+}
 
-  .top-row-content,
-  .map-row {
-    flex-direction: column; /* Stack content vertically on small screens */
-    align-items: center;
-  }
+.paragraph p.comingSoonHighlight {
+  color: rgb(1, 90, 90); /* Red for important points */
+  font-weight: 500; /* Make the important points bold */
+}
 
-  .mrt-map {
-    width: 100%;
-    height: auto; /* Allow the image to resize dynamically */
-  }
-
-  .project-description-box {
-    width: 100%;
-    margin-top: 15px;
-  }
-
-  .station-form select,
-  .station-form button {
-    width: 100%; /* Make form elements fill the screen on mobile */
-  }
-
-  .centered-table th,
-  .centered-table td {
-    padding: 5px;
-  }
+.paragraph p:last-child {
+  margin-bottom: 5; /* Remove bottom margin from the last paragraph */
 }
