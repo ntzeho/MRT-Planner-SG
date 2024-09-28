@@ -25,8 +25,8 @@ const outputPadding = {
 }
 
 const serverURL = 'https://mrt-planner-sg-server.vercel.app/'
-const stationsURL = serverURL + 'stations'
-const solveURL = serverURL + 'solve'
+const stationsURL = 'https://mrt-planner-sg-server.vercel.app/stations'
+const solveURL = 'https://mrt-planner-sg-server.vercel.app/solve'
 
 module.exports = {
     stationColours,
