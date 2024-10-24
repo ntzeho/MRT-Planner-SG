@@ -36,6 +36,7 @@ function App() {
       axios.post(solveURL, { start, end })
         .then(response => {
           setResults(response.data);
+          setExpandedRoutes(response.data.map(() => false)); //initialize all routes as minimized
           setExpandedSections(response.data.map(() => false)); //initialize all sections as minimized
         })
         .catch(error => console.error('Error submitting request:', error));
@@ -172,7 +173,7 @@ function App() {
                                     <img src={railPic} alt="Train" className="icon" />
                                     <span
                                     style={{
-                                        backgroundColor: getStationColor(section[2][0]), // Station code color
+                                        backgroundColor: getStationColor(section[2][0]), //station code color
                                         color: 'white', //text color
                                         padding: '2px 5px',
                                         borderRadius: '4px',
@@ -207,16 +208,16 @@ function App() {
                                     <img src={railPic} alt="Train" className="icon" />
                                     <span
                                     style={{
-                                        backgroundColor: getStationColor(section[2][0]), // Station code color
-                                        color: 'white', // Text color
+                                        backgroundColor: getStationColor(section[2][0]), //station code color
+                                        color: 'white', //text color
                                         padding: '2px 5px',
                                         borderRadius: '4px',
-                                        marginLeft: '5px', // Small space before the station code
+                                        marginLeft: '5px', //small space before the station code
                                         display: 'inline-block',
                                     }}
                                     >
                                     {['ST', 'PT'].includes(section[2][0].slice(0, 2)) 
-                                        ? section[3][0].slice(0, 2) // Display end station code if condition is met otherwise display start station code
+                                        ? section[3][0].slice(0, 2) //display end station code if condition is met otherwise display start station code
                                         : section[2][0].slice(0, 2)} 
                                     </span>
                                 </>
@@ -246,7 +247,7 @@ function App() {
                                     <td className="route-summary">
                                         <span
                                         style={{
-                                            backgroundColor: getStationColor(section[2][0]), // Boarding station code color
+                                            backgroundColor: getStationColor(section[2][0]), //boarding station code color
                                             color: 'white',
                                             padding: '2px 5px',
                                             borderRadius: '4px',
@@ -265,7 +266,7 @@ function App() {
                                         ) : section[0] === 'Train' ? (
                                         <img src={railPic} alt="Train" className="icon-summary" />
                                         ) : section[0] === 'Transfer' ? (
-                                        // <img src={transferPic} alt="Transfer" className="icon" />
+                                        //<img src={transferPic} alt="Transfer" className="icon" />
                                         <div className="transfer-icons">
                                             <img src={railPic} alt="Train" className="icon-summary" />
                                             <span className="transfer-arrow"> → </span>
@@ -281,7 +282,7 @@ function App() {
                                     <td className="route-summary">
                                         <span
                                         style={{
-                                            backgroundColor: getStationColor(section[3][0]), // Alighting station code color
+                                            backgroundColor: getStationColor(section[3][0]), //alighting station code color
                                             color: 'white',
                                             padding: '2px 5px',
                                             borderRadius: '4px',
@@ -336,12 +337,12 @@ function App() {
                                                     <>
                                                         <span
                                                         style={{
-                                                            backgroundColor: getStationColor(station[0]), // Station code background color
+                                                            backgroundColor: getStationColor(station[0]), //station code background color
                                                             color: 'white',
                                                             padding: '2px 5px',
                                                             borderRadius: '4px',
                                                             display: 'inline-block',
-                                                            marginRight: '5px', // Add space between stations
+                                                            marginRight: '5px', //add space between stations
                                                         }}
                                                         >
                                                         {station[0]}

@@ -10,16 +10,16 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  flex-wrap: wrap; /* Allows wrapping for smaller screens */
+  flex-wrap: wrap; /* allows wrapping for smaller screens */
   padding: 10px;
 }
 
 .logo-container {
-  flex: 1 1 150px; /* Adjust width based on available space */
+  flex: 1 1 150px; /* adjust width based on available space */
 }
 
 .station-form {
-  flex: 2 1 300px; /* Allow form to grow and shrink */
+  flex: 2 1 300px; /* allow form to grow and shrink */
 }
 
 .station-form select,
@@ -29,7 +29,7 @@
 }
 
 button {
-  margin-right: 10px; /* Adds space between the buttons */
+  margin-right: 10px; /* adds space between buttons */
 }
 
 /* styling for logo */
@@ -82,7 +82,7 @@ button {
 /* center the table on the page */
 .centered-table {
   margin: auto; /* centers table horizontally */
-  width: 100%; /* can be optional; set width to better control table size */
+  width: 100%; /* control table size */
   border-collapse: collapse; /* remove gaps between cells */
   border: none;
 }
@@ -114,21 +114,21 @@ button {
   list-style-type: none;
 }
 
-/* Style for the icons in the route summary */
+/* style for the icons in the route summary */
 .icon, .icon-summary {
   width: 24px;
   height: 24px;
-  vertical-align: middle; /* Aligns icon with text */
+  vertical-align: middle; /* aligns icon with text */
   margin-right: 1px;
 }
 
-/* Style for the transition arrow in the route summary */
+/* style for the transition arrow in the route summary */
 .transition-arrow {
   margin: 0 2px;
   font-size: 18px;
 }
 
-/* Style for the description list to reduce spacing */
+/* style for the description list to reduce spacing */
 .description-list {
   padding-left: 0;
   margin: 5px 0;
@@ -142,41 +142,41 @@ button {
 
 .transfer-icons {
   display: inline-flex;
-  align-items: center; /* Vertically align the icons and arrow */
+  align-items: center; /* vertically align icons and arrow */
 }
 
 .transfer-arrow {
-  margin: 0 0px; /* Space around the arrow */
+  margin: 0 0px; /* space around arrow */
   margin-right: 5px;
   font-weight: bold;
   font-size: 18px;
 }
 
-/* Media query for smaller screens */
+/* smaller screens */
 @media (max-width: 500px) {
   .top-row-content {
     flex-direction: column;
-    align-items: center; /* Center items on small screens */
+    align-items: center; /* center items on small screens */
   }
 
   .station-form {
-    width: 100%; /* Full width on smaller screens */
+    width: 100%; /* full width on smaller screens */
   }
 
   .station-form button {
-    width: 45%; /* Ensure buttons are side by side with enough space */
+    width: 45%; /* ensure buttons are side by side with enough space */
     max-width: 60px;
   }
 
   .icon-summary {
     width: 16px;
     height: 16px;
-    vertical-align: middle; /* Aligns icon with text */
+    vertical-align: middle; /* aligns icon with text */
     margin-right: 1px;
   }
 
   .transfer-arrow {
-    margin: 0 0px; /* Space around the arrow */
+    margin: 0 0px; /* space around the arrow */
     margin-right: 3px;
     font-weight: bold;
     font-size: 12px;
@@ -194,41 +194,41 @@ button {
 }
 
 .project-description-box {
-  background-color: #f9f9f9; /* Light grey background for the box */
-  border: 1px solid #dcdcdc; /* Subtle border */
-  border-radius: 8px; /* Rounded corners */
-  padding: 20px; /* Space inside the box */
-  margin-top: 0px; /* Add space above the box */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  background-color: #f9f9f9; /* light grey background for box */
+  border: 1px solid #dcdcdc; /* subtle border */
+  border-radius: 8px; /* rounded corners */
+  padding: 20px; /* space inside box */
+  margin-top: 0px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* soft shadow for depth */
 }
 
 .project-heading {
-  font-family: 'Arial', sans-serif; /* Modern and clean font */
-  color: #333; /* Dark grey text */
-  font-size: 24px; /* Heading size */
-  font-weight: 600; /* Bold heading */
-  margin-bottom: 15px; /* Space between heading and content */
+  font-family: 'Arial', sans-serif;
+  color: #333; /* dark grey text */
+  font-size: 24px; /* heading size */
+  font-weight: 600; /* bold heading */
+  margin-bottom: 15px; /* space between heading and content */
 }
 
 .paragraph p {
-  font-family: 'Roboto', sans-serif; /* Clear and readable font */
-  font-size: 16px; /* Standard paragraph size */
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px; /* standard paragraph size */
   color: #555; /* Slightly lighter grey for readability */
-  line-height: 1.6; /* Increased line height for readability */
-  margin-bottom: 15px; /* Space between paragraphs */
-  text-align: justify; /* Apply justification to paragraphs */
+  line-height: 1.6; /* increased line height for readability */
+  margin-bottom: 15px; /* space between paragraphs */
+  text-align: justify;
 }
 
 .paragraph p.highlight {
-  color: #d9534f; /* Red for important points */
-  font-weight: 500; /* Make the important points bold */
+  color: #d9534f; /* red for important points */
+  font-weight: 500; /* make important points bold */
 }
 
 .paragraph p.comingSoonHighlight {
-  color: rgb(1, 90, 90); /* Red for important points */
-  font-weight: 500; /* Make the important points bold */
+  color: rgb(1, 90, 90); /* blue */
+  font-weight: 500; /* bold */
 }
 
 .paragraph p:last-child {
-  margin-bottom: 5; /* Remove bottom margin from the last paragraph */
+  margin-bottom: 5;
 }
