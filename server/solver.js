@@ -284,7 +284,7 @@ function getTimings(path) {
 
     let pathWalkTime = 0
     if (pathAttributes.length === 5) { //obtain walking time at start
-        if (path.walk.includes(path.names[0])) pathWalkTime = parseInt(path.walk.slice(0,1))
+        if (path.walk[0].includes(path.names[0])) pathWalkTime = parseInt(path.walk.slice(0,1))
     }
     //direct path with no transfers
     if (path.transfer.length === 0) {

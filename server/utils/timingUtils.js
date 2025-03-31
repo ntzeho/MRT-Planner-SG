@@ -83,8 +83,16 @@ function dayChecker(type) {
     const isPubHol = (genericPublicHolidays.includes(formatDate) || publicHolidays.includes(formatDateYear))
 
     if (isPubHol) { //return key immediately if day is public holiday
-        for (const key of categories) {
-            if (key.includes('Public Holiday')) return [key]
+        if (type === 'smrt_times') {
+            for (const key of categories) {
+                if (key.includes('Public Holiday')) return [key]
+            }
+        } else {
+            let finalKeys = []
+            for (const key of categories) {
+                if (key.includes('Public Holiday') || !key.includes('|')) finalKeys.push(key)
+            }
+            return finalKeys
         }
     }
 

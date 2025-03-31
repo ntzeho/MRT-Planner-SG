@@ -61,7 +61,7 @@ def scrapeSMRT():
                 smrt_timings[smrt_timings.index(lst)] = newlst
 
             for timing in smrt_timings:
-                timings[station]['smrt_times'][timing[0]] = {timing[order] + ' | ' + timing[day]: timing[day+order] for order in range(1,3) for day in range(3,len(timing)-3,3)}
+                timings[station]['smrt_times'][timing[0]] = {timing[order] + ' | ' + timing[day]: timing[day+order] for order in range(1,3) for day in range(3,len(timing)-2,3)}
             
 
 def scrapeSBS():

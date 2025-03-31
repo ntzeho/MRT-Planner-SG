@@ -1,5 +1,5 @@
 const genericPublicHolidays = ['01/01', '01/05', '09/08', '25/12']
-const publicHolidays = ['31/10/2024']
+const publicHolidays = ['31/03/2025', '18/04/2025', '12/05/2025', '07/06/2025', '20/10/2025']
 
 const dayDict = {
     'Monday': 1,

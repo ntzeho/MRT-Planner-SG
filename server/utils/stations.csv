@@ -77,6 +77,7 @@ NE14,Hougang,North East Line
 NE15,Buangkok,North East Line
 NE16,Sengkang,North East Line
 NE17,Punggol,North East Line
+NE18,Punggol Coast,North East Line
 CC1,Dhoby Ghaut,Circle Line
 CC2,Bras Basah,Circle Line
 CC3,Esplanade,Circle Line
@@ -110,6 +111,7 @@ CE2,Marina Bay,Circle Line Extension
 DT1,Bukit Panjang,Downtown Line
 DT2,Cashew,Downtown Line
 DT3,Hillview,Downtown Line
+DT4,Hume,Downtown Line
 DT5,Beauty World,Downtown Line
 DT6,King Albert Park,Downtown Line
 DT7,Sixth Avenue,Downtown Line
