@@ -24,7 +24,7 @@ function App() {
   useEffect(() => {
     axios.get(stationsURL)
       .then(response => setStations(response.data))
-      .catch(error => console.error('Error fetching stations:', error));
+      .catch(error => setResults({ error: "Error fetching stations: " + error }));
   }, []);
 
   //handle form submission to obtain routes
