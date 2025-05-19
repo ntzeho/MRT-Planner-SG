@@ -29,6 +29,12 @@ function outputJourney(start, end) {
             if (checkDirect(path.codes)) {
                 directPaths = true
             }
+            
+            for (const station of path.transfer) {
+                let no_current_transfer_path = new astar(code_start, code_end, [], [station])
+                if (no_current_transfer_path.time !== 0) {paths.push(no_current_transfer_path)}
+            }
+
             paths.push(path)
         }
     }

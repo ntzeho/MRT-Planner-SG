@@ -134,7 +134,7 @@ function checkLineInPaths(line, paths) {
 }
 
 
-function astar(start, end, exclude=[]) {
+function astar(start, end, excludeCodes=[], excludeStations=[]) {
     let open_list = []
     let closed_set = new Set()
     let came_from = {}
@@ -143,10 +143,12 @@ function astar(start, end, exclude=[]) {
     const stationArray = Object.keys(stations_dict)
 
     for (const station of stationArray) {
-        let codeArray = stations_dict[station]
-        for (const code of codeArray) {
-            g_score[code] = Infinity
-            f_score[code] = Infinity
+        if (!excludeStations.includes(station)) {
+            let codeArray = stations_dict[station]
+                for (const code of codeArray) {
+                    g_score[code] = Infinity
+                    f_score[code] = Infinity
+                }
         }
     }
 
@@ -171,7 +173,7 @@ function astar(start, end, exclude=[]) {
 
         closed_set.add(current)
 
-        let neighbors = getNeighbours(current, exclude)
+        let neighbors = getNeighbours(current, excludeCodes)
         for (const neighbor of neighbors) {
             let travelKey = current + ',' + neighbor in travelTime ? current + ',' + neighbor : neighbor + ',' + current
             let tentative_g_score = g_score[current] + travelTime[travelKey]
