@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Select from 'react-select';
 import axios from 'axios';
 import logo from './images/MRT-Planner-SG-Logo.png';
 import mrtMap from './images/mrt-map.jpg';
@@ -28,7 +29,9 @@ function App() {
 
   //handle form submission to obtain routes
   const handleSubmit = () => {
-    if (startStation === endStation) {
+    if (startStation === '' || endStation === '') {
+      setResults({ error: "Ensure both boarding and alighting stations are filled in!" })
+    } else if (startStation === endStation) {
       setResults({ error: "Boarding and alighting stations must be different!" });
     } else {
       const start = startStation.slice(0, startStation.indexOf('[') - 1);
@@ -39,9 +42,18 @@ function App() {
           setExpandedRoutes(response.data.map(() => false)); //initialize all routes as minimized
           setExpandedSections(response.data.map(() => false)); //initialize all sections as minimized
         })
-        .catch(error => console.error('Error submitting request:', error));
+        .catch(error => setResults({error}));
     }
   };
+
+  //swap start and end stations
+  const handleSwap = () => {
+    if (startStation !== endStation) {
+      let currentStartStation = startStation;
+      setStartStation(endStation);
+      setEndStation(currentStartStation);
+    }
+  }
 
   //reset inputs by refreshing page
   const handleReset = () => {
@@ -71,6 +83,12 @@ function App() {
     }));
   };
 
+  //for dropdown box
+  const stationOptions = stations.map((station) => ({
+    value: station,
+    label: station,
+  }));
+
 
   return (
     <div className="App">
@@ -88,6 +106,19 @@ function App() {
                 </tr>
                 <tr>
                   <td>
+                    <div className="select-wrapper">
+                      <Select
+                        options={stationOptions}
+                        value={stationOptions.find(option => option.value === startStation)}
+                        onChange={(selectedOption) => setStartStation(selectedOption?.value || '')}
+                        placeholder="Select station"
+                        isClearable
+                        className="custom-select-container"
+                        classNamePrefix="custom-select"
+                      />
+                    </div>
+                  </td>
+                  {/* <td>
                     <select
                       value={startStation}
                       onChange={(e) => setStartStation(e.target.value)}
@@ -99,13 +130,26 @@ function App() {
                         </option>
                       ))}
                     </select>
-                  </td>
+                  </td> */}
                 </tr>
                 <tr>
                   <td>Alighting Station</td>
                 </tr>
                 <tr>
                   <td>
+                    <div className="select-wrapper">
+                      <Select
+                        options={stationOptions}
+                        value={stationOptions.find(option => option.value === endStation)}
+                        onChange={(selectedOption) => setEndStation(selectedOption?.value || '')}
+                        placeholder="Select station"
+                        isClearable
+                        className="custom-select-container"
+                        classNamePrefix="custom-select"
+                      />
+                    </div>
+                  </td>
+                  {/* <td>
                     <select
                       value={endStation}
                       onChange={(e) => setEndStation(e.target.value)}
@@ -117,11 +161,12 @@ function App() {
                         </option>
                       ))}
                     </select>
-                  </td>
+                  </td> */}
                 </tr>
                 <tr>
                   <td>
                     <button onClick={handleSubmit}>Submit</button>
+                    <button onClick={handleSwap}>Swap</button>
                     <button onClick={handleReset}>Reset</button>
                   </td>
                 </tr>

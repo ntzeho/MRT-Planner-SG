@@ -232,3 +232,36 @@ button {
 .paragraph p:last-child {
   margin-bottom: 5;
 }
+
+/* Dropdown box selection */
+.custom-select-container {
+  width: 250px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.custom-select__control {
+  min-height: 25px !important;
+  height: 25px !important;
+}
+
+.custom-select__indicators {
+  height: 25px !important;
+}
+
+.custom-select__value-container {
+  height: 25px !important;
+  padding: 0 6px !important;
+}
+
+.custom-select__input {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.2 !important;
+}
+
+.select-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
