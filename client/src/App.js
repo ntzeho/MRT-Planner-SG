@@ -48,7 +48,7 @@ function App() {
 
   //swap start and end stations
   const handleSwap = () => {
-    if (startStation !== endStation) {
+    if (startStation !== endStation && startStation !== '' && endStation !== '') {
       let currentStartStation = startStation;
       setStartStation(endStation);
       setEndStation(currentStartStation);
